@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Component } from 'react';
 
 import logo from './logo.svg';
@@ -10,6 +11,8 @@ import History from './History';
 
 import { v4 as uuid } from 'uuid';
 
+import { GoogleLogin } from 'react-google-login';
+
 import {
   CircularProgressbarWithChildren,
   buildStyles
@@ -20,6 +23,7 @@ class App extends Component<any,any>{
   constructor(props: any) {
     super(props);
     this.state = { 
+      user: false,
       budget: 500,
       spent:  300,
       last: 0,
@@ -31,6 +35,15 @@ class App extends Component<any,any>{
     };
   }
 
+  handleLogin = async (data:any) => {
+    this.setState({ user : data });
+  }
+
+  handleLoginFailure = async (data:any) => {
+    alert("Error");
+    console.log(data);
+  }
+
   deleteTransaction(id:any, amount: any){
     const newHistory = this.state.history.filter((h:any) => h.id != id);
     const newLast = this.state.spent + this.state.price;
@@ -40,9 +53,17 @@ class App extends Component<any,any>{
   }
 
   render() {
-  console.log(this.state)
     return  (
       <div className="App">
+      {this.state.user == false ?
+        <GoogleLogin
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}
+          buttonText="Login"
+          cookiePolicy={'single_host_origin'}
+          onSuccess={this.handleLogin.bind(this)}
+          onFailure={this.handleLoginFailure.bind(this)}
+        /> :
+        <>
         <Progress amount={this.state.price} last={this.state.last} total={this.state.price + this.state.spent} budget={this.state.budget}/>
         <div className="overall-summary">
           <span className="summary-line">Monthly budget: <span className="summary-value">${this.state.budget}</span></span>
@@ -53,6 +74,7 @@ class App extends Component<any,any>{
           <History delete={this.deleteTransaction.bind(this)} data={this.state.history}/>
           </div>
         </div>
+        </>}
       </div>
     );
   }
