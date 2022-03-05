@@ -1,0 +1,122 @@
+.App {
+  text-align: center;
+  font-family: futura;
+  padding: 30px;
+}
+
+#root{
+  border: 1px solid black;
+  width: 350px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.spend-progress-content{
+  margin-top: -25px !important;
+}
+
+.spend-progress{
+  width: 200px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-top: 0px;
+  margin-bottom: 10px;
+}
+
+.progress-body{
+  font-size: 12px;
+  width: 150px;
+  font-weight: 600;
+}
+
+.progress-header{
+  font-weight: 800;
+  color: rgb(75,176,248);
+  font-size: xx-large;
+}
+
+.summary-line{
+  display: block;
+
+}
+
+.summary-value{
+  font-weight: 600
+}
+
+.divider-bar{
+    background: #efefef;
+    height: 3px;
+    width: 250px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.purchase-history{
+  margin-top: 30px;
+}
+
+.history-title{
+  font-weight: 600;
+}
+
+.MuiSvgIcon-root{
+  width: 20px !important;
+}
+
+table{
+  margin: 0 auto;
+  margin-top: 20px;
+  text-align: right;
+  cursor: pointer;
+}
+
+.table-label{
+  text-align: left;
+}
+
+tr{
+  height: 30px !important;
+}
+
+tr:hover{
+  font-weight: 600
+}
+
+td{
+  width: 75px
+}
+
+.table-amount{
+  padding-right: 20px;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
