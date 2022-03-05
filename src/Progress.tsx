@@ -10,6 +10,7 @@ import {
   buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { getPercentage } from './Helpers';
 
 class Progress extends Component<any,any>{
   constructor(props: any) {
@@ -17,13 +18,18 @@ class Progress extends Component<any,any>{
     this.state = { 
       interval: 100,
       valuesIndex: 0,
-      values: [0,1,2,3,4,5,6,7,8,9,10].map(x => 10*x*this.props.total/this.props.budget)
     };
   }
 
-  componentDidMount() {
+  getIntervalArray(){
+    return (this.props.last <= this.props.total) ? [0,1,2,3,4,5,6,7,8,9,10].map(x => 100*(this.props.last + x*(this.props.total-this.props.last)/10)/this.props.budget)
+    : [0,1,2,3,4,5,6,7,8,9,10].map(x => 100*(this.props.last - x*(this.props.last-this.props.total)/10)/this.props.budget)
+  }
+
+  runInterval(){
+    const values = this.getIntervalArray();
     const interval = setInterval(() => {
-      if(this.state.valuesIndex < this.state.values.length){
+      if(this.state.valuesIndex < values.length){
         this.setState({
           valuesIndex: this.state.valuesIndex + 1
         });
@@ -34,25 +40,50 @@ class Progress extends Component<any,any>{
     }, this.state.interval);
   }
 
+  componentDidMount() {
+    this.runInterval();
+  }
+
+  componentWillReceiveProps(nextProps:any) {
+    this.setState({ valuesIndex: 0 });
+    this.runInterval();
+  }
+
+  getRange(){
+    if (100*this.props.total/this.props.budget < 75){
+      return {class: "below-budget", colour: "rgb(75,176,248)"}
+    }
+    else if (100*this.props.total/this.props.budget < 100){
+      return {class: "approaching-budget", colour: "rgb(248,200,75)"}
+    }
+     else{
+      return {class: "above-budget", colour: "rgb(248,75,75)"}
+    }
+  }
+
   render() {
+    const range = this.getRange();
+    const values = this.getIntervalArray();
+    const progressBody = this.props.amount > 0 ? `You'd hit ${getPercentage(this.props.total, this.props.budget)}% of your monthly budget` : `You're at ${getPercentage(this.props.total, this.props.budget)}% of your monthly budget`;
+
     return (
       <div className="spend-progress">
         <CircularProgressbarWithChildren
-          value={this.state.values[this.state.valuesIndex]}
+          value={values[this.state.valuesIndex]}
           strokeWidth={3}
           styles={buildStyles({
-            pathColor: "rgb(75,176,248)",
+            pathColor: `${range.colour}`,
             trailColor: "#eee",
             strokeLinecap: "round",
             rotation: 0.65
           })}
         >
         <div className="spend-progress-content">
-          <div className="progress-header">
-            $<CountUp duration={1} delay={0.25} start={this.props.spent} end={this.props.total}/>
+          <div className={`progress-header ${range.class}`}>
+            $<CountUp duration={1} start={this.props.last} end={this.props.total}/>
           </div>
           <div className="progress-body">
-            You'd hit {100*this.props.total/this.props.budget}% of your monthly budget
+            {progressBody}
           </div>
         </div>  
         </CircularProgressbarWithChildren>

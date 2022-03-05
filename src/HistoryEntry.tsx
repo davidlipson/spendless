@@ -11,8 +11,8 @@ class HistoryEntry extends Component<any,any>{
     super(props);
   }
 
-  handleDelete(id:any){
-    this.props.delete(id);
+  handleDelete(){
+    this.props.delete(this.props.data.id, this.props.data.amount);
   }
 
   render() {
@@ -23,7 +23,7 @@ class HistoryEntry extends Component<any,any>{
               currency: 'USD',
             })}</td>
             <td>{this.props.data.date}</td>
-            <td><Tooltip title="Remove from budget" onClick={() => this.handleDelete(this.props.data.id)}>
+            <td><Tooltip title="Remove from budget" onClick={() => this.handleDelete()}>
               <IconButton >
                 <DeleteIcon />
               </IconButton>

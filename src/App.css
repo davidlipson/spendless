@@ -31,7 +31,7 @@
 }
 
 .spend-progress-content{
-  margin-top: -25px !important;
+  margin-top: -15px !important;
 }
 
 .spend-progress{
@@ -50,8 +50,19 @@
 
 .progress-header{
   font-weight: 800;
-  color: rgb(75,176,248);
   font-size: xx-large;
+}
+
+.below-budget{
+  color: rgb(75,176,248);
+}
+
+.approaching-budget{
+  color: rgb(248,200,75);
+}
+
+.above-budget{
+  color: rgb(248,75,75);
 }
 
 .summary-line{
