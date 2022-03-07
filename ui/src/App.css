@@ -7,12 +7,28 @@
 #root{
   border: 1px solid black;
   width: 350px;
+  border: 1px solid black;
+  width: 350px;
+  max-height: 575px;
+  overflow-y: hidden;
+}
+
+.purchase-history-body{
+  max-height: 183px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin-top: 10px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.current-user{
+  padding-bottom: 20px;
+  font-weight: 800;
 }
 
 .App-header {
@@ -39,13 +55,18 @@
   margin: 0 auto;
   padding: 20px;
   padding-top: 0px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .progress-body{
   font-size: 12px;
   width: 150px;
   font-weight: 600;
+}
+
+.welcome-header{
+  font-weight: 800;
+  font-size: x-large;
 }
 
 .progress-header{
@@ -80,23 +101,29 @@
     width: 250px;
     margin: 0 auto;
     margin-top: 30px;
+    display: none
 }
 
+
 .purchase-history{
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .history-title{
   font-weight: 600;
+  display: none;
 }
 
 .MuiSvgIcon-root{
   width: 20px !important;
 }
 
+.MuiButtonBase-root{
+  padding: 0px !important;
+}
+
 table{
   margin: 0 auto;
-  margin-top: 20px;
   text-align: right;
   cursor: pointer;
 }
@@ -107,10 +134,12 @@ table{
 
 tr{
   height: 30px !important;
+  color: rgb(163, 162, 162);
 }
 
 tr:hover{
-  font-weight: 600
+  font-style: italic;
+  color: black;
 }
 
 td{
@@ -119,6 +148,50 @@ td{
 
 .table-amount{
   padding-right: 20px;
+}
+
+
+.welcome-body{
+  margin: 25px;
+}
+
+.logout-button{
+  position: relative;
+  top: -15px;
+  right: -5px;
+  text-align: right;
+  color: rgb(163, 162, 162);
+  font-size: 14px;
+  cursor: pointer
+}
+
+.logout-button:hover{
+  color: black;
+  font-style: italic;
+}
+
+.confirm-buttons{
+  padding-top: 5px;
+}
+
+.confirm-buttons a {
+  cursor: pointer;
+  color: rgb(163, 162, 162);
+}
+
+.confirm-buttons a:hover{
+  color: black;
+  font-style: italic;
+}
+
+
+.confirm-buttons a {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.alert-message{
+  color: rgb(248,75,75);
 }
 
 @keyframes App-logo-spin {

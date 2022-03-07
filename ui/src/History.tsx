@@ -10,13 +10,15 @@ class History extends Component<any,any>{
 
   render() {
     return (
-      <table>
-        <tbody>
-        {this.props.data.map((h:any) => {
-          return <HistoryEntry data={h} delete={this.props.delete}/>
-        })}
-        </tbody>
-      </table>  
+      <div className="purchase-history-body">
+        <table>
+          <tbody>
+          {this.props.data.map((h:any) => {
+            return <HistoryEntry data={h} ignore={this.props.ignore}/>
+          })}
+          </tbody>
+        </table> 
+      </div> 
     );
   }
 }

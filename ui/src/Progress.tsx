@@ -45,8 +45,13 @@ class Progress extends Component<any,any>{
   }
 
   componentWillReceiveProps(nextProps:any) {
-    this.setState({ valuesIndex: 0 });
-    this.runInterval();
+    if(nextProps.last != this.props.last 
+      || nextProps.total != this.props.total 
+      || nextProps.budget != this.props.budget 
+      || nextProps.amount != this.props.amount){
+      this.setState({ valuesIndex: 0 });
+      this.runInterval();
+    }
   }
 
   getRange(){
@@ -64,8 +69,8 @@ class Progress extends Component<any,any>{
   render() {
     const range = this.getRange();
     const values = this.getIntervalArray();
-    const progressBody = this.props.amount > 0 ? `You'd hit ${getPercentage(this.props.total, this.props.budget)}% of your monthly budget` : `You're at ${getPercentage(this.props.total, this.props.budget)}% of your monthly budget`;
-
+    const perc = getPercentage(this.props.total, this.props.budget); 
+    const progressBody = `${this.props.amount > 0 ? "You'd hit " : "You're at "} ${perc <= 100 ? perc : perc - 100}% ${perc <= 100 ? "of" : "over"} your monthly budget`
     return (
       <div className="spend-progress">
         <CircularProgressbarWithChildren
