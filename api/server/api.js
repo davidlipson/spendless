@@ -27,7 +27,7 @@ router.post('/ignore', koaBody(), async ctx => {
 
 router.post('/login', koaBody(), async ctx => {
 	const body = ctx.request.body;
-	const results = await database.loginUser(body.gid, body.first_name, body.last_name, body.email)
+	const results = await database.loginUser(body.email, body.first_name, body.last_name)
 	if (results.length === 0) { ctx.throw(404) }
   	ctx.body = results
 })

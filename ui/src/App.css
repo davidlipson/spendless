@@ -2,15 +2,14 @@
   text-align: center;
   font-family: futura;
   padding: 30px;
+  max-height: 600px;
+  border: 5px solid;
 }
 
 #root{
-  border: 1px solid black;
   width: 350px;
-  border: 1px solid black;
   width: 350px;
-  max-height: 575px;
-  overflow-y: hidden;
+  max-height: 600px;
 }
 
 .purchase-history-body{
@@ -50,6 +49,16 @@
   margin-top: -15px !important;
 }
 
+.budget-border{
+  border: 5px solid;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 340px;
+    height: 590px;
+    z-index: -1;
+}
+
 .spend-progress{
   width: 200px;
   margin: 0 auto;
@@ -76,7 +85,7 @@
 
 .below-budget{
   color: rgb(75,176,248);
-}
+  }
 
 .approaching-budget{
   color: rgb(248,200,75);

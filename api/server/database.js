@@ -33,15 +33,15 @@ module.exports = {
         const results = await client.query(query)
         return results
     },
-    loginUser: async (gid, first_name, last_name, email) => {
+    loginUser: async (email, first_name, last_name) => {
         const query = `
             with s as (
                 select *
                 from public.user
-                where gid = '${gid}'
+                where email = '${email}'
             ), i as (
-                insert into public.user ("gid", "first_name", "last_name", "email")
-                select '${gid}', '${first_name}', '${last_name}', '${email}'
+                insert into public.user ("email", "first_name", "last_name")
+                select '${email}', '${first_name}', '${last_name}'
                 where not exists (select 1 from s)
                 returning *
             )

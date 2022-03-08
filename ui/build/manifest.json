@@ -3,7 +3,11 @@
   "name": "SpendLess",
   "version": "1.0",
   "manifest_version": 3,
-  "action": {"default_popup": "index.html",
-       "default_title": "SpendLess"
-	}
+  "action": {
+      "default_popup": "index.html",
+      "default_title": "SpendLess"
+	},
+  "permissions": [
+    "identity", "identity.email", "activeTab"
+  ]
 }

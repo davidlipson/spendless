@@ -1,13 +1,19 @@
+/*global chrome*/
+
 import { Component } from 'react';
 import './App.css';
 import Progress from './Progress';
 import History from './History';
 import ConfirmIgnore from './ConfirmIgnore';
-import { getCurrency } from './Helpers';
+import { getCurrency, getRange } from './Helpers';
 import { GoogleLogin } from 'react-google-login';
 import Cookies from 'universal-cookie';
+import { idText } from 'typescript';
 
 const cookies = new Cookies();
+const CLIENT_ID = process.env.NODE_ENV == "development" 
+  ? process.env.REACT_APP_DEV_CLIENT_ID 
+  : process.env.REACT_APP_PROD_CLIENT_ID;
 
 class App extends Component<any,any>{
   constructor(props: any) {
@@ -23,10 +29,27 @@ class App extends Component<any,any>{
     };
   }
 
+  loginGoogleProfile = async () => {
+    try{
+      let s = this;
+      chrome.identity.getProfileUserInfo(function(userInfo) {
+        s.loginUser({email: userInfo.email})
+      });
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+
   componentDidMount(){
     const currentUser = cookies.get(process.env.REACT_APP_SPENDLESS_COOKIE_NAME as string);
     if (currentUser){
+      console.log(`Using currently signed in user ${currentUser}`)
       this.setUser(currentUser);
+    }
+    else{
+      console.log(`Logging in new user through google api`)
+      this.loginGoogleProfile();
     }
   }
 
@@ -43,13 +66,12 @@ class App extends Component<any,any>{
     }
   }
 
-  loginUser = async (gid:string, prof:any) => {
+  loginUser = async (prof:any) => {
     try{
       const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            gid: gid,
             first_name: prof.givenName,
             last_name: prof.familyName,
             email: prof.email
@@ -89,7 +111,7 @@ class App extends Component<any,any>{
   }
 
   handleLogin = async (data:any) => {
-    this.loginUser(data.googleId, data.profileObj);
+    this.loginUser(data.profileObj);
   }
 
   handleLoginFailure = async (data:any) => {
@@ -139,28 +161,33 @@ class App extends Component<any,any>{
   }
 
   render() {
-    console.log(this.state.ignoring);
+    const range = getRange(this.state.price + this.state.spent, this.state.user.budget);
     return  (
-      <div className="App">
+      <div className="App"  style={{ borderColor: range.colour }} >
       {this.state.user == false ?
         <>
         <div className={`welcome-header`}>
             Welcome to SpendLess!
         </div>
         <div className={`welcome-body`}>
-        In order to use SpendLess, you must login with google:
+        In order to use SpendLess, you must login with Google.
         </div>
-        <GoogleLogin
+        {process.env.NODE_ENV == "development" ?
+          <GoogleLogin
           className="google-login-button"
-          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}
+          clientId={CLIENT_ID as string}
           buttonText="Login"
           cookiePolicy={'single_host_origin'}
           onSuccess={this.handleLogin.bind(this)}
           onFailure={this.handleLoginFailure.bind(this)}
-        /></> :
+        /> : <div className={`welcome-body`}>
+        Once signed in through Chrome, reload the SpendLess extension.
+        </div>
+        }</>
+         :
         <>
-        <div className="logout-button" onClick={this.logout.bind(this)}>Logout</div>
-        <div className="current-user">{this.state.user.first_name ? `Hi ${this.state.user.first_name}!` : `Hi!`}</div>
+        {process.env.NODE_ENV == "development" ? <div className="logout-button" onClick={this.logout.bind(this)}>Logout</div> : <></>}
+        <div className="current-user">Welcome to Spendless{((typeof this.state.user.first_name != 'undefined') && this.state.user.first_name != "" && this.state.user.first_name != "undefined") ? `, ${this.state.user.first_name}` : ""}!</div>
         <Progress amount={this.state.price} last={this.state.last} total={this.state.price + this.state.spent} budget={this.state.user.budget}/>
         <div className="overall-summary">
        
