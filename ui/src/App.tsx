@@ -8,7 +8,7 @@ import ConfirmIgnore from './ConfirmIgnore';
 import { getCurrency, getRange } from './Helpers';
 import { GoogleLogin } from 'react-google-login';
 import Cookies from 'universal-cookie';
-import { idText } from 'typescript';
+import Whitelist from './Whitelist';
 
 const cookies = new Cookies();
 const CLIENT_ID = process.env.NODE_ENV == "development" 
@@ -25,6 +25,8 @@ class App extends Component<any,any>{
       last: 0,
       price: 0,
       history: [],
+      page: "",
+      pendingAmount: 0,
       ignoring: false
     };
   }
@@ -41,14 +43,127 @@ class App extends Component<any,any>{
     }
   }
 
+  /*checkTab = async() => {
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+      let url = tabs[0].url;
+      let found = false;
+      for (const [key, value] of Object.entries(Whitelist)) {
+        value.forEach(r => {
+          let re = new RegExp(r);
+          if (url?.match(re) && !found){
+            found = true;
+            if(key == "amazon_processed"){
+              this.submitLastTransaction();
+              this.updateUserPage(this.state.user.id, url, 0, "")
+            }
+            else{
+              this.setPage(key, tabs[0], r)
+            }
+          }
+        })
+      }
+      if(!found){
+        this.updateUserPage(this.state.user.id, "", 0, "")
+      }
+    });
+    return false;
+  }*/
+
+  /*setPage = async(page:any, tab:any, match:any) => {
+    try{
+      let query = "";
+      let descQuery = "";
+      if (page == "amazon_product"){
+        query = `document.querySelector('#sns-base-price, .cart__subtotal-price, .cart__total-money, .sc-price, .a-price-whole').textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')`
+        descQuery = `document.querySelector('#productTitle, #title').textContent.trim()`
+      }
+      if (page == "amazon_cart"){
+        query = `document.querySelector('#sns-base-price, .cart__subtotal-price, .cart__total-money, .sc-price, .a-price-whole').textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')`
+      }
+      if (page == "amazon_checkout"){
+        query = `document.querySelector('.grand-total-price, .payment-due__price, .a-price-whole').textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')`
+        descQuery = `document.querySelector('#productTitle, #title').textContent.trim()`
+      }
+      if (page == "cart"){
+        query = `document.querySelector('#sns-base-price, .cart__subtotal-price, .cart__total-money, .sc-price, .a-price-whole').textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')`
+      }
+      if (page == "checkout"){
+        query = `document.querySelector('.grand-total-price, .payment-due__price, .a-price-whole').textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')`
+        descQuery = `document.querySelector('#productTitle, #title').textContent.trim()`
+      }
+      if (query != ""){
+        chrome.tabs.executeScript(tab.id, {
+          code: query
+        }, (amount) => {
+          try{
+            let result = parseFloat(amount[0]);
+            if (!isNaN(result) && result > 0){
+              if (descQuery != ""){
+                chrome.tabs.executeScript(tab.id, {
+                  code: descQuery
+                }, (description) => {
+                  try{
+                    this.updateUserPage(this.state.user.id, tab.url, result, description[0])
+                  }
+                  catch(e){
+                    console.log(e);
+                    this.updateUserPage(this.state.user.id, tab.url, result, "")
+                  }
+                })
+              }
+              else{
+                this.updateUserPage(this.state.user.id, tab.url, result, 
+                  (page == "amazon_cart" || page == "amazon_checkout") ? "Amazon" : "")
+              }
+              this.setState({page: page, price: result});
+            }
+            else{
+              this.updateUserPage(this.state.user.id, tab.url, 0, "")
+              this.setState({page: page, price: 0});
+            }
+          }
+          catch(e){
+            console.log(e)
+            this.updateUserPage(this.state.user.id, tab.url, 0, "")
+            this.setState({page: page, price: 0});
+          }
+        })
+      }
+      else{
+        this.updateUserPage(this.state.user.id, "", 0, "")
+        this.setState({page: "", price: 0})
+      }
+    }
+    catch(e){
+      this.updateUserPage(this.state.user.id, "", 0, "")
+      this.setState({page: "", price: 0})
+      console.log(e)
+    }
+  }*/
+
+  /*checkPopOut = async() => {
+    chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+      let id = tabs[0].id
+      chrome.tabs.executeScript(id as number, {
+        code: `document.querySelector(".cart-flyout__total__price").textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')`
+      }, (result) => {
+        console.log('cart found', result)
+      })
+    });
+    return;
+  }*/
+
+  /*checkForCheckout = async() =>{
+    let found = await this.checkTab() 
+    if (!found) this.checkPopOut()
+  }*/
+
   componentDidMount(){
     const currentUser = cookies.get(process.env.REACT_APP_SPENDLESS_COOKIE_NAME as string);
     if (currentUser){
-      console.log(`Using currently signed in user ${currentUser}`)
       this.setUser(currentUser);
     }
     else{
-      console.log(`Logging in new user through google api`)
       this.loginGoogleProfile();
     }
   }
@@ -60,6 +175,38 @@ class App extends Component<any,any>{
       const data = await response.json()
       this.setState({ user : data[0] })
       this.getHistory(this.state.user.id);
+      //this.checkForCheckout();
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
+
+  /*submitLastTransaction = async() => {
+    try{
+      const url = `http://localhost:5000/submit?uid=${this.state.user.id}`;
+      const response = await fetch(url)
+      const data = await response.json()
+      this.getHistory(this.state.user.id);
+    }
+    catch(error){
+      console.log(error);
+    }
+  }*/
+
+  updateUserPage = async(uid:string, url:string, amount: number, description: string) => {
+    try{
+      const response = await fetch(`http://localhost:5000/page`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({uid, url, amount, description})
+      });
+
+      const data = await response.json();
+      console.log(data);
     }
     catch(error){
       console.log(error);
@@ -134,8 +281,7 @@ class App extends Component<any,any>{
             })
         };
         const url = "http://localhost:5000/ignore";
-        const response = await fetch(url, requestOptions);
-        const data = await response.json()
+        await fetch(url, requestOptions);
         const newLast = this.state.spent + this.state.price;
         const newSpent = Math.max((this.state.spent - d.amount), 0);
         this.setState({last: newLast, spent: newSpent, ignoring: false});
@@ -146,7 +292,6 @@ class App extends Component<any,any>{
       }
     }
     catch(error){
-      console.log(error);
       this.setState({ignoring: false})
     } 
   }
@@ -162,8 +307,9 @@ class App extends Component<any,any>{
 
   render() {
     const range = getRange(this.state.price + this.state.spent, this.state.user.budget);
+    console.log(this.state.page);
     return  (
-      <div className="App"  style={{ borderColor: range.colour }} >
+      <div className="App" style={{ borderColor: (this.state.user == false ? "#e3e3e3" : range.colour) }} >
       {this.state.user == false ?
         <>
         <div className={`welcome-header`}>
@@ -181,7 +327,7 @@ class App extends Component<any,any>{
           onSuccess={this.handleLogin.bind(this)}
           onFailure={this.handleLoginFailure.bind(this)}
         /> : <div className={`welcome-body`}>
-        Once signed in through Chrome, reload the SpendLess extension.
+        Once signed in through Chrome, reload the SpendLess extension (you may need to restart Chrome).
         </div>
         }</>
          :
@@ -193,8 +339,12 @@ class App extends Component<any,any>{
        
         {this.state.ignoring != false ? <ConfirmIgnore confirm={this.ignoreTransaction.bind(this)} data={this.state.ignoring}/> 
         : <>
-          <span className="summary-line">Monthly budget: <span className="summary-value">{getCurrency(this.state.user.budget)}</span></span>
+          {(this.state.page == "checkout") || (this.state.page == "cart") || (this.state.page == "amazon_cart") || (this.state.page == "amazon_checkout") || (this.state.page == "amazon_product")? 
+          (this.state.price > 0 ? <div style={{ color: range.colour }} className="checkout-line"><span className="summary-line">Are you sure you want to spend <span className="summary-value">{getCurrency(this.state.price)}</span> on this?</span></div>
+          : <div style={{ color: range.colour }} className="checkout-line"><span className="summary-line">Are you sure you want to buy this?</span></div>
+          ) : <></>}
           <span className="summary-line">Spent this month: <span className="summary-value">{getCurrency(this.state.spent)}</span></span>
+          <span className="summary-line">Monthly budget: <span className="summary-value">{getCurrency(this.state.user.budget)}</span></span>
         </>}
           
           <div className="divider-bar"></div>

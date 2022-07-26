@@ -33,7 +33,7 @@ class HistoryEntry extends Component<any,any>{
   render() {
     return (
         <tr onClick={() => this.handleIgnore()}>
-            <td className="table-label">{this.props.data.description}</td>
+            <td className="table-label">{this.props.data.description.length > 15 ? `${this.props.data.description.substring(0,14)}...` : this.props.data.description}</td>
             <td className="table-amount">{getCurrency(this.props.data.amount)}</td>
             <td className='table-timestamp'>{this.convertToDateString(this.props.data.timestamp)}</td>
         </tr>

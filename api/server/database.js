@@ -21,6 +21,12 @@ module.exports = {
         const results = await client.query(query)
         return results.rows
     },
+    setPage: async (uid, url, amount, description) => {
+        const query = `INSERT INTO url (uid, url, amount, description) VALUES('${uid}', '${url}', ${amount}, '${description}') ON CONFLICT (uid) DO UPDATE SET url=EXCLUDED.url, amount=EXCLUDED.amount, description=EXCLUDED.description`;
+        console.log(query)
+        const results = await client.query(query)
+        return results.rows
+    },
 	getHistory: async (uid) => {
         const query = `select * from public.transaction where uid = '${uid}'::uuid::uuid and ignored is false order by timestamp desc`;
 		console.log(query)
@@ -29,6 +35,14 @@ module.exports = {
     },
 	ignoreTransaction: async (uid, id) => {
 		const query = `update public.transaction set ignored = true where uid='${uid}'::uuid::uuid and id='${id}'::uuid::uuid`;
+		console.log(query)
+        const results = await client.query(query)
+        return results
+    },
+    addLastTransaction: async (uid) => {
+		const query = `INSERT INTO transaction (uid, description, amount)
+                        (SELECT uid, description, amount FROM url
+                        WHERE uid = '${uid}' and amount > 0)`;
 		console.log(query)
         const results = await client.query(query)
         return results

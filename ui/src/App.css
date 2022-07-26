@@ -8,7 +8,6 @@
 
 #root{
   width: 350px;
-  width: 350px;
   max-height: 600px;
 }
 
@@ -131,27 +130,27 @@
   padding: 0px !important;
 }
 
-table{
+.App table{
   margin: 0 auto;
   text-align: right;
   cursor: pointer;
 }
 
-.table-label{
+.App .table-label{
   text-align: left;
 }
 
-tr{
+.App tr{
   height: 30px !important;
   color: rgb(163, 162, 162);
 }
 
-tr:hover{
+.App tr:hover{
   font-style: italic;
   color: black;
 }
 
-td{
+.App td{
   width: 75px
 }
 
@@ -203,6 +202,10 @@ td{
   color: rgb(248,75,75);
 }
 
+.checkout-line{
+  margin-bottom: 10px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -211,5 +214,3 @@ td{
     transform: rotate(360deg);
   }
 }
-
-

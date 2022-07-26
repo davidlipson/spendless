@@ -10,7 +10,7 @@ import {
   buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { getPercentage } from './Helpers';
+import { getPercentage, getRange } from './Helpers';
 
 class Progress extends Component<any,any>{
   constructor(props: any) {
@@ -54,20 +54,10 @@ class Progress extends Component<any,any>{
     }
   }
 
-  getRange(){
-    if (100*this.props.total/this.props.budget < 75){
-      return {class: "below-budget", colour: "rgb(75,176,248)"}
-    }
-    else if (100*this.props.total/this.props.budget < 100){
-      return {class: "approaching-budget", colour: "rgb(248,200,75)"}
-    }
-     else{
-      return {class: "above-budget", colour: "rgb(248,75,75)"}
-    }
-  }
+  
 
   render() {
-    const range = this.getRange();
+    const range = getRange(this.props.total, this.props.budget);
     const values = this.getIntervalArray();
     const perc = getPercentage(this.props.total, this.props.budget); 
     const progressBody = `${this.props.amount > 0 ? "You'd hit " : "You're at "} ${perc <= 100 ? perc : perc - 100}% ${perc <= 100 ? "of" : "over"} your monthly budget`

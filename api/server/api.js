@@ -12,6 +12,17 @@ router.get('/user', async ctx => {
   	ctx.body = results
 })
 
+router.get('/submit', async ctx => {
+	const results = await database.addLastTransaction(ctx.query.uid)
+  	ctx.body = results
+})
+
+router.post('/page',koaBody(), async ctx => {
+	console.log(ctx.request.body)
+	const results = await database.setPage(ctx.request.body.uid, ctx.request.body.url, ctx.request.body.amount, ctx.request.body.description)
+  	ctx.body = results
+})
+
 router.get('/history', async ctx => {
 	const results = await database.getHistory(ctx.query.uid)
 	if (results.length === 0) { ctx.throw(404) }
