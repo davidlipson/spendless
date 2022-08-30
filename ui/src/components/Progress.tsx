@@ -1,16 +1,15 @@
 import React from 'react';
 import { Component } from 'react';
-import './App.css';
+import '../App.css';
 
 import CountUp from 'react-countup';
 
 import {
-  CircularProgressbar,
   CircularProgressbarWithChildren,
   buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { getPercentage, getRange } from './Helpers';
+import { getPercentage, getRange } from '../helpers/mathFns';
 
 class Progress extends Component<any,any>{
   constructor(props: any) {
@@ -59,25 +58,25 @@ class Progress extends Component<any,any>{
   render() {
     const range = getRange(this.props.total, this.props.budget);
     const values = this.getIntervalArray();
-    const perc = getPercentage(this.props.total, this.props.budget); 
-    const progressBody = `${this.props.amount > 0 ? "You'd hit " : "You're at "} ${perc <= 100 ? perc : perc - 100}% ${perc <= 100 ? "of" : "over"} your monthly budget`
+    const perc = getPercentage(this.props.total, this.props.budget);
+    const lastPerc = getPercentage(this.props.last, this.props.budget);
+    const progressBody = `OF BUDGET USED`
     return (
       <div className="spend-progress">
         <CircularProgressbarWithChildren
           value={values[this.state.valuesIndex]}
-          strokeWidth={3}
+          strokeWidth={5}
           styles={buildStyles({
             pathColor: `${range.colour}`,
             trailColor: "#eee",
-            strokeLinecap: "round",
-            rotation: 0.65
+            strokeLinecap: "square",
           })}
         >
         <div className="spend-progress-content">
-          <div className={`progress-header ${range.class}`}>
-            $<CountUp duration={1} start={this.props.last} end={this.props.total}/>
+          <div className={`progress-header`}>
+            <CountUp duration={1} start={lastPerc} end={perc}/><span className="small-perc-symbol">%</span>
           </div>
-          <div className="progress-body">
+          <div className="progress-body small-cap-font">
             {progressBody}
           </div>
         </div>  

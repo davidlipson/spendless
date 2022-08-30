@@ -4,7 +4,7 @@ const api = require('./api')
 
 // Setup Koa app
 const app = new Koa()
-const port = process.env.PORT || 5000
+const port = 5000
 
 // Apply CORS config
 var options = {

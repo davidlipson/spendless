@@ -23,6 +23,11 @@ router.post('/page',koaBody(), async ctx => {
   	ctx.body = results
 })
 
+router.post('/budget',koaBody(), async ctx => {
+	const results = await database.updateBudget(ctx.request.body.uid, ctx.request.body.budget)
+  	ctx.body = results
+})
+
 router.get('/history', async ctx => {
 	const results = await database.getHistory(ctx.query.uid)
 	if (results.length === 0) { ctx.throw(404) }

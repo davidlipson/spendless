@@ -1,124 +1,104 @@
 const Whitelist = {
-    "amazon_processed": [
+    "processed": {
+      query: '',
+      regex: [
         "\/gp\/buy\/thankyou"
-    ],
-    "amazon_product": [
-        "amazon.+\/dp"
-    ],
-    "amazon_cart": [
-        "amazon.+\/gp\/cart",
-        "amazon.+\/cart"
-    ],
-    "amazon_checkout": [
-        "amazon.+\/gp\/buy\/"
-    ],
-    "checkout": [
-        "\/checkouts",
-        "\/gp",
-        "\/dp",
-    ],
-    "cart": [
+    ]},
+    "checkout": { 
+      query: '.grand-total-price, .payment-due__price, .a-price-whole', 
+      description: '#productTitle, #title',
+      regex: [
+      "amazon.+\/gp\/buy\/",
+      "\/checkouts",
+      "\/checkout",
+      "\/gp",
+      "\/dp",
+      "\/buy\/"
+    ]},
+    "cart": { 
+      query: '#sns-base-price, .cart__subtotal-price, .cart__total-money, .sc-price, .a-price-whole, .price, .gl-body-l',
+      regex: [
+      "amazon.+\/gp\/cart",
+        "amazon.+\/cart",
         "\/cart",
         "\/dp"
-    ]
+    ]}
 }
 
-chrome.tabs.onUpdated.addListener(function
-    (tabId, changeInfo, tab) {
-        if(tab.url !== undefined && changeInfo.status == "complete" && tab.id == tabId){
-            chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-                if(tabs[0].id == tabId){
-                    let url = tabs[0].url;
+const Blacklist = [
+  "amazon.+\/dp\/",
+  "amazon.+\/gp\/product\/"
+]
+
+chrome.webNavigation.onCompleted.addListener(async(details) => {
+  const { frameId, parentFrameId, processId, tabId, timeStamp, url } = details
+        if(url !== undefined && frameId === 0){
                     let found = false;
                     for (const [key, value] of Object.entries(Whitelist)) {
-                      value.forEach(r => {
+                      value.regex.forEach(r => {
                         let re = new RegExp(r);
                         if (url?.match(re) && !found){
                           found = true;
-                          if(key == "amazon_processed"){
-                            console.log("submit last transaction")
-                            //this.updateUserPage(this.state.user.id, url, 0, "")
-                            //this.submitLastTransaction();
+                          let blacklisted = false;
+                          Blacklist.forEach(b => {
+                            let bre = new RegExp(b)
+                            if(url.match(bre)){
+                              blacklisted = true;
+                            } 
+                          })
+                          if(!blacklisted){
+                            chrome.identity.getProfileUserInfo(async (userInfo) => {
+                              let user = await loginUser({email: userInfo.email});
+                              if(user){
+                                if(key === 'processed'){
+                                  await submitLastTransaction(user.id);
+                                }
+                                else{
+                                  chrome.tabs.sendMessage( tabId, {
+                                    user,
+                                    page: key,
+                                    query: value.query,
+                                    description: value.description,
+                                    url
+                                  })
+                                }
+                              }
+                            });
                           }
-                          else{
-                              console.log('set current page')
-                            //this.setPage(key, tabs[0], r)
-                          }
-        
-                          chrome.identity.getProfileUserInfo(function(userInfo) {
-                            chrome.tabs.sendMessage( tabId, {
-                                email: userInfo.email,
-                                info: changeInfo,
-                                page: key,
-                                tab: tab,
-                                userInfo
-                              })
-                          });
                         }
                       })
                     }
-                    if(!found){
-                        console.log('none found')
-                        chrome.identity.getProfileUserInfo(function(userInfo) {
-                            chrome.tabs.sendMessage( tabId, {
-                                email: userInfo.email,
-                                info: changeInfo,
-                                key: null
-                              })
-                        });
-                      //this.updateUserPage(this.state.user.id, "", 0, "")
-                    }
-                }
-              });
-        }
-        
-      }
-  );
+                } 
+      });
 
-/*
-  chrome.webNavigation.onCompleted.addListener(function(details) {
-    if(details.frameId == 0){
-        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-                let url = tabs[0].url;
-                let found = false;
-                for (const [key, value] of Object.entries(Whitelist)) {
-                  value.forEach(r => {
-                    let re = new RegExp(r);
-                    if (url?.match(re) && !found){
-                      found = true;
-                      if(key == "amazon_processed"){
-                        console.log("submit last transaction")
-                        //this.updateUserPage(this.state.user.id, url, 0, "")
-                        //this.submitLastTransaction();
-                      }
-                      else{
-                          console.log('set current page')
-                        //this.setPage(key, tabs[0], r)
-                      }
-
-                      chrome.identity.getProfileUserInfo(function(userInfo) {
-                        chrome.tabs.sendMessage(tabs[0].id, {
-                            email: userInfo.email,
-                            info: changeInfo,
-                            page: key,
-                            tab: tab
-                          })
-                      });
-                      
-                    }
-                  })
-                }
-                if(!found){
-                    console.log('none found')
-                    chrome.identity.getProfileUserInfo(function(userInfo) {
-                        chrome.tabs.sendMessage(tabs[0].id, {
-                            email: userInfo.email,
-                            info: changeInfo,
-                            key: null
-                          })
-                    });
-                  //this.updateUserPage(this.state.user.id, "", 0, "")
-                }
-          });
+  loginUser = async (prof) => {
+    try{
+      const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            first_name: prof.givenName,
+            last_name: prof.familyName,
+            email: prof.email
+          })
+      };
+      const url = "http://localhost:5000/login";
+      const response = await fetch(url, requestOptions);
+      const data = await response.json();
+      return data[0];
     }
-});*/
+    catch(error){
+      console.log(error);
+      return null;
+    }
+  } 
+
+  submitLastTransaction = async(id) => {
+    try{
+      const url = `http://localhost:5000/submit?uid=${id}`;
+      await fetch(url)
+    }
+    catch(error){
+      console.log(error);
+    }
+  }

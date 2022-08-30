@@ -1,13 +1,16 @@
+// TODO
+// refactor to Jquery
+// only use the extension.css for the react app as well 
+
 chrome.runtime.onMessage.addListener(
     async function(request, sender, sendResponse) {
       if(request.page != null){
-        let user = await loginUser({email: request.email})
+        let user = request.user;
         if(request.page == "processed"){
-          submitLastTransaction(user.id);
-          updateUserPage(user.id, request.tab.url, 0, "")  
+          await updateUserPage(user.id, request.url, 0, "")  
         }
-        let { found, amount} = await setPage(request.page, user, request.tab);
-        let {spent } = await getHistory(user.id);
+        let {amount} = await setPage(user, request.url, request.query, request.description);
+        let spent = await getHistory(user.id);
        
         var total = amount + spent;
         const range = getRange(total, user.budget);
@@ -21,143 +24,146 @@ chrome.runtime.onMessage.addListener(
         app.style.borderColor = range.colour
         popup.appendChild(app);
 
-        var currentUser = parent.document.createElement('div');
-        currentUser.className = 'popup-current-user';
-        currentUser.innerHTML = `Welcome to Spendless${((typeof user.first_name != 'undefined') && user.first_name != "" && user.first_name != "undefined") ? (", " + user.first_name) : ""}!`
-        app.appendChild(currentUser);
+        var mainText = parent.document.createElement('span');
+        mainText.className = 'popup-main-text';
+        mainText.innerHTML = "Spendless, Save more!"
+        app.appendChild(mainText);
 
-        var checkout = parent.document.createElement('div');
-        checkout.className = 'popup-checkout-line';
-        app.appendChild(checkout);
-
-        var totalDiv = parent.document.createElement('span');
-        totalDiv.className = 'popup-total';
-        totalDiv.innerHTML = getCurrency(total);
-        totalDiv.style.color = range.color;
-        checkout.appendChild(totalDiv);
-
-        var progress = parent.document.createElement('div');
-        progress.className = 'popup-progress';
-        checkout.appendChild(progress);
-        
-        var perc = getPercentage(total, user.budget); 
-        progress.innerHTML = `${amount > 0 ? "You'd hit " : "You're at "} ${perc <= 100 ? perc : perc - 100}% ${perc <= 100 ? "of" : "over"} your monthly budget`
-
-        
-        if(found){
-          var summary = parent.document.createElement('span');
-          summary.className = 'popup-summary-line';
-          if (amount > 0) {
-            summary.innerHTML = `Are you sure you want to spend ${getCurrency(amount)} on this?`
-          }
-          else {
-            summary.innerHTML = 'Are you sure you want to buy this?'
-          }
-          summary.style.color = range.colour
-          checkout.appendChild(summary);
-        }
-
-        
         var overall = parent.document.createElement('div');
-        overall.className = 'popup-overall-summary';
+        overall.className = 'popup-budget-summary-lines';
         app.appendChild(overall);
 
-        var budLine = parent.document.createElement('span');
-        budLine.className = 'popup-summary-line';
-        budLine.innerHTML = `Monthly Budget: <span class="summary-value">${getCurrency(user.budget)}</span>`;
-        overall.appendChild(budLine);
+        var budDiv = parent.document.createElement('div');
+        budDiv.className = 'popup-budget-summary-div';
 
-        var spentLine = parent.document.createElement('span');
-        spentLine.className = 'popup-summary-line';
-        spentLine.innerHTML = `Spent this month: <span class="summary-value">${getCurrency(spent)}</span>`;
-        overall.appendChild(spentLine);    
+        var budVal = parent.document.createElement('span');
+        budVal.className = 'popup-summary-value';
+        budVal.innerHTML = getCurrency(spent).replace('.00', '');
+        budDiv.appendChild(budVal);
+        
+        var budLine = parent.document.createElement('span');
+        budLine.className = 'popup-summary-line popup-small-cap-font';
+        budLine.innerHTML = 'AMOUNT SPENT';
+        budDiv.appendChild(budLine);
+
+        overall.appendChild(budDiv);
+
+        var leftDiv = parent.document.createElement('div');
+        leftDiv.className = 'popup-budget-summary-div';
+
+        var leftVal = parent.document.createElement('span');
+        leftVal.className = 'popup-summary-value';
+        leftVal.innerHTML = getCurrency(Math.ceil(user.budget)).replace('.00', '');
+        leftDiv.appendChild(leftVal);
+        
+        var leftLine = parent.document.createElement('span');
+        leftLine.className = 'popup-summary-line popup-small-cap-font';
+        leftLine.innerHTML = 'LEFT IN BUDGET';
+        leftDiv.appendChild(leftLine);
+
+        overall.appendChild(leftDiv);
+
+        var hideMessage = parent.document.createElement('div');
+        hideMessage .className = 'popup-hide-message';
+        hideMessage.innerHTML = "Hide this message"
+        hideMessage.onclick = function(ev){
+          const els = parent.document.querySelectorAll('.popup-app');
+          els.forEach(el => {
+            el.remove()
+          })
+        }
+
+        app.appendChild(hideMessage)
+        
+        var ignoreMessage = parent.document.createElement('div');
+        ignoreMessage.className = 'popup-ignore-message';
+        ignoreMessage.innerHTML = "Ignore this transaction"
+        ignoreMessage.onclick = function(ev){
+          updateUserPage(user.id, request.url, 0, '')
+          const els = parent.document.querySelectorAll('.popup-app');
+          els.forEach(el => {
+            el.remove()
+          });
+          alertMessage("<span style='font-weight: 800'>Got it!</span> This transaction won't be included in your budget.")
+        }
+        app.appendChild(ignoreMessage)
       }
   });
 
-loginUser = async (prof) => {
-    try{
-      const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            first_name: prof.givenName,
-            last_name: prof.familyName,
-            email: prof.email
-          })
-      };
-      const url = "http://localhost:5000/login";
-      const response = await fetch(url, requestOptions);
-      const data = await response.json();
-      return data[0];
-    }
-    catch(error){
-      console.log(error);
-      return null;
-    }
-  } 
+  alertMessage = (text, time = 5000) => {
+    var alert = parent.document.createElement('div');
+    alert.className = 'popup-alert-message';
+    alert.innerHTML = text;
+    parent.document.getElementsByTagName('html')[0].appendChild(alert);
+    window.setTimeout(function() {
+      alert.style.display = 'none';
+    }, time);
+    
+  }
+
 
   getHistory = async (uid) => {
     try{
       const url = `http://localhost:5000/history?uid=${uid}`;
       const response = await fetch(url)
       const data = await response.json()
-      console.log(data);
-      // do this better w triggers in db instead of calculating spent in ui
       let total = 0;
       data.forEach((h) => {
         total += h.amount;
       })
-      return {history: data, spent: total};
+      return total
     }
     catch(error){
       console.log(error);
-      return {history: [], spent: 0};
+      return 0
     }
   }
 
-  setPage = async(page, user, tab) => {
+  setPage = async(user, url, q, d) => {
+    let uid = user.id;
+    let link = url;
+    let amount = 0;
+    let description = "";
+    let found = false;
     try{
       let query = "";
       let descQuery = "";
-      if (page == "cart"){
-        query = parent.document.querySelector('#sns-base-price, .cart__subtotal-price, .cart__total-money, .sc-price, .a-price-whole').textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')
+      query = parent.document.querySelector(q)?.textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')
+      if (d){
+        descQuery = parent.document.querySelector(d)?.textContent.trim()
       }
-      if (page == "checkout"){
-        query = parent.document.querySelector('.grand-total-price, .payment-due__price, .a-price-whole').textContent.replace(/[]+|[s]{2,}/g, ' ').trim().replace('$','')
-        descQuery = parent.document.querySelector('#productTitle, #title').textContent.trim()
-      }
-      if (query != ""){
+      if (query && query != ""){
           try{
             let result = parseFloat(query);
+            found = true
             if (!isNaN(result) && result > 0){
-              if (descQuery != ""){
-                updateUserPage(user.id, tab.url, result, descQuery)
-                return {found: true, amount: result, description: descQuery}
+              amount = result
+              if (descQuery && descQuery != ""){
+                description = descQuery
               }
               else{
-                updateUserPage(user.id, tab.url, result, "")
-                return {found: true, amount: result, description: ""}
+                const baseUrl = url.match(/^https?:\/\/[^#?\/]+/)
+                description = baseUrl || ''
               }
             }
             else{
-              updateUserPage(user.id, tab.url, 0, "")
-              return {found: true, amount: 0, description: ""}
+              throw "Invalid query value";
             }
           }
           catch(e){
-            updateUserPage(user.id, tab.url, 0, "")
-            return {found: false, amount: 0, description: ""}
+            console.log(e)
           }
       }
       else{
-        updateUserPage(user.id, "", 0, "")
-        return {found: false, amount: 0, description: ""}
+        throw "Query not found";
       }
     }
     catch(e){
-      updateUserPage(user.id, "", 0, "")
-      return {found: false, amount: 0, description: ""}
+      console.log(e);
     }
+
+    await updateUserPage(uid, link, amount, description)
+    return {found, amount, description}
   }
 
   getCurrency = (a) => {
@@ -204,19 +210,9 @@ updateUserPage = async(uid, url, amount, description) => {
     });
 
     const data = await response.json();
-    console.log(data);
   }
   catch(error){
     console.log(error);
   }
 }
 
-submitLastTransaction = async(id) => {
-  try{
-    const url = `http://localhost:5000/submit?uid=${id}`;
-    await fetch(url)
-  }
-  catch(error){
-    console.log(error);
-  }
-}

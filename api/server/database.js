@@ -39,6 +39,11 @@ module.exports = {
         const results = await client.query(query)
         return results
     },
+    updateBudget: async(uid, budget) => {
+        const query = `update public.user set budget = ${budget} where id='${uid}'::uuid::uuid`;
+        const results = await client.query(query)
+        return results
+    },
     addLastTransaction: async (uid) => {
 		const query = `INSERT INTO transaction (uid, description, amount)
                         (SELECT uid, description, amount FROM url

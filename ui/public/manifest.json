@@ -16,7 +16,7 @@
   "background": {     
     "persistent": false,
     "scripts": [      
-      "background.js"     
+      "background.js"
     ]   
   },
   "permissions": [

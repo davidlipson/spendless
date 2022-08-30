@@ -1,21 +1,46 @@
 .popup-app {
-    text-align: center;
-    font-family: futura;
-    padding: 30px;
-    max-height: 600px;
-    border: 5px solid;
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+  padding: 30px;
+  max-height: 600px;
+  color: #363636;
   }
   
 #popup-root{
-    width: 400px;
+    width: 300px;
     max-height: 600px;
     position: fixed;
     bottom: 10px;
     right: 10px;
     background: white;
     z-index: 10000;
-    opacity: 0.8;
+    box-shadow: 0px 0px 7px 2px #8080801a;
+    border-radius: 4px;
   }
+
+  .popup-alert-message{
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    color: #363636;
+    width: 300px;
+    height: 80px;
+    padding: 20px;
+    padding-top: 24px;
+    font-size: 14px;
+    text-align: left;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: white;
+    z-index: 10000;
+    box-shadow: 0px 0px 7px 2px #8080801a;
+    border-radius: 4px;
+  }
+
+.popup-main-text{
+  font-size: 16px;
+  font-weight: 800;
+}
 
 .popup-toggle{
   font-size: 60px;
@@ -26,22 +51,11 @@
   position: absolute;
 }
   
-  .purchase-history-body{
-    max-height: 183px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    margin-top: 10px;
-  }
   
   @media (prefers-reduced-motion: no-preference) {
     .App-logo {
       animation: App-logo-spin infinite 20s linear;
     }
-  }
-  
-  .popup-current-user{
-    padding-bottom: 20px;
-    font-weight: 800;
   }
   
   .App-header {
@@ -61,16 +75,6 @@
   
   .spend-progress-content{
     margin-top: -15px !important;
-  }
-  
-  .budget-border{
-    border: 5px solid;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 340px;
-      height: 590px;
-      z-index: -1;
   }
   
   .spend-progress{
@@ -111,11 +115,51 @@
   
   .popup-summary-line{
     display: block;
-  
+  }
+
+  .popup-budget-summary-lines{
+    display: flex;
+    padding: 20px 0px;
+    display: flex;
+  }
+
+  .popup-budget-summary-div{
+    width: 50%;
+    padding: 10px
   }
   
-  .summary-value{
-    font-weight: 600
+  .popup-small-cap-font{
+    font-weight: 400;
+    font-size: 12px;
+    font-variant: small-caps;
+  }
+
+  .popup-summary-value{
+    display: block;
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 3px;
+ }
+
+ .popup-hide-message{
+  background-color: black;
+  color: white;
+  padding: 20px 0px;
+  width: 240px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+ }
+
+ .popup-ignore-message {
+  padding-top: 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+
+  .popup-budget-summary-div:first-of-type {
+    border-right: 1px solid #E2E2E2;
   }
   
   .divider-bar{
