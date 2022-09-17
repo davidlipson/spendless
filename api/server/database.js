@@ -14,7 +14,9 @@ module.exports = class DBClient {
             password: process.env.PG_PASSWORD,
             port: process.env.PG_PORT,
             host: process.env.PG_HOST,
-            ssl: (process.env.NODE_ENV === 'production' && true) || false,
+            ssl: {
+                rejectUnauthorized: false,
+            },
         });
         await this.client.connect();
         if (process.env.NODE_ENV === 'production' || init === true) {
