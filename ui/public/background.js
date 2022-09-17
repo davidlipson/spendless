@@ -77,8 +77,9 @@ loginUser = async (prof) => {
                 email: prof.email,
             }),
         };
-        const url = `${process.env.API_URL}/login`;
+        const url = `https://spendless-pg.herokuapp.com/login`;
         const response = await fetch(url, requestOptions);
+        console.log(response);
         const data = await response.json();
         return data[0];
     } catch (error) {
@@ -89,7 +90,7 @@ loginUser = async (prof) => {
 
 submitLastTransaction = async (id) => {
     try {
-        const url = `${process.env.API_URL}/submit?uid=${id}`;
+        const url = `https://spendless-pg.herokuapp.com/submit?uid=${id}`;
         await fetch(url);
     } catch (error) {
         console.log(error);

@@ -117,7 +117,7 @@ alertMessage = (text, time = 5000) => {
 
 getHistory = async (uid) => {
     try {
-        const url = `${process.env.API_URL}/history?uid=${uid}`;
+        const url = `https://spendless-pg.herokuapp.com/history?uid=${uid}`;
         const response = await fetch(url);
         const data = await response.json();
         let total = 0;
@@ -217,14 +217,17 @@ convertToDateString = (date) => {
 
 updateUserPage = async (uid, url, amount, description) => {
     try {
-        const response = await fetch(`${process.env.API_URL}/page`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ uid, url, amount, description }),
-        });
+        const response = await fetch(
+            `https://spendless-pg.herokuapp.com/page`,
+            {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ uid, url, amount, description }),
+            }
+        );
 
         const data = await response.json();
     } catch (error) {

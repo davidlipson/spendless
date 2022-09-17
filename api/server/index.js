@@ -44,6 +44,7 @@ database.createDatabase().then(() => {
 
     router.get('/history', async (ctx) => {
         const results = await database.getHistory(ctx.query.uid);
+        console.log(results);
         ctx.body = results;
     });
 

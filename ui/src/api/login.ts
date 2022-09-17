@@ -12,7 +12,8 @@ export const loginUser = async (prof:any) => {
             email: prof.email
           })
       };
-      const url = `${process.env.API_URL}/login`;
+      const url = `${process.env.REACT_APP_API_URL}/login`;
+      console.log(url)
       const response = await fetch(url, requestOptions);
       const data = await response.json();
       cookies.set(process.env.REACT_APP_SPENDLESS_COOKIE_NAME as string, data[0].id as string, { path: '/' });

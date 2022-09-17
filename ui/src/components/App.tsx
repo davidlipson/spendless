@@ -56,10 +56,9 @@ class App extends Component<any,any>{
 
   setUser = async(uid:string) => {
     try{
-      const url = `${process.env.API_URL}/user?uid=${uid}`;
+      const url = `${process.env.REACT_APP_API_URL}/user?uid=${uid}`;
       const response = await fetch(url)
       const data = await response.json()
-      console.log(data)
       this.setState({ user : data[0] })
       this.history(this.state.user.id);
     }

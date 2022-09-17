@@ -7,6 +7,6 @@ export const ignoreTransaction = async(uid: string, id: string, ) => {
               id
             })
         };
-        const url = `${process.env.API_URL}/ignore`;
+        const url = `${process.env.REACT_API_URL}/ignore`;
         await fetch(url, requestOptions);
   }

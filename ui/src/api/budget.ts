@@ -7,6 +7,6 @@ export const updateBudget = async(uid: string, budget: number ) => {
           budget
         })
     };
-    const url = `${process.env.API_URL}/budget`;
+    const url = `${process.env.REACT_APP_API_URL}/budget`;
     await fetch(url, requestOptions);
 }
