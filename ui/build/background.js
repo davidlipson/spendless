@@ -1,40 +1,15 @@
-const Whitelist = {
-    processed: {
-        query: '',
-        regex: ['/gp/buy/thankyou'],
-    },
-    checkout: {
-        query: '.grand-total-price, .payment-due__price, .a-price-whole',
-        description: '#productTitle, #title',
-        regex: [
-            'amazon.+/gp/buy/',
-            '/checkouts',
-            '/checkout',
-            '/gp',
-            '/dp',
-            '/buy/',
-        ],
-    },
-    cart: {
-        query: '#sns-base-price, .cart__subtotal-price, .cart__total-money, .sc-price, .a-price-whole, .price, .gl-body-l',
-        regex: ['amazon.+/gp/cart', 'amazon.+/cart', '/cart', '/dp'],
-    },
-};
-
-const Blacklist = ['amazon.+/dp/', 'amazon.+/gp/product/'];
-
 chrome.webNavigation.onCompleted.addListener(async (details) => {
-    const { frameId, parentFrameId, processId, tabId, timeStamp, url } =
-        details;
+    const { whitelist, blacklist } = await getUrlList();
+    const { frameId, tabId, url } = details;
     if (url !== undefined && frameId === 0) {
         let found = false;
-        for (const [key, value] of Object.entries(Whitelist)) {
+        for (const [key, value] of Object.entries(whitelist)) {
             value.regex.forEach((r) => {
                 let re = new RegExp(r);
                 if (url?.match(re) && !found) {
                     found = true;
                     let blacklisted = false;
-                    Blacklist.forEach((b) => {
+                    blacklist.forEach((b) => {
                         let bre = new RegExp(b);
                         if (url.match(bre)) {
                             blacklisted = true;
@@ -78,12 +53,24 @@ loginUser = async (prof) => {
         };
         const url = `https://spendless-pg.herokuapp.com/login`;
         const response = await fetch(url, requestOptions);
-        console.log(response);
         const data = await response.json();
         return data[0];
     } catch (error) {
         console.log(error);
         return null;
+    }
+};
+
+getUrlList = async () => {
+    try {
+        const url = `https://spendless-pg.herokuapp.com/list`;
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log(error);
+        return { whitelist: {}, blacklist: [] };
     }
 };
 

@@ -47,7 +47,7 @@ database.createDatabase().then(() => {
         ctx.body = results;
     });
 
-    router.get('/list', async () => {
+    router.get('/list', async (ctx) => {
         const whitelist = {
             processed: {
                 query: '',
@@ -71,6 +71,7 @@ database.createDatabase().then(() => {
             },
         };
         const blacklist = ['amazon.+/dp/', 'amazon.+/gp/product/'];
+        console.log(whitelist, blacklist);
         ctx.body = { whitelist, blacklist };
     });
 

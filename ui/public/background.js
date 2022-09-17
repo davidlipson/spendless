@@ -65,7 +65,9 @@ getUrlList = async () => {
     try {
         const url = `https://spendless-pg.herokuapp.com/list`;
         const response = await fetch(url);
-        return await response.json();
+        const data = await response.json();
+        console.log(data);
+        return data;
     } catch (error) {
         console.log(error);
         return { whitelist: {}, blacklist: [] };
