@@ -9,7 +9,7 @@ console.log('Starting...');
 const database = new DBClient();
 database.createDatabase().then(() => {
     const router = new Router();
-    const port = (process.env.NODE_ENV === 'production' && 80) || 5000;
+    const port = process.env.PORT || 5000;
 
     router.get('/user', async (ctx) => {
         const results = await database.getUser(ctx.query.uid);
