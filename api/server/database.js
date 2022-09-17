@@ -1,65 +1,134 @@
-const postgres = require('pg')
+const postgres = require('pg');
 
-// Initialize postgres client
-const client = new postgres.Client({
-	user: "postgres",
-	password: "",
-	database: "postgres",
-	port: 5436,
-	host: "localhost",
-	ssl: false
-})
+module.exports = class DBClient {
+    client;
+    constructor() {
+        this.client = null;
+    }
 
-// Connect to the DB
-client.connect().then(() => {
-	console.log(`Connected To ${client.database} at ${client.host}:${client.port}`)
-}).catch((e) => {console.log(e)})
+    createDatabase = async (init = false) => {
+        // Initialize postgres client
+        this.client = await new postgres.Client({
+            user: process.env.PG_USER,
+            password: process.env.PG_PASSWORD,
+            port: process.env.PG_PORT,
+            host: process.env.PG_HOST,
+        });
+        await this.client.connect();
+        if (init === true) {
+            try {
+                await this.client.query(
+                    `CREATE DATABASE "${process.env.PG_DB}"`
+                );
+                await this.client.query(`CREATE TABLE "user" (
+                    id uuid NOT NULL DEFAULT gen_random_uuid(),
+                    first_name varchar NULL,
+                    last_name varchar NULL,
+                    email varchar NOT NULL,
+                    budget float8 NOT NULL DEFAULT 100,
+                    spent float8 NULL DEFAULT 0,
+                    CONSTRAINT user_check CHECK ((budget > (0)::double precision)),
+                    CONSTRAINT user_pk PRIMARY KEY (id),
+                    CONSTRAINT user_un UNIQUE (email)
+                );`);
+                await this.client.query(`CREATE TABLE "url" (
+                    uid uuid NOT NULL,
+                    url text NULL,
+                    amount float8 NULL,
+                    description varchar NULL,
+                    CONSTRAINT url_pk PRIMARY KEY (uid),
+                    CONSTRAINT lasttab_fk FOREIGN KEY (uid) REFERENCES "user"(id)
+                );`);
+                await this.client.query(`CREATE TABLE "transaction" (
+                    id uuid NOT NULL DEFAULT gen_random_uuid(),
+                    uid uuid NOT NULL,
+                    "timestamp" timestamp NOT NULL DEFAULT now(),
+                    description varchar NOT NULL,
+                    amount float8 NOT NULL DEFAULT 0,
+                    ignored bool NULL DEFAULT false,
+                    CONSTRAINT transaction_fk FOREIGN KEY (uid) REFERENCES "user"(id)
+                );`);
+                await this.client.query(`CREATE TABLE "monthly" (
+                    id uuid NOT NULL DEFAULT gen_random_uuid(),
+                    uid uuid NOT NULL,
+                    budget float8 NOT NULL,
+                    amount float8 NOT NULL,
+                    CONSTRAINT monthly_pk PRIMARY KEY (id),
+                    CONSTRAINT monthly_fk FOREIGN KEY (uid) REFERENCES "user"(id)
+                );`);
+                return true;
+            } catch (error) {
+                await this.client.end();
+                throw error;
+            }
+        }
+        return true;
+    };
 
-module.exports = {
-    getUser: async (uid) => {
-        const query = `select * from public.user where id = '${uid}' limit 1`;
-        const results = await client.query(query)
-        return results.rows
-    },
-    setPage: async (uid, url, amount, description) => {
-        const query = `INSERT INTO url (uid, url, amount, description) VALUES('${uid}', '${url}', ${amount}, '${description}') ON CONFLICT (uid) DO UPDATE SET url=EXCLUDED.url, amount=EXCLUDED.amount, description=EXCLUDED.description`;
-        console.log(query)
-        const results = await client.query(query)
-        return results.rows
-    },
-	getHistory: async (uid) => {
-        const query = `select * from public.transaction where uid = '${uid}'::uuid::uuid and ignored is false order by timestamp desc`;
-		console.log(query)
-        const results = await client.query(query)
-        return results.rows
-    },
-	ignoreTransaction: async (uid, id) => {
-		const query = `update public.transaction set ignored = true where uid='${uid}'::uuid::uuid and id='${id}'::uuid::uuid`;
-		console.log(query)
-        const results = await client.query(query)
-        return results
-    },
-    updateBudget: async(uid, budget) => {
-        const query = `update public.user set budget = ${budget} where id='${uid}'::uuid::uuid`;
-        const results = await client.query(query)
-        return results
-    },
-    addLastTransaction: async (uid) => {
-		const query = `INSERT INTO transaction (uid, description, amount)
+    getUser = async (uid) => {
+        const query = `select * from "user" where id = '${uid}' limit 1`;
+        try {
+            const results = await this.client.query(query);
+            return results.rows;
+        } catch (err) {
+            throw err;
+        }
+    };
+    setPage = async (uid, url, amount, description) => {
+        const query = `INSERT INTO "url" (uid, url, amount, description) VALUES('${uid}', '${url}', ${amount}, '${description}') ON CONFLICT (uid) DO UPDATE SET url=EXCLUDED.url, amount=EXCLUDED.amount, description=EXCLUDED.description`;
+        try {
+            const results = await this.client.query(query);
+            return results.rows;
+        } catch (err) {
+            throw err;
+        }
+    };
+    getHistory = async (uid) => {
+        const query = `select * from "transaction" where uid = '${uid}'::uuid::uuid and ignored is false order by timestamp desc`;
+        try {
+            const results = await this.client.query(query);
+            return results.rows;
+        } catch (err) {
+            throw err;
+        }
+    };
+    ignoreTransaction = async (uid, id) => {
+        const query = `update "transaction" set ignored = true where uid='${uid}'::uuid::uuid and id='${id}'::uuid::uuid`;
+        try {
+            const results = await this.client.query(query);
+            return results;
+        } catch (err) {
+            throw err;
+        }
+    };
+    updateBudget = async (uid, budget) => {
+        const query = `update "user" set budget = ${budget} where id='${uid}'::uuid::uuid`;
+        try {
+            const results = await this.client.query(query);
+            return results;
+        } catch (err) {
+            throw err;
+        }
+    };
+    addLastTransaction = async (uid) => {
+        const query = `INSERT INTO transaction (uid, description, amount)
                         (SELECT uid, description, amount FROM url
                         WHERE uid = '${uid}' and amount > 0)`;
-		console.log(query)
-        const results = await client.query(query)
-        return results
-    },
-    loginUser: async (email, first_name, last_name) => {
+        try {
+            const results = await this.client.query(query);
+            return results;
+        } catch (err) {
+            throw err;
+        }
+    };
+    loginUser = async (email, first_name, last_name) => {
         const query = `
             with s as (
                 select *
-                from public.user
+                from "user"
                 where email = '${email}'
             ), i as (
-                insert into public.user ("email", "first_name", "last_name")
+                insert into "user" ("email", "first_name", "last_name")
                 select '${email}', '${first_name}', '${last_name}'
                 where not exists (select 1 from s)
                 returning *
@@ -71,8 +140,11 @@ module.exports = {
             from s
         `;
 
-		console.log(query)
-        const results = await client.query(query)
-        return results.rows
-    }
-}
+        try {
+            const results = await this.client.query(query);
+            return results.rows;
+        } catch (err) {
+            throw err;
+        }
+    };
+};

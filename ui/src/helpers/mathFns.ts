@@ -1,12 +1,12 @@
 export const getRange = (total:number, budget:number) => {
     if (100*total/budget < 75){
-      return {class: "below-budget", colour: "#679093"}
+      return {class: "spendless-ext-below-budget", colour: "#679093"}
     }
     else if (100*total/budget < 100){
-      return {class: "approaching-budget", colour: "#DCC7B4"}
+      return {class: "spendless-ext-approaching-budget", colour: "#DCC7B4"}
     }
      else{
-      return {class: "above-budget", colour: "#D98C74"}
+      return {class: "spendless-ext-above-budget", colour: "#D98C74"}
     }
 }
 

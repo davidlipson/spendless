@@ -1,7 +1,4 @@
-
-
 import { Component } from 'react';
-import '../App.css';
 import ReactLogo from '../SpendLess.svg';
 
 class TopBar extends Component<any,any>{
@@ -12,9 +9,9 @@ class TopBar extends Component<any,any>{
 
   render() {
     return (
-    <div className="top-bar">
-       <div className="spendless-icon"> <img src={ReactLogo} alt="React Logo" /></div>
-        {process.env.NODE_ENV == "development" ? <div className="logout-button" onClick={this.props.logout}>Logout</div> : <div className="logout-button"></div>}
+    <div className="spendless-ext-dropdown-top-bar">
+       <div className="spendless-ext-icon"> <img src={ReactLogo} alt="React Logo" /></div>
+        {process.env.NODE_ENV == "development" ? <div className="spendless-ext-logout-button" onClick={this.props.logout}>Logout</div> : <div className="spendless-ext-logout-button"></div>}
     </div>
     );
   }

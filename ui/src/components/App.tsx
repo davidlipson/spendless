@@ -1,6 +1,5 @@
 /*global chrome*/
 import { Component } from 'react';
-import '../App.css';
 import Progress from './Progress';
 import History from './History';
 import { getRange } from '../helpers/mathFns';
@@ -60,6 +59,7 @@ class App extends Component<any,any>{
       const url = `http://localhost:5000/user?uid=${uid}`;
       const response = await fetch(url)
       const data = await response.json()
+      console.log(data)
       this.setState({ user : data[0] })
       this.history(this.state.user.id);
     }
@@ -125,18 +125,16 @@ class App extends Component<any,any>{
     this.initialize();
   }
 
-  // <div className="App"> border style={{ borderColor: (this.state.user == false ? "#e3e3e3" : range.colour) }} 
-
   render() {
     const range = getRange(this.state.price + this.state.spent, this.state.user.budget);
     return  (
-      <div className="App">
+      <div className="spendless-ext-app spendless-ext-dropdown">
       {this.state.user == false ?
         <>
-        <div className={`welcome-header`}>
+        <div className={`spendless-ext-welcome-header`}>
             Welcome to SpendLess!
         </div>
-        <div className={`welcome-body`}>
+        <div className={`spendless-ext-welcome-body`}>
         In order to use SpendLess, you must login with Google.
         </div>
         {process.env.NODE_ENV == "development" ?
@@ -147,7 +145,7 @@ class App extends Component<any,any>{
           cookiePolicy={'single_host_origin'}
           onSuccess={this.handleLogin.bind(this)}
           onFailure={this.handleLoginFailure.bind(this)}
-        /> : <div className={`welcome-body`}>
+        /> : <div className={`spendless-ext-welcome-body`}>
         Once signed in through Chrome, reload the SpendLess extension (you may need to restart Chrome).
         </div>
         }</>
@@ -156,11 +154,10 @@ class App extends Component<any,any>{
         <TopBar logout={this.logout.bind(this)}/>
         <Progress amount={this.state.price} last={this.state.last} total={this.state.price + this.state.spent} budget={this.state.user.budget}/>
         <div className="overall-summary">
-        <BudgetSummary submitNewBudget={this.submitNewBudget.bind(this)} spent={this.state.spent} budget={this.state.user.budget}/>
-          
-          <div className="divider-bar"></div>
-          <div className="purchase-history">
-          <History ignore={this.ignoreTransaction.bind(this)} data={this.state.history.slice(0,3)}/>
+          <BudgetSummary submitNewBudget={this.submitNewBudget.bind(this)} spent={this.state.spent} budget={this.state.user.budget}/>
+          <div className="spendless-ext-divider-bar"></div>
+          <div className="spendless-ext-dropdown-history">
+            <History ignore={this.ignoreTransaction.bind(this)} data={this.state.history.slice(0,3)}/>
           </div>
         </div>
         </>}
