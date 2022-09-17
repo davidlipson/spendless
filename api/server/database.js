@@ -9,21 +9,37 @@ module.exports = class DBClient {
     createDatabase = async (init = false) => {
         // Initialize postgres client
         console.log(process.env.PG_HOST);
-        this.client = await new postgres.Client({
-            user: process.env.PG_USER,
-            password: process.env.PG_PASSWORD,
-            port: process.env.PG_PORT,
-            host: process.env.PG_HOST,
-            ssl: {
-                rejectUnauthorized: false,
-            },
-        });
+        if (process.env.NODE_ENV === 'production') {
+            this.client = await new postgres.Client({
+                user: process.env.PG_USER,
+                password: process.env.PG_PASSWORD,
+                database: process.env.PG_DB,
+                port: process.env.PG_PORT,
+                host: process.env.PG_HOST,
+                ssl: {
+                    rejectUnauthorized: false,
+                },
+            });
+        } else {
+            this.client = await new postgres.Client({
+                user: process.env.PG_USER,
+                password: process.env.PG_PASSWORD,
+                port: process.env.PG_PORT,
+                host: process.env.PG_HOST,
+                ssl: {
+                    rejectUnauthorized: false,
+                },
+            });
+        }
+
         await this.client.connect();
         if (process.env.NODE_ENV === 'production' || init === true) {
             try {
-                await this.client.query(
-                    `CREATE DATABASE "${process.env.PG_DB}"`
-                );
+                if (process.env.NODE_ENV !== 'production') {
+                    await this.client.query(
+                        `CREATE DATABASE "${process.env.PG_DB}"`
+                    );
+                }
                 await this.client.query(`CREATE TABLE "user" (
                     id uuid NOT NULL DEFAULT gen_random_uuid(),
                     first_name varchar NULL,
