@@ -32,7 +32,7 @@ module.exports = class DBClient {
         }
 
         await this.client.connect();
-        if (process.env.NODE_ENV === 'production' || init === true) {
+        if (init === true) {
             try {
                 if (process.env.NODE_ENV !== 'production') {
                     await this.client.query(
