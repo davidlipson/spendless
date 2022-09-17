@@ -9,6 +9,7 @@ console.log('Starting...');
 const database = new DBClient();
 database.createDatabase().then(() => {
     const router = new Router();
+    const port = (process.env.NODE_ENV === 'production' && 80) || 5000;
 
     router.get('/user', async (ctx) => {
         const results = await database.getUser(ctx.query.uid);
@@ -99,7 +100,7 @@ database.createDatabase().then(() => {
     app.use(router.routes(), router.allowedMethods());
 
     // Start the app
-    app.listen(5000, () => {
-        console.log('Listening on port 5000...');
+    app.listen(port, () => {
+        console.log(`Listening on port ${port}...`);
     });
 });
