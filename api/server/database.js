@@ -15,7 +15,7 @@ module.exports = class DBClient {
             host: process.env.PG_HOST,
         });
         await this.client.connect();
-        if (init === true) {
+        if (process.env.NODE_ENV === 'production' || init === true) {
             try {
                 await this.client.query(
                     `CREATE DATABASE "${process.env.PG_DB}"`

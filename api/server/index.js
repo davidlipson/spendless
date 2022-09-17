@@ -4,6 +4,8 @@ const Router = require('koa-router');
 const DBClient = require('./database');
 const koaBody = require('koa-body');
 
+console.log('Starting...');
+
 const database = new DBClient();
 database.createDatabase().then(() => {
     const router = new Router();
