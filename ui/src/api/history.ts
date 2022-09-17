@@ -3,7 +3,6 @@ export const getHistory = async (uid:string) => {
       const url = `${process.env.REACT_APP_API_URL}/history?uid=${uid}`;
       const response = await fetch(url)
       const data = await response.json()
-      console.log(data)
       // do this better w triggers in db instead of calculating spent in ui
       let total = 0;
 

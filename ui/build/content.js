@@ -2,23 +2,22 @@
 // refactor to Jquery
 // only use the extension.css for the react app as well
 
-chrome.runtime.onMessage.addListener(async function (
-    request,
-    sender,
-    sendResponse
-) {
+chrome.runtime.onMessage.addListener(async function (request) {
     if (request.page != null) {
         let user = request.user;
+        let amount = 0;
         if (request.page == 'processed') {
             await updateUserPage(user.id, request.url, 0, '');
+        } else {
+            const response = await setPage(
+                user,
+                request.url,
+                request.query,
+                request.description
+            );
+            amount = response.amount;
         }
-        let { amount } = await setPage(
-            user,
-            request.url,
-            request.query,
-            request.description
-        );
-        console.log(amount, request.query, request.description);
+
         let spent = await getHistory(user.id);
 
         var total = amount + spent;

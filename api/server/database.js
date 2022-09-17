@@ -135,7 +135,6 @@ module.exports = class DBClient {
                         WHERE uid = '${uid}' and amount > 0)`;
         try {
             const results = await this.client.query(query);
-            console.log(results);
             return results;
         } catch (err) {
             throw err;
@@ -162,7 +161,6 @@ module.exports = class DBClient {
 
         try {
             const results = await this.client.query(query);
-            console.log(results);
             return results.rows;
         } catch (err) {
             throw err;

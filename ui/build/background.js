@@ -48,15 +48,14 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                             if (user) {
                                 if (key === 'processed') {
                                     await submitLastTransaction(user.id);
-                                } else {
-                                    chrome.tabs.sendMessage(tabId, {
-                                        user,
-                                        page: key,
-                                        query: value.query,
-                                        description: value.description,
-                                        url,
-                                    });
                                 }
+                                chrome.tabs.sendMessage(tabId, {
+                                    user,
+                                    page: key,
+                                    query: value.query,
+                                    description: value.description,
+                                    url,
+                                });
                             }
                         });
                     }
