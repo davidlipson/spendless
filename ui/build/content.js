@@ -16,58 +16,58 @@ chrome.runtime.onMessage.addListener(
         const range = getRange(total, user.budget);
 
         var popup = parent.document.createElement('div');
-        popup.id = 'popup-root';
+        popup.className = 'spendless-ext-root';
         parent.document.getElementsByTagName('html')[0].appendChild(popup);
 
         var app = parent.document.createElement('div');
-        app.className = 'popup-app';
+        app.className = 'spendless-ext-app spendless-ext-popup';
         app.style.borderColor = range.colour
         popup.appendChild(app);
 
         var mainText = parent.document.createElement('span');
-        mainText.className = 'popup-main-text';
+        mainText.className = 'spendless-ext-popup-header';
         mainText.innerHTML = "Spendless, Save more!"
         app.appendChild(mainText);
 
         var overall = parent.document.createElement('div');
-        overall.className = 'popup-budget-summary-lines';
+        overall.className = 'spendless-ext-summary-lines';
         app.appendChild(overall);
 
         var budDiv = parent.document.createElement('div');
-        budDiv.className = 'popup-budget-summary-div';
+        budDiv.className = 'spendless-ext-summary-div';
 
         var budVal = parent.document.createElement('span');
-        budVal.className = 'popup-summary-value';
-        budVal.innerHTML = getCurrency(spent).replace('.00', '');
+        budVal.className = 'spendless-ext-summary-value';
+        budVal.innerHTML = getCurrency(Math.ceil(spent)).replace('.00', '');
         budDiv.appendChild(budVal);
         
         var budLine = parent.document.createElement('span');
-        budLine.className = 'popup-summary-line popup-small-cap-font';
+        budLine.className = 'spendless-ext-summary-line spendless-ext-small-cap-font';
         budLine.innerHTML = 'AMOUNT SPENT';
         budDiv.appendChild(budLine);
 
         overall.appendChild(budDiv);
 
         var leftDiv = parent.document.createElement('div');
-        leftDiv.className = 'popup-budget-summary-div';
+        leftDiv.className = 'spendless-ext-summary-div';
 
         var leftVal = parent.document.createElement('span');
-        leftVal.className = 'popup-summary-value';
+        leftVal.className = 'spendless-ext-summary-value';
         leftVal.innerHTML = getCurrency(Math.ceil(user.budget)).replace('.00', '');
         leftDiv.appendChild(leftVal);
         
         var leftLine = parent.document.createElement('span');
-        leftLine.className = 'popup-summary-line popup-small-cap-font';
+        leftLine.className = 'spendless-ext-summary-line spendless-ext-small-cap-font';
         leftLine.innerHTML = 'LEFT IN BUDGET';
         leftDiv.appendChild(leftLine);
 
         overall.appendChild(leftDiv);
 
         var hideMessage = parent.document.createElement('div');
-        hideMessage .className = 'popup-hide-message';
+        hideMessage .className = 'spendless-ext-popup-hide';
         hideMessage.innerHTML = "Hide this message"
         hideMessage.onclick = function(ev){
-          const els = parent.document.querySelectorAll('.popup-app');
+          const els = parent.document.querySelectorAll('.spendless-ext-app');
           els.forEach(el => {
             el.remove()
           })
@@ -76,11 +76,11 @@ chrome.runtime.onMessage.addListener(
         app.appendChild(hideMessage)
         
         var ignoreMessage = parent.document.createElement('div');
-        ignoreMessage.className = 'popup-ignore-message';
+        ignoreMessage.className = 'spendless-ext-popup-ignore';
         ignoreMessage.innerHTML = "Ignore this transaction"
         ignoreMessage.onclick = function(ev){
           updateUserPage(user.id, request.url, 0, '')
-          const els = parent.document.querySelectorAll('.popup-app');
+          const els = parent.document.querySelectorAll('.spendless-ext-app');
           els.forEach(el => {
             el.remove()
           });
@@ -92,7 +92,7 @@ chrome.runtime.onMessage.addListener(
 
   alertMessage = (text, time = 5000) => {
     var alert = parent.document.createElement('div');
-    alert.className = 'popup-alert-message';
+    alert.className = 'spendless-ext-popup-message';
     alert.innerHTML = text;
     parent.document.getElementsByTagName('html')[0].appendChild(alert);
     window.setTimeout(function() {
@@ -180,13 +180,13 @@ chrome.runtime.onMessage.addListener(
 
 getRange = (total, budget) => {
     if (100*total/budget < 75){
-      return {class: "below-budget", colour: "rgb(75,176,248)"}
+      return {class: "spendless-ext-below-budget", colour: "rgb(75,176,248)"}
     }
     else if (100*total/budget < 100){
-      return {class: "approaching-budget", colour: "rgb(248,200,75)"}
+      return {class: "spendless-ext-approaching-budget", colour: "rgb(248,200,75)"}
     }
      else{
-      return {class: "above-budget", colour: "rgb(248,75,75)"}
+      return {class: "spendless-ext-above-budget", colour: "rgb(248,75,75)"}
     }
 }
 

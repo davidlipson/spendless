@@ -1,6 +1,4 @@
-import React from 'react';
 import { Component } from 'react';
-import '../App.css';
 
 import CountUp from 'react-countup';
 
@@ -62,7 +60,7 @@ class Progress extends Component<any,any>{
     const lastPerc = getPercentage(this.props.last, this.props.budget);
     const progressBody = `OF BUDGET USED`
     return (
-      <div className="spend-progress">
+      <div className="spendless-ext-dropdown-progress">
         <CircularProgressbarWithChildren
           value={values[this.state.valuesIndex]}
           strokeWidth={5}
@@ -72,11 +70,11 @@ class Progress extends Component<any,any>{
             strokeLinecap: "square",
           })}
         >
-        <div className="spend-progress-content">
-          <div className={`progress-header`}>
-            <CountUp duration={1} start={lastPerc} end={perc}/><span className="small-perc-symbol">%</span>
+        <div className="spendless-ext-dropdown-progress-content">
+          <div className={`spendless-ext-dropdown-progress-header`}>
+            <CountUp duration={1} start={lastPerc} end={perc}/><span className="spendless-ext-dropdown-perc">%</span>
           </div>
-          <div className="progress-body small-cap-font">
+          <div className="spendless-ext-dropdown-progress-body spendless-ext-small-cap-font">
             {progressBody}
           </div>
         </div>  

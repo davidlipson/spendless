@@ -1,7 +1,6 @@
 
 
 import { Component } from 'react';
-import '../App.css';
 import { getCurrency } from '../helpers/mathFns';
 import HighlightOffSharpIcon from '@mui/icons-material/HighlightOffSharp';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
@@ -39,27 +38,26 @@ class BudgetSummary extends Component<any,any>{
     this.setState({editBudget: false})
   }
 
-
   render() {
     return (
-      <div className="budget-summary-lines">
-        <div className="budget-summary-div">
-          <span className="summary-value">{getCurrency(Math.ceil(this.props.spent)).replace('.00', '')}</span>
-          <span className="summary-line small-cap-font">AMOUNT SPENT</span>
+      <div className="spendless-ext-summary-lines">
+        <div className="spendless-ext-summary-div">
+          <span className="spendless-ext-summary-value">{getCurrency(Math.ceil(this.props.spent)).replace('.00', '')}</span>
+          <span className="spendless-ext-summary-line spendless-ext-small-cap-font">AMOUNT SPENT</span>
         </div>
         {this.state.editBudget ? 
-        <div className="budget-summary-div budget-edit" >
-          <div className="edit-budget-bar">
+        <div className="spendless-ext-summary-div spendless-ext-dropdown-budget-edit" >
+          <div className="spendless-ext-dropdown-edit-budget-bar">
             <HighlightOffSharpIcon className="cancel-button" onClick={() => this.setState({editBudget: false})}/>
-            <div className="budget-input-row">
-              <span className="summary-value budget-dollar-sign">$</span>
-              <NumericInput onChange={this.handleEditBudget.bind(this)} className="numeric-input-budget" min={0} max={10000} precision={0} style={false} value={this.state.editValue}/>
+            <div className="spendless-ext-dropdown-budget-input-row">
+              <span className="spendless-ext-summary-value spendless-ext-dropdown-budget-dollar-sign">$</span>
+              <NumericInput onChange={this.handleEditBudget.bind(this)} className="spendless-ext-dropdown-numeric-input-budget" min={0} max={10000} precision={0} style={false} value={this.state.editValue}/>
             </div>
-            <CheckCircleOutlineRoundedIcon className="save-button" onClick={this.submitNewBudget.bind(this)}/>
+            <CheckCircleOutlineRoundedIcon className="spendless-ext-dropdown-save" onClick={this.submitNewBudget.bind(this)}/>
           </div>
         </div>
         : 
-        <div className="budget-summary-div budget-summary-total" 
+        <div className="spendless-ext-summary-div spendless-ext-dropdown-summary-total" 
         onMouseEnter={this.onMouseover.bind(this)}
         onMouseLeave={this.onMouseout.bind(this)}
         onClick={() => {
@@ -67,8 +65,8 @@ class BudgetSummary extends Component<any,any>{
             this.setState({editBudget: true})
           }
         }}>
-          <span className="summary-value">{getCurrency(this.props.budget).replace('.00', '')}</span>
-          <span className="summary-line small-cap-font">{this.state.text}</span>
+          <span className="spendless-ext-summary-value">{getCurrency(this.props.budget).replace('.00', '')}</span>
+          <span className="spendless-ext-summary-line spendless-ext-small-cap-font">{this.state.text}</span>
         </div>}
         </div>
     );

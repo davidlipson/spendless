@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import '../App.css';
 import HistoryEntry from './HistoryEntry';
 import Button from '@mui/material/Button';
 
@@ -13,9 +12,9 @@ class History extends Component<any,any>{
 
   render() {
     return (
-      <div className="purchase-history-body">
+      <div className="spendless-ext-dropdown-history-body">
         {this.props.data.length > 0 ? <>
-        <div className='recent-transactions-title small-cap-font'>RECENT TRANSACTIONS</div>
+        <div className='spendless-ext-dropdown-transactions-title spendless-ext-small-cap-font'>RECENT TRANSACTIONS</div>
         <table className="purchase-history-table">
           <tbody>
           {this.props.data.map((h:any) => {
@@ -23,8 +22,8 @@ class History extends Component<any,any>{
           })}
           </tbody>
         </table>
-        <Button onClick={() => this.setState({editMode: !this.state.editMode})} className={`manage-transactions manage-transactions-${this.state.editMode ? 'on' : 'off' }`} variant="contained">{this.state.editMode ? 'Done editing' : 'Edit transactions'}</Button></>  
-        : <div className='transaction-message'>You do not have any recent transactions.</div>}
+        <Button onClick={() => this.setState({editMode: !this.state.editMode})} className={`spendless-ext-dropdown-manage-transactions spendless-ext-dropdown-manage-transactions-${this.state.editMode ? 'on' : 'off' }`} variant="contained">{this.state.editMode ? 'Done editing' : 'Edit transactions'}</Button></>  
+        : <div className='spendless-ext-dropdown-empty'>You do not have any recent transactions.</div>}
       </div> 
     );
   }

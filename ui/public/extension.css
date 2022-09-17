@@ -1,24 +1,65 @@
-.popup-app {
+/*
+  naming convention for spendless css
+  1. general classes: .spendless-ext-<class>
+  2. dropdown classes: .spendless-ext-dropdown-<class>
+  3. popup classes: .spendless-ext-popup-<class>
+*/
+
+.spendless-ext-root{
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: white;
+  z-index: 10000;
+  box-shadow: 0px 0px 7px 2px #8080801a;
+  border-radius: 4px;
+}
+
+#root{
+  width: 400px;
+  max-height: 800px;
+}
+
+.spendless-ext-app {
   text-align: center;
   font-family: 'Lato', sans-serif;
   padding: 30px;
-  max-height: 600px;
   color: #363636;
-  }
-  
-#popup-root{
-    width: 300px;
-    max-height: 600px;
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background: white;
-    z-index: 10000;
-    box-shadow: 0px 0px 7px 2px #8080801a;
-    border-radius: 4px;
-  }
+}
 
-  .popup-alert-message{
+.spendless-ext-dropdown-top-bar{
+  border-bottom: 1px solid #e2e2e2;
+  margin-bottom: 20px;
+  display: flex;
+  padding-bottom: 15px;
+}
+
+.spendless-ext-icon{
+  display: flex;
+  width: 85%;
+}
+
+.spendless-ext-dropdown-ignore{
+  text-align: center;
+    width: 20px;
+    padding-left: 15px;
+}
+
+.spendless-ext-dropdown-cancel:hover{
+  cursor: pointer;
+  color: #e06767;
+}
+
+.spendless-ext-icon img{
+  width: 90px !important;
+}
+
+.spendless-ext-popup{
+  width: 300px;
+  max-height: 600px;
+}
+
+.spendless-ext-popup-message{
     text-align: center;
     font-family: 'Lato', sans-serif;
     color: #363636;
@@ -37,10 +78,17 @@
     border-radius: 4px;
   }
 
-.popup-main-text{
+.spendless-ext-popup-header{
   font-size: 16px;
   font-weight: 800;
 }
+
+.spendless-ext-dropdown-transactions-title{
+  text-align: left;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  padding-bottom: 15px;
+  }
 
 .popup-toggle{
   font-size: 60px;
@@ -69,15 +117,11 @@
     color: white;
   }
   
-  .App-link {
-    color: #61dafb;
-  }
-  
-  .spend-progress-content{
+  .spendless-ext-dropdown-progress-content{
     margin-top: -15px !important;
   }
   
-  .spend-progress{
+  .spendless-ext-dropdown-progress{
     width: 200px;
     margin: 0 auto;
     padding: 20px;
@@ -85,63 +129,63 @@
     margin-bottom: 5px;
   }
   
-  .progress-body{
+  .spendless-ext-dropdown-progress-body{
     font-size: 12px;
     width: 150px;
     font-weight: 600;
   }
   
-  .welcome-header{
+  .spendless-ext-welcome-header{
     font-weight: 800;
     font-size: x-large;
   }
   
-  .progress-header{
+  .spendless-ext-dropdown-progress-header{
     font-weight: 800;
     font-size: xx-large;
   }
   
-  .below-budget{
+  .spendless-ext-below-budget{
     color: rgb(75,176,248);
     }
   
-  .approaching-budget{
+  .spendless-ext-approaching-budget{
     color: rgb(248,200,75);
   }
   
-  .above-budget{
+  .spendless-ext-above-budget{
     color: rgb(248,75,75);
   }
   
-  .popup-summary-line{
+  .spendless-ext-summary-line{
     display: block;
   }
 
-  .popup-budget-summary-lines{
+  .spendless-ext-summary-lines{
     display: flex;
-    padding: 20px 0px;
+    padding: 10px 0px;
     display: flex;
   }
 
-  .popup-budget-summary-div{
+  .spendless-ext-summary-div{
     width: 50%;
     padding: 10px
   }
   
-  .popup-small-cap-font{
+  .spendless-ext-small-cap-font{
     font-weight: 400;
     font-size: 12px;
     font-variant: small-caps;
   }
 
-  .popup-summary-value{
+  .spendless-ext-summary-value{
     display: block;
     font-weight: 800;
     font-size: 14px;
     margin-bottom: 3px;
  }
 
- .popup-hide-message{
+ .spendless-ext-popup-hide{
   background-color: black;
   color: white;
   padding: 20px 0px;
@@ -151,34 +195,29 @@
   cursor: pointer;
  }
 
- .popup-ignore-message {
+ .spendless-ext-popup-ignore {
   padding-top: 15px;
   cursor: pointer;
   font-size: 14px;
 }
 
-
-  .popup-budget-summary-div:first-of-type {
+  .spendless-ext-summary-div:first-of-type {
     border-right: 1px solid #E2E2E2;
   }
   
-  .divider-bar{
-      background: #efefef;
-      height: 3px;
-      width: 250px;
-      margin: 0 auto;
-      margin-top: 30px;
-      display: none
+  .spendless-ext-divider-bar{
+    background: #e4e3e3;
+    height: 1px;
+    margin: 0 auto;
+    margin-top: 10px;
   }
   
+  .spendless-ext-dropdown-empty{
+    margin-top: 5px;
+  }
   
-  .purchase-history{
+  .spendless-ext-dropdown-history{
     margin-top: 20px;
-  }
-  
-  .history-title{
-    font-weight: 600;
-    display: none;
   }
   
   .MuiSvgIcon-root{
@@ -189,45 +228,46 @@
     padding: 0px !important;
   }
   
-  .popup-app table{
+  .spendless-ext-app table{
     margin: 0 auto;
     text-align: right;
     cursor: pointer;
+    padding-bottom: 10px;
   }
   
-  .table-label{
+  .spendless-ext-dropdown-table-label{
     text-align: left;
+    width: 200px !important;
+    padding-left: 15px;
   }
   
-  .popup-app tr{
-    height: 20px !important;
-    color: rgb(163, 162, 162);
+  .spendless-ext-app tr{
+    height: 60px !important;
+    padding: 20px;
   }
 
-  .popup-purchase-history-body{
+  .spendless-ext-dropdown-history-body{
     margin-top: 20px;;
   }
+
+  .spendless-ext-dropdown-budget-input-row{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   
-  .popup-app tr:hover{
-    font-style: italic;
-    color: black;
+  .spendless-ext-dropdown-table-amount{
+    width: 150px;
+    padding-right: 15px;
+    font-size: 16px;
   }
   
-  .popup-app td{
-    width: 75px;
-    text-align: center;
-  }
-  
-  .table-amount{
-    padding-right: 20px;
-  }
-  
-  
-  .welcome-body{
+  .spendless-ext-welcome-body{
     margin: 25px;
   }
   
-  .logout-button{
+  .spendless-ext-logout-button{
     position: relative;
     top: -15px;
     right: -5px;
@@ -236,43 +276,39 @@
     font-size: 14px;
     cursor: pointer
   }
-  
-  .logout-button:hover{
-    color: black;
-    font-style: italic;
-  }
-  
-  .confirm-buttons{
-    padding-top: 5px;
-  }
-  
-  .confirm-buttons a {
-    cursor: pointer;
-    color: rgb(163, 162, 162);
-  }
-  
-  .confirm-buttons a:hover{
-    color: black;
-    font-style: italic;
-  }
-  
-  
-  .confirm-buttons a {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-  
-  .alert-message{
-    color: rgb(248,75,75);
-  }
-  
-  .checkout-line, .popup-checkout-line{
-    margin-bottom: 10px;
-  }
 
-  .popup-checkout-line{
-    font-size: 14px;
-    padding-bottom: 10px;
+  .spendless-ext-dropdown-manage-transactions{
+    width: 100%;
+    
+    height: 50px;
+    font-variant: unset !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+  }
+  
+  .spendless-ext-dropdown-manage-transactions-off{
+    background: black !important;
+  }
+  
+  .spendless-ext-dropdown-manage-transactions-on{
+    background: #679093 !important;
+  }
+  
+
+  .spendless-ext-dropdown-history-timestamp{
+    font-size: 12px;
+    color: #6C6C6C;
+    margin-top: 2px;
+  }
+  
+  .spendless-ext-dropdown-history-name{
+    font-weight: 900;
+    font-size: 16px;
+  }
+  
+  
+  .spendless-confirm-ignore{
+    margin-bottom: 15px;
   }
 
   .popup-progress{
@@ -280,10 +316,56 @@
     font-size: 14px;
   }
 
+  .spendless-ext-dropdown-edit-budget-bar{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+  .spendless-ext-dropdown-summary-total{
+    cursor: pointer;
+  }
+
+  .spendless-ext-dropdown-budget-edit{
+    cursor: pointer;
+  }
+
+  .spendless-ext-dropdown-edit-budget-bar svg{
+    margin: 0px 10px;
+  }
+
+  .spendless-ext-dropdown-save:hover{
+    cursor: pointer;
+    color: #4fa17c;
+  }
+
+  .spendless-ext-dropdown-numeric-input-budget{
+    width: 5ch;
+    text-align: right;
+    font-weight: 800;
+    font-size: 15px;
+    color: #363636;
+    font-family: 'Lato';
+    border: none;
+    border-bottom: 1px dotted #cfcfcf;
+    outline: none;
+  }
+
   .popup-total{
     font-weight: 800;
     font-size: xx-large;
     padding-bottom: 20px;
+  }
+
+  .spendless-ext-dropdown-budget-dollar-sign{
+    border-bottom: 1px dotted #cfcfcf;
+    margin-bottom: -3px;
+  }
+
+  .spendless-ext-dropdown-perc{
+    font-size: 18px;
   }
   
   @keyframes App-logo-spin {
@@ -293,5 +375,10 @@
     to {
       transform: rotate(360deg);
     }
+  }
+
+  .CircularProgressbar-trail {
+    stroke: #a1a1a1 !important;
+    stroke-width: 0.5px !important;
   }
   

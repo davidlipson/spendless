@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import '../App.css';
 import { getCurrency } from '../helpers/mathFns';
 import { shortenText } from '../helpers/shortenText';
 import HighlightOffSharpIcon from '@mui/icons-material/HighlightOffSharp';
@@ -21,12 +20,12 @@ class HistoryEntry extends Component<any,any>{
     const name = shortenText(this.props.data.description, 2)
     return (
         <tr>
-          {this.props.editMode && <td onClick={() => this.handleIgnore()} className="ignore-button"><HighlightOffSharpIcon className="cancel-button"/></td>}
-            <td className="table-label">
-              <div className="history-name">{name == "" ? "Unknown Transaction" : name}</div>
-              <div className="history-timestamp">{this.convertToDateString(this.props.data.timestamp)}</div>
+          {this.props.editMode && <td onClick={() => this.handleIgnore()} className="spendless-ext-dropdown-ignore"><HighlightOffSharpIcon className="spendless-ext-dropdown-cancel"/></td>}
+            <td className="spendless-ext-dropdown-table-label">
+              <div className="spendless-ext-dropdown-history-name">{name == "" ? "Unknown Transaction" : name}</div>
+              <div className="spendless-ext-dropdown-history-timestam">{this.convertToDateString(this.props.data.timestamp)}</div>
             </td>
-            <td className="table-amount">{getCurrency(this.props.data.amount)}</td>
+            <td className="spendless-ext-dropdown-table-amount">{getCurrency(this.props.data.amount)}</td>
         </tr>
     )
   }
