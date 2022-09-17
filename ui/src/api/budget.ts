@@ -7,6 +7,6 @@ export const updateBudget = async(uid: string, budget: number ) => {
           budget
         })
     };
-    const url = "http://localhost:5000/budget";
+    const url = `${process.env.API_URL}/budget`;
     await fetch(url, requestOptions);
 }

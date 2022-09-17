@@ -161,6 +161,7 @@ module.exports = class DBClient {
 
         try {
             const results = await this.client.query(query);
+            console.log(results);
             return results.rows;
         } catch (err) {
             throw err;

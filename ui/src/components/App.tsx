@@ -56,7 +56,7 @@ class App extends Component<any,any>{
 
   setUser = async(uid:string) => {
     try{
-      const url = `http://localhost:5000/user?uid=${uid}`;
+      const url = `${process.env.API_URL}/user?uid=${uid}`;
       const response = await fetch(url)
       const data = await response.json()
       console.log(data)

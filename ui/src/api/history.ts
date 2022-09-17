@@ -1,6 +1,6 @@
 export const getHistory = async (uid:string) => {
     try{
-      const url = `http://localhost:5000/history?uid=${uid}`;
+      const url = `${process.env.API_URL}/history?uid=${uid}`;
       const response = await fetch(url)
       const data = await response.json()
       console.log(data)

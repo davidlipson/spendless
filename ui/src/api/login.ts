@@ -12,7 +12,7 @@ export const loginUser = async (prof:any) => {
             email: prof.email
           })
       };
-      const url = "http://localhost:5000/login";
+      const url = `${process.env.API_URL}/login`;
       const response = await fetch(url, requestOptions);
       const data = await response.json();
       cookies.set(process.env.REACT_APP_SPENDLESS_COOKIE_NAME as string, data[0].id as string, { path: '/' });
