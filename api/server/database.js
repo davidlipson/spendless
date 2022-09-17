@@ -8,6 +8,7 @@ module.exports = class DBClient {
 
     createDatabase = async (init = false) => {
         // Initialize postgres client
+        console.log(process.env.PG_HOST);
         this.client = await new postgres.Client({
             user: process.env.PG_USER,
             password: process.env.PG_PASSWORD,
