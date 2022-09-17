@@ -25,6 +25,7 @@ database.createDatabase().then(() => {
     });
 
     router.post('/page', koaBody(), async (ctx) => {
+        console.log(ctx.request.body)
         const results = await database.setPage(
             ctx.request.body.uid,
             ctx.request.body.url,
@@ -44,7 +45,6 @@ database.createDatabase().then(() => {
 
     router.get('/history', async (ctx) => {
         const results = await database.getHistory(ctx.query.uid);
-        console.log(results);
         ctx.body = results;
     });
 
