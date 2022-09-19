@@ -1,26 +1,10 @@
 // TODO
 // refactor to Jquery
-// only use the extension.css for the react app as well
-
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.page != null) {
-        let user = request.user;
-        let amount = 0;
-        if (request.page == 'processed') {
-            await updateUserPage(user.id, request.url, 0, '');
-        } else {
-            const response = await setPage(
-                user,
-                request.url,
-                request.query,
-                request.description
-            );
-            amount = response.amount;
-        }
-
-        let spent = await getHistory(user.id);
-
-        var total = amount + spent;
+        const { user, spent, url, query, description, page } = request;
+        const { amount } = await setPage(user, url, query, description, page);
+        const total = amount + spent;
         const range = getRange(total, user.budget);
 
         var popup = parent.document.createElement('div');
@@ -91,8 +75,8 @@ chrome.runtime.onMessage.addListener(async function (request) {
         var ignoreMessage = parent.document.createElement('div');
         ignoreMessage.className = 'spendless-ext-popup-ignore';
         ignoreMessage.innerHTML = 'Ignore this transaction';
-        ignoreMessage.onclick = function (ev) {
-            updateUserPage(user.id, request.url, 0, '');
+        ignoreMessage.onclick = async function (ev) {
+            await updateUserPage(user.id, request.url, 0, '', false);
             const els = parent.document.querySelectorAll('.spendless-ext-app');
             els.forEach((el) => {
                 el.remove();
@@ -115,65 +99,52 @@ alertMessage = (text, time = 5000) => {
     }, time);
 };
 
-getHistory = async (uid) => {
-    try {
-        const url = `https://spendless-pg.herokuapp.com/history?uid=${uid}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        let total = 0;
-        data.forEach((h) => {
-            total += h.amount;
-        });
-        return total;
-    } catch (error) {
-        console.log(error);
-        return 0;
-    }
-};
-
-setPage = async (user, url, q, d) => {
-    let uid = user.id;
-    let link = url;
+setPage = async (user, url, q, d, p) => {
+    const uid = user.id;
     let amount = 0;
     let description = '';
     let found = false;
-    try {
-        let query = '';
-        let descQuery = '';
-        query = parent.document
-            .querySelector(q)
-            ?.textContent.replace(/[]+|[s]{2,}/g, ' ')
-            .trim()
-            .replace('$', '');
-        if (d) {
-            descQuery = parent.document.querySelector(d)?.textContent.trim();
-        }
-        if (query && query != '') {
-            try {
-                let result = parseFloat(query);
-                found = true;
-                if (!isNaN(result) && result > 0) {
-                    amount = result;
-                    if (descQuery && descQuery != '') {
-                        description = descQuery;
-                    } else {
-                        const baseUrl = url.match(/^https?:\/\/[^#?\/]+/);
-                        description = baseUrl || '';
-                    }
-                } else {
-                    throw 'Invalid query value';
-                }
-            } catch (e) {
-                console.log(e);
+    if (p != 'processed') {
+        try {
+            let query = '';
+            let descQuery = '';
+            query = parent.document
+                .querySelector(q)
+                ?.textContent.replace(/[]+|[s]{2,}/g, ' ')
+                .trim()
+                .replace('$', '');
+            if (d) {
+                descQuery = parent.document
+                    .querySelector(d)
+                    ?.textContent.trim();
             }
-        } else {
-            throw 'Query not found';
+            if (query && query != '') {
+                try {
+                    let result = parseFloat(query);
+                    found = true;
+                    if (!isNaN(result) && result > 0) {
+                        amount = result;
+                        if (descQuery && descQuery != '') {
+                            description = descQuery;
+                        } else {
+                            const baseUrl = url.match(/^https?:\/\/[^#?\/]+/);
+                            description = baseUrl || '';
+                        }
+                    } else {
+                        throw 'Invalid query value';
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            } else {
+                throw 'Query not found';
+            }
+        } catch (e) {
+            console.log(e);
         }
-    } catch (e) {
-        console.log(e);
     }
 
-    await updateUserPage(uid, link, amount, description);
+    await updateUserPage(uid, url, amount, description, false);
     return { found, amount, description };
 };
 
@@ -215,21 +186,22 @@ convertToDateString = (date) => {
     return date.split('T')[0].replaceAll('-', '/');
 };
 
-updateUserPage = async (uid, url, amount, description) => {
+updateUserPage = async (uid, url, amount, description, lastPurchase) => {
     try {
-        const response = await fetch(
-            `https://spendless-pg.herokuapp.com/page`,
-            {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ uid, url, amount, description }),
-            }
-        );
-
-        const data = await response.json();
+        await fetch(`https://spendless-pg.herokuapp.com/page`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                uid,
+                url,
+                amount,
+                description,
+                lastPurchase,
+            }),
+        });
     } catch (error) {
         console.log(error);
     }

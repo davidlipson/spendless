@@ -8,12 +8,9 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                 let re = new RegExp(r);
                 if (url?.match(re) && !found) {
                     found = true;
-                    let blacklisted = false;
-                    blacklist.forEach((b) => {
+                    const blacklisted = blacklist.find((b) => {
                         let bre = new RegExp(b);
-                        if (url.match(bre)) {
-                            blacklisted = true;
-                        }
+                        return url.match(bre);
                     });
                     if (!blacklisted) {
                         chrome.identity.getProfileUserInfo(async (userInfo) => {
@@ -21,15 +18,14 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                                 email: userInfo.email,
                             });
                             if (user) {
-                                if (key === 'processed') {
-                                    await submitLastTransaction(user.id);
-                                }
+                                const spent = await getHistory(user.id);
                                 chrome.tabs.sendMessage(tabId, {
                                     user,
                                     page: key,
                                     query: value.query,
                                     description: value.description,
                                     url,
+                                    spent,
                                 });
                             }
                         });
@@ -66,7 +62,6 @@ getUrlList = async () => {
         const url = `https://spendless-pg.herokuapp.com/list`;
         const response = await fetch(url);
         const data = await response.json();
-        console.log(data);
         return data;
     } catch (error) {
         console.log(error);
@@ -74,11 +69,18 @@ getUrlList = async () => {
     }
 };
 
-submitLastTransaction = async (id) => {
+getHistory = async (uid) => {
     try {
-        const url = `https://spendless-pg.herokuapp.com/submit?uid=${id}`;
-        await fetch(url);
+        const url = `https://spendless-pg.herokuapp.com/history?uid=${uid}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        let total = 0;
+        data.forEach((h) => {
+            total += h.amount;
+        });
+        return total;
     } catch (error) {
         console.log(error);
+        return 0;
     }
 };
