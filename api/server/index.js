@@ -21,16 +21,15 @@ database.createDatabase().then(() => {
         ctx.body = results;
     });
 
-    router.get('/submit', async (ctx) => {});
-
     router.post('/page', koaBody(), async (ctx) => {
         const { uid, url, amount, description, lastPurchase } =
             ctx.request.body;
         if (lastPurchase) {
             await database.addLastTransaction(uid);
         }
-        const results = await database.setPage(uid, url, amount, description);
-        ctx.body = results;
+        await database.setPage(uid, url, amount, description);
+        const total = await database.getTotal(uid);
+        ctx.body = { total };
     });
 
     router.post('/budget', koaBody(), async (ctx) => {

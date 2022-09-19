@@ -2,10 +2,8 @@
 // refactor to Jquery
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.page != null) {
-        const { user, spent, url, query, description, page } = request;
-        const { amount } = await setPage(user, url, query, description, page);
-        const total = amount + spent;
-        const range = getRange(total, user.budget);
+        const { user, url, query, description, page } = request;
+        const { total } = await setPage(user, url, query, description, page);
 
         var popup = parent.document.createElement('div');
         popup.className = 'spendless-ext-root';
@@ -13,7 +11,6 @@ chrome.runtime.onMessage.addListener(async function (request) {
 
         var app = parent.document.createElement('div');
         app.className = 'spendless-ext-app spendless-ext-popup';
-        app.style.borderColor = range.colour;
         popup.appendChild(app);
 
         var mainText = parent.document.createElement('span');
@@ -30,7 +27,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
 
         var budVal = parent.document.createElement('span');
         budVal.className = 'spendless-ext-summary-value';
-        budVal.innerHTML = getCurrency(Math.ceil(spent)).replace('.00', '');
+        budVal.innerHTML = getCurrency(Math.ceil(total)).replace('.00', '');
         budDiv.appendChild(budVal);
 
         var budLine = parent.document.createElement('span');
@@ -144,8 +141,8 @@ setPage = async (user, url, q, d, p) => {
         }
     }
 
-    await updateUserPage(uid, url, amount, description, false);
-    return { found, amount, description };
+    const total = await updateUserPage(uid, url, amount, description, false);
+    return { total };
 };
 
 getCurrency = (a) => {
@@ -159,25 +156,6 @@ getCurrency = (a) => {
     }
 };
 
-getRange = (total, budget) => {
-    if ((100 * total) / budget < 75) {
-        return {
-            class: 'spendless-ext-below-budget',
-            colour: 'rgb(75,176,248)',
-        };
-    } else if ((100 * total) / budget < 100) {
-        return {
-            class: 'spendless-ext-approaching-budget',
-            colour: 'rgb(248,200,75)',
-        };
-    } else {
-        return {
-            class: 'spendless-ext-above-budget',
-            colour: 'rgb(248,75,75)',
-        };
-    }
-};
-
 getPercentage = (a, b) => {
     return Math.floor(100 * Math.max(0, a / b));
 };
@@ -188,7 +166,7 @@ convertToDateString = (date) => {
 
 updateUserPage = async (uid, url, amount, description, lastPurchase) => {
     try {
-        await fetch(`https://spendless-pg.herokuapp.com/page`, {
+        const result = await fetch(`https://spendless-pg.herokuapp.com/page`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -202,7 +180,10 @@ updateUserPage = async (uid, url, amount, description, lastPurchase) => {
                 lastPurchase,
             }),
         });
+        const { total } = result.json();
+        return total;
     } catch (error) {
         console.log(error);
+        return 0;
     }
 };

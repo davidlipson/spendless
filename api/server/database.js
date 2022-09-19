@@ -105,10 +105,22 @@ module.exports = class DBClient {
         const query = `select * from "transaction" where uid = '${uid}'::uuid::uuid and ignored is false order by timestamp desc`;
         try {
             const results = await this.client.query(query);
-            return results.rows;
+            const spent = this.getTotalFromHistory(results.rows);
+            return { history: results.rows, spent };
         } catch (err) {
             throw err;
         }
+    };
+    getTotal = async (uid) => {
+        const { history } = await this.getHistory(uid);
+        return this.getTotalFromHistory(history);
+    };
+    getTotalFromHistory = (history) => {
+        let total = 0;
+        history.forEach((h) => {
+            total += h.amount;
+        });
+        return total;
     };
     ignoreTransaction = async (uid, id) => {
         const query = `update "transaction" set ignored = true where uid='${uid}'::uuid::uuid and id='${id}'::uuid::uuid`;

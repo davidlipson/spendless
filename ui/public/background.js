@@ -18,14 +18,12 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                                 email: userInfo.email,
                             });
                             if (user) {
-                                const spent = await getHistory(user.id);
                                 chrome.tabs.sendMessage(tabId, {
                                     user,
                                     page: key,
                                     query: value.query,
                                     description: value.description,
                                     url,
-                                    spent,
                                 });
                             }
                         });
@@ -66,21 +64,5 @@ getUrlList = async () => {
     } catch (error) {
         console.log(error);
         return { whitelist: {}, blacklist: [] };
-    }
-};
-
-getHistory = async (uid) => {
-    try {
-        const url = `https://spendless-pg.herokuapp.com/history?uid=${uid}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        let total = 0;
-        data.forEach((h) => {
-            total += h.amount;
-        });
-        return total;
-    } catch (error) {
-        console.log(error);
-        return 0;
     }
 };
