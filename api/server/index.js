@@ -13,23 +13,34 @@ database.createDatabase().then(() => {
     const port = process.env.PORT || 5000;
 
     router.get('/user', async (ctx) => {
-        const { uid } = ctx.request.body;
-        const results = await database.getUser(uid);
-        if (results.length === 0) {
-            ctx.throw(404);
+        try {
+            const { uid } = ctx.query;
+            const results = await database.getUser(uid);
+            if (results.length === 0) {
+                ctx.throw(404);
+            }
+            ctx.body = results;
+        } catch (err) {
+            console.log(err);
         }
-        ctx.body = results;
     });
 
-    router.post('/page', koaBody(), async (ctx) => {
-        const { uid, url, amount, description, lastPurchase } =
-            ctx.request.body;
-        if (lastPurchase) {
-            await database.addLastTransaction(uid);
+    router.post('/add', koaBody(), async (ctx) => {
+        try {
+            const { uid, amount, description, lastPurchase, tid } =
+                ctx.request.body;
+            let newId = tid;
+            if (lastPurchase && tid) {
+                await database.confirmLastTransaction(uid, tid);
+            } else {
+                newId = await database.addTransaction(uid, description, amount);
+                console.log(newId);
+            }
+            const total = await database.getTotal(uid);
+            ctx.body = { total, tid: newId };
+        } catch (err) {
+            console.log(err);
         }
-        await database.setPage(uid, url, amount, description);
-        const total = await database.getTotal(uid);
-        ctx.body = { total };
     });
 
     router.post('/budget', koaBody(), async (ctx) => {
@@ -39,9 +50,15 @@ database.createDatabase().then(() => {
     });
 
     router.get('/history', async (ctx) => {
-        const { uid } = ctx.request.body;
-        const results = await database.getHistory(uid);
-        ctx.body = results;
+        const { uid } = ctx.query;
+        const { history, spent, recent } = await database.getHistory(uid);
+        ctx.body = { history, spent, recent };
+    });
+
+    router.get('/recent', async (ctx) => {
+        const { uid } = ctx.query;
+        const recent = await database.getRecentlyUnconfirmed(uid);
+        ctx.body = recent;
     });
 
     router.get('/list', async (ctx) => {
@@ -49,8 +66,8 @@ database.createDatabase().then(() => {
     });
 
     router.post('/ignore', koaBody(), async (ctx) => {
-        const { uid, id } = ctx.request.body;
-        const results = await database.ignoreTransaction(uid, id);
+        const { uid, tid } = ctx.request.body;
+        const results = await database.ignoreTransaction(uid, tid);
         if (results.length === 0) {
             ctx.throw(404);
         }

@@ -24,20 +24,18 @@ module.exports = class DBClient {
                 password: process.env.PG_PASSWORD,
                 port: process.env.PG_PORT,
                 host: process.env.PG_HOST,
-                ssl: {
-                    rejectUnauthorized: false,
-                },
+                ssl: false,
             });
         }
 
         await this.client.connect();
         if (init === true) {
             try {
-                if (process.env.NODE_ENV !== 'production') {
+                /*if (process.env.NODE_ENV !== 'production') {
                     await this.client.query(
                         `CREATE DATABASE "${process.env.PG_DB}"`
                     );
-                }
+                }*/
                 await this.client.query(`CREATE TABLE "user" (
                     id uuid NOT NULL DEFAULT gen_random_uuid(),
                     first_name varchar NULL,
@@ -49,14 +47,6 @@ module.exports = class DBClient {
                     CONSTRAINT user_pk PRIMARY KEY (id),
                     CONSTRAINT user_un UNIQUE (email)
                 );`);
-                await this.client.query(`CREATE TABLE "url" (
-                    uid uuid NOT NULL,
-                    url text NULL,
-                    amount float8 NULL,
-                    description varchar NULL,
-                    CONSTRAINT url_pk PRIMARY KEY (uid),
-                    CONSTRAINT lasttab_fk FOREIGN KEY (uid) REFERENCES "user"(id)
-                );`);
                 await this.client.query(`CREATE TABLE "transaction" (
                     id uuid NOT NULL DEFAULT gen_random_uuid(),
                     uid uuid NOT NULL,
@@ -64,6 +54,7 @@ module.exports = class DBClient {
                     description varchar NOT NULL,
                     amount float8 NOT NULL DEFAULT 0,
                     ignored bool NULL DEFAULT false,
+                    confirmed bool NULL DEFAULT false,
                     CONSTRAINT transaction_fk FOREIGN KEY (uid) REFERENCES "user"(id)
                 );`);
                 await this.client.query(`CREATE TABLE "monthly" (
@@ -92,22 +83,26 @@ module.exports = class DBClient {
             throw err;
         }
     };
-    setPage = async (uid, url, amount, description) => {
-        const query = `INSERT INTO "url" (uid, url, amount, description) VALUES('${uid}', '${url}', ${amount}, '${description}') ON CONFLICT (uid) DO UPDATE SET url=EXCLUDED.url, amount=EXCLUDED.amount, description=EXCLUDED.description`;
+    getHistory = async (uid) => {
+        const query = `select * from "transaction" where uid = '${uid}'::uuid::uuid and ignored is false and confirmed is true order by timestamp desc`;
+        try {
+            const results = await this.client.query(query);
+            const spent = this.getTotalFromHistory(results.rows);
+            const recent = await this.getRecentlyUnconfirmed(uid);
+            return { history: results.rows, spent, recent };
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    };
+    getRecentlyUnconfirmed = async (uid) => {
+        const query = `select * from "transaction" where uid = '${uid}'::uuid::uuid and confirmed is false and ignored is false and 
+        timestamp = (select maxts from (select max(timestamp) as maxts from transaction where uid = '${uid}' and confirmed is false) as mts) limit 1`;
         try {
             const results = await this.client.query(query);
             return results.rows;
         } catch (err) {
-            throw err;
-        }
-    };
-    getHistory = async (uid) => {
-        const query = `select * from "transaction" where uid = '${uid}'::uuid::uuid and ignored is false order by timestamp desc`;
-        try {
-            const results = await this.client.query(query);
-            const spent = this.getTotalFromHistory(results.rows);
-            return { history: results.rows, spent };
-        } catch (err) {
+            console.log(err);
             throw err;
         }
     };
@@ -140,14 +135,24 @@ module.exports = class DBClient {
             throw err;
         }
     };
-    addLastTransaction = async (uid) => {
-        const query = `INSERT INTO transaction (uid, description, amount)
-                        (SELECT uid, description, amount FROM url
-                        WHERE uid = '${uid}' and amount > 0)`;
+    confirmLastTransaction = async (uid, tid) => {
+        const query = `UPDATE "transaction" SET confirmed = true WHERE uid = '${uid}' and amount > 0 and id = '${tid}' RETURNING id, amount`;
         try {
             const results = await this.client.query(query);
             return results;
         } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    };
+    addTransaction = async (uid, description, amount) => {
+        const query = `insert into "transaction" ("description", "amount", "uid") values ('${description}', '${amount}', '${uid}') RETURNING id`;
+        console.log(query);
+        try {
+            const results = await this.client.query(query);
+            return results.rows[0].id;
+        } catch (err) {
+            console.log(err);
             throw err;
         }
     };

@@ -13,6 +13,7 @@ export const loginUser = async (prof:any) => {
           })
       };
       const url = `${process.env.REACT_APP_API_URL}/login`;
+      alert(url)
       const response = await fetch(url, requestOptions);
       const data = await response.json();
       cookies.set(process.env.REACT_APP_SPENDLESS_COOKIE_NAME as string, data[0].id as string, { path: '/' });

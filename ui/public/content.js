@@ -1,9 +1,22 @@
+const host = 'http://localhost:5000';
+//    host = 'https://spendless-pg.herokuapp.com';
+
 // TODO
 // refactor to Jquery
 chrome.runtime.onMessage.addListener(async function (request) {
-    if (request.page != null) {
-        const { user, url, query, description, page } = request;
-        const { total } = await setPage(user, url, query, description, page);
+    if (
+        request.page != null &&
+        !parent.document.querySelector('.spendless-ext-root')
+    ) {
+        const { user, url, query, description, page, recent } = request;
+        const { total, tid } = await setPage(
+            user,
+            url,
+            query,
+            description,
+            page,
+            recent
+        );
 
         var popup = parent.document.createElement('div');
         popup.className = 'spendless-ext-root';
@@ -73,7 +86,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
         ignoreMessage.className = 'spendless-ext-popup-ignore';
         ignoreMessage.innerHTML = 'Ignore this transaction';
         ignoreMessage.onclick = async function (ev) {
-            await updateUserPage(user.id, request.url, 0, '', false);
+            await ignoreTransaction(user.id, tid);
             const els = parent.document.querySelectorAll('.spendless-ext-app');
             els.forEach((el) => {
                 el.remove();
@@ -96,11 +109,10 @@ alertMessage = (text, time = 5000) => {
     }, time);
 };
 
-setPage = async (user, url, q, d, p) => {
+setPage = async (user, url, q, d, p, r) => {
     const uid = user.id;
     let amount = 0;
     let description = '';
-    let found = false;
     if (p != 'processed') {
         try {
             let query = '';
@@ -118,7 +130,6 @@ setPage = async (user, url, q, d, p) => {
             if (query && query != '') {
                 try {
                     let result = parseFloat(query);
-                    found = true;
                     if (!isNaN(result) && result > 0) {
                         amount = result;
                         if (descQuery && descQuery != '') {
@@ -141,8 +152,14 @@ setPage = async (user, url, q, d, p) => {
         }
     }
 
-    const total = await updateUserPage(uid, url, amount, description, false);
-    return { total };
+    const { total, tid } = await updateUserPage(
+        uid,
+        amount,
+        description,
+        p == 'processed',
+        r
+    );
+    return { total, tid };
 };
 
 getCurrency = (a) => {
@@ -164,9 +181,9 @@ convertToDateString = (date) => {
     return date.split('T')[0].replaceAll('-', '/');
 };
 
-updateUserPage = async (uid, url, amount, description, lastPurchase) => {
+updateUserPage = async (uid, amount, description, lastPurchase, recent) => {
     try {
-        const result = await fetch(`https://spendless-pg.herokuapp.com/page`, {
+        const result = await fetch(`${host}/add`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -174,14 +191,35 @@ updateUserPage = async (uid, url, amount, description, lastPurchase) => {
             },
             body: JSON.stringify({
                 uid,
-                url,
                 amount,
                 description,
                 lastPurchase,
+                tid: recent?.id,
             }),
         });
-        const { total } = result.json();
-        return total;
+        const { total, tid } = await result.json();
+        return { total, tid };
+    } catch (error) {
+        console.log(error);
+        return 0;
+    }
+};
+
+ignoreTransaction = async (uid, tid) => {
+    console.log(uid, tid);
+    try {
+        const result = await fetch(`${host}/ignore`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                uid,
+                tid,
+            }),
+        });
+        return result;
     } catch (error) {
         console.log(error);
         return 0;

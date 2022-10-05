@@ -1,3 +1,6 @@
+const host = 'http://localhost:5000';
+//    host = 'https://spendless-pg.herokuapp.com';
+
 chrome.webNavigation.onCompleted.addListener(async (details) => {
     const { whitelist, blacklist } = await getUrlList();
     const { frameId, tabId, url } = details;
@@ -8,12 +11,9 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                 let re = new RegExp(r);
                 if (url?.match(re) && !found) {
                     found = true;
-                    let blacklisted = false;
-                    blacklist.forEach((b) => {
+                    const blacklisted = blacklist.find((b) => {
                         let bre = new RegExp(b);
-                        if (url.match(bre)) {
-                            blacklisted = true;
-                        }
+                        return url.match(bre);
                     });
                     if (!blacklisted) {
                         chrome.identity.getProfileUserInfo(async (userInfo) => {
@@ -21,11 +21,10 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                                 email: userInfo.email,
                             });
                             if (user) {
-                                if (key === 'processed') {
-                                    await submitLastTransaction(user.id);
-                                }
+                                let recent = await getRecent(user.id);
                                 chrome.tabs.sendMessage(tabId, {
                                     user,
+                                    recent,
                                     page: key,
                                     query: value.query,
                                     description: value.description,
@@ -51,7 +50,7 @@ loginUser = async (prof) => {
                 email: prof.email,
             }),
         };
-        const url = `https://spendless-pg.herokuapp.com/login`;
+        const url = `${host}/login`;
         const response = await fetch(url, requestOptions);
         const data = await response.json();
         return data[0];
@@ -63,7 +62,7 @@ loginUser = async (prof) => {
 
 getUrlList = async () => {
     try {
-        const url = `https://spendless-pg.herokuapp.com/list`;
+        const url = `${host}/list`;
         const response = await fetch(url);
         const data = await response.json();
         return data;
@@ -73,11 +72,14 @@ getUrlList = async () => {
     }
 };
 
-submitLastTransaction = async (id) => {
+getRecent = async (uid) => {
     try {
-        const url = `https://spendless-pg.herokuapp.com/submit?uid=${id}`;
-        await fetch(url);
+        const url = `${host}/recent?uid=${uid}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data[0];
     } catch (error) {
         console.log(error);
+        return null;
     }
 };

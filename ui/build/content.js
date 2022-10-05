@@ -1,27 +1,22 @@
+const host = 'http://localhost:5000';
+//    host = 'https://spendless-pg.herokuapp.com';
+
 // TODO
 // refactor to Jquery
-// only use the extension.css for the react app as well
-
 chrome.runtime.onMessage.addListener(async function (request) {
-    if (request.page != null) {
-        let user = request.user;
-        let amount = 0;
-        if (request.page == 'processed') {
-            await updateUserPage(user.id, request.url, 0, '');
-        } else {
-            const response = await setPage(
-                user,
-                request.url,
-                request.query,
-                request.description
-            );
-            amount = response.amount;
-        }
-
-        let spent = await getHistory(user.id);
-
-        var total = amount + spent;
-        const range = getRange(total, user.budget);
+    if (
+        request.page != null &&
+        !parent.document.querySelector('.spendless-ext-root')
+    ) {
+        const { user, url, query, description, page, recent } = request;
+        const { total, tid } = await setPage(
+            user,
+            url,
+            query,
+            description,
+            page,
+            recent
+        );
 
         var popup = parent.document.createElement('div');
         popup.className = 'spendless-ext-root';
@@ -29,7 +24,6 @@ chrome.runtime.onMessage.addListener(async function (request) {
 
         var app = parent.document.createElement('div');
         app.className = 'spendless-ext-app spendless-ext-popup';
-        app.style.borderColor = range.colour;
         popup.appendChild(app);
 
         var mainText = parent.document.createElement('span');
@@ -46,7 +40,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
 
         var budVal = parent.document.createElement('span');
         budVal.className = 'spendless-ext-summary-value';
-        budVal.innerHTML = getCurrency(Math.ceil(spent)).replace('.00', '');
+        budVal.innerHTML = getCurrency(Math.ceil(total)).replace('.00', '');
         budDiv.appendChild(budVal);
 
         var budLine = parent.document.createElement('span');
@@ -91,8 +85,8 @@ chrome.runtime.onMessage.addListener(async function (request) {
         var ignoreMessage = parent.document.createElement('div');
         ignoreMessage.className = 'spendless-ext-popup-ignore';
         ignoreMessage.innerHTML = 'Ignore this transaction';
-        ignoreMessage.onclick = function (ev) {
-            updateUserPage(user.id, request.url, 0, '');
+        ignoreMessage.onclick = async function (ev) {
+            await ignoreTransaction(user.id, tid);
             const els = parent.document.querySelectorAll('.spendless-ext-app');
             els.forEach((el) => {
                 el.remove();
@@ -115,66 +109,57 @@ alertMessage = (text, time = 5000) => {
     }, time);
 };
 
-getHistory = async (uid) => {
-    try {
-        const url = `https://spendless-pg.herokuapp.com/history?uid=${uid}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        let total = 0;
-        data.forEach((h) => {
-            total += h.amount;
-        });
-        return total;
-    } catch (error) {
-        console.log(error);
-        return 0;
-    }
-};
-
-setPage = async (user, url, q, d) => {
-    let uid = user.id;
-    let link = url;
+setPage = async (user, url, q, d, p, r) => {
+    const uid = user.id;
     let amount = 0;
     let description = '';
-    let found = false;
-    try {
-        let query = '';
-        let descQuery = '';
-        query = parent.document
-            .querySelector(q)
-            ?.textContent.replace(/[]+|[s]{2,}/g, ' ')
-            .trim()
-            .replace('$', '');
-        if (d) {
-            descQuery = parent.document.querySelector(d)?.textContent.trim();
-        }
-        if (query && query != '') {
-            try {
-                let result = parseFloat(query);
-                found = true;
-                if (!isNaN(result) && result > 0) {
-                    amount = result;
-                    if (descQuery && descQuery != '') {
-                        description = descQuery;
-                    } else {
-                        const baseUrl = url.match(/^https?:\/\/[^#?\/]+/);
-                        description = baseUrl || '';
-                    }
-                } else {
-                    throw 'Invalid query value';
-                }
-            } catch (e) {
-                console.log(e);
+    if (p != 'processed') {
+        try {
+            let query = '';
+            let descQuery = '';
+            query = parent.document
+                .querySelector(q)
+                ?.textContent.replace(/[]+|[s]{2,}/g, ' ')
+                .trim()
+                .replace('$', '');
+            if (d) {
+                descQuery = parent.document
+                    .querySelector(d)
+                    ?.textContent.trim();
             }
-        } else {
-            throw 'Query not found';
+            if (query && query != '') {
+                try {
+                    let result = parseFloat(query);
+                    if (!isNaN(result) && result > 0) {
+                        amount = result;
+                        if (descQuery && descQuery != '') {
+                            description = descQuery;
+                        } else {
+                            const baseUrl = url.match(/^https?:\/\/[^#?\/]+/);
+                            description = baseUrl || '';
+                        }
+                    } else {
+                        throw 'Invalid query value';
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            } else {
+                throw 'Query not found';
+            }
+        } catch (e) {
+            console.log(e);
         }
-    } catch (e) {
-        console.log(e);
     }
 
-    await updateUserPage(uid, link, amount, description);
-    return { found, amount, description };
+    const { total, tid } = await updateUserPage(
+        uid,
+        amount,
+        description,
+        p == 'processed',
+        r
+    );
+    return { total, tid };
 };
 
 getCurrency = (a) => {
@@ -188,25 +173,6 @@ getCurrency = (a) => {
     }
 };
 
-getRange = (total, budget) => {
-    if ((100 * total) / budget < 75) {
-        return {
-            class: 'spendless-ext-below-budget',
-            colour: 'rgb(75,176,248)',
-        };
-    } else if ((100 * total) / budget < 100) {
-        return {
-            class: 'spendless-ext-approaching-budget',
-            colour: 'rgb(248,200,75)',
-        };
-    } else {
-        return {
-            class: 'spendless-ext-above-budget',
-            colour: 'rgb(248,75,75)',
-        };
-    }
-};
-
 getPercentage = (a, b) => {
     return Math.floor(100 * Math.max(0, a / b));
 };
@@ -215,22 +181,47 @@ convertToDateString = (date) => {
     return date.split('T')[0].replaceAll('-', '/');
 };
 
-updateUserPage = async (uid, url, amount, description) => {
+updateUserPage = async (uid, amount, description, lastPurchase, recent) => {
     try {
-        const response = await fetch(
-            `https://spendless-pg.herokuapp.com/page`,
-            {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ uid, url, amount, description }),
-            }
-        );
-
-        const data = await response.json();
+        const result = await fetch(`${host}/add`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                uid,
+                amount,
+                description,
+                lastPurchase,
+                tid: recent?.id,
+            }),
+        });
+        const { total, tid } = await result.json();
+        return { total, tid };
     } catch (error) {
         console.log(error);
+        return 0;
+    }
+};
+
+ignoreTransaction = async (uid, tid) => {
+    console.log(uid, tid);
+    try {
+        const result = await fetch(`${host}/ignore`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                uid,
+                tid,
+            }),
+        });
+        return result;
+    } catch (error) {
+        console.log(error);
+        return 0;
     }
 };

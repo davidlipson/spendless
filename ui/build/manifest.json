@@ -7,19 +7,31 @@
     "default_title": "SpendLess",
     "default_popup": "index.html"
   },
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "all_frames": true,
-    "js":      ["content.js"],
-    "css": ["extension.css"]
-  }],
-  "background": {     
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "all_frames": true,
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "extension.css"
+      ]
+    }
+  ],
+  "background": {
     "persistent": false,
-    "scripts": [      
+    "scripts": [
       "background.js"
-    ]   
+    ]
   },
   "permissions": [
-    "identity", "identity.email", "activeTab", "tabs", "webNavigation"
+    "identity",
+    "identity.email",
+    "activeTab",
+    "tabs",
+    "webNavigation"
   ]
 }
