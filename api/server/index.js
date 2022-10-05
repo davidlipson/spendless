@@ -66,8 +66,8 @@ database.createDatabase().then(() => {
     });
 
     router.post('/ignore', koaBody(), async (ctx) => {
-        const { uid, tid } = ctx.request.body;
-        const results = await database.ignoreTransaction(uid, tid);
+        const { uid, id } = ctx.request.body;
+        const results = await database.ignoreTransaction(uid, id);
         if (results.length === 0) {
             ctx.throw(404);
         }

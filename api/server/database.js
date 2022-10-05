@@ -6,7 +6,7 @@ module.exports = class DBClient {
         this.client = null;
     }
 
-    createDatabase = async (init = false) => {
+    createDatabase = async (init = true) => {
         if (process.env.NODE_ENV === 'production') {
             this.client = await new postgres.Client({
                 user: process.env.PG_USER,
@@ -31,11 +31,11 @@ module.exports = class DBClient {
         await this.client.connect();
         if (init === true) {
             try {
-                /*if (process.env.NODE_ENV !== 'production') {
-                    await this.client.query(
-                        `CREATE DATABASE "${process.env.PG_DB}"`
-                    );
-                }*/
+                //await this.client.query(
+                //    `CREATE DATABASE "${process.env.PG_DB}"`
+                //);
+                await this.client.query('DROP SCHEMA IF EXISTS public CASCADE');
+                await this.client.query('CREATE SCHEMA public');
                 await this.client.query(`CREATE TABLE "user" (
                     id uuid NOT NULL DEFAULT gen_random_uuid(),
                     first_name varchar NULL,
@@ -91,7 +91,6 @@ module.exports = class DBClient {
             const recent = await this.getRecentlyUnconfirmed(uid);
             return { history: results.rows, spent, recent };
         } catch (err) {
-            console.log(err);
             throw err;
         }
     };
@@ -102,7 +101,6 @@ module.exports = class DBClient {
             const results = await this.client.query(query);
             return results.rows;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     };
@@ -141,18 +139,15 @@ module.exports = class DBClient {
             const results = await this.client.query(query);
             return results;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     };
     addTransaction = async (uid, description, amount) => {
         const query = `insert into "transaction" ("description", "amount", "uid") values ('${description}', '${amount}', '${uid}') RETURNING id`;
-        console.log(query);
         try {
             const results = await this.client.query(query);
             return results.rows[0].id;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     };

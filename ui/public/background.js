@@ -1,4 +1,4 @@
-const host = 'http://localhost:5000';
+//const host = 'http://localhost:5000';
 //    host = 'https://spendless-pg.herokuapp.com';
 
 chrome.webNavigation.onCompleted.addListener(async (details) => {

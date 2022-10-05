@@ -200,13 +200,11 @@ updateUserPage = async (uid, amount, description, lastPurchase, recent) => {
         const { total, tid } = await result.json();
         return { total, tid };
     } catch (error) {
-        console.log(error);
         return 0;
     }
 };
 
-ignoreTransaction = async (uid, tid) => {
-    console.log(uid, tid);
+ignoreTransaction = async (uid, id) => {
     try {
         const result = await fetch(`${host}/ignore`, {
             method: 'POST',
@@ -216,7 +214,7 @@ ignoreTransaction = async (uid, tid) => {
             },
             body: JSON.stringify({
                 uid,
-                tid,
+                id,
             }),
         });
         return result;
