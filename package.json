@@ -1,6 +1,5 @@
 {
     "scripts": {
         "start": "cd api && npm i && node index.js",
-	"build": "cd ui && npm run build"
     }
 }
