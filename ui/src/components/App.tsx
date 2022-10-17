@@ -29,6 +29,7 @@ class App extends Component<any,any>{
       history: [],
       page: "",
       pendingAmount: 0,
+      editBudget: false,
     };
   }
 
@@ -150,10 +151,10 @@ class App extends Component<any,any>{
         }</>
          :
         <>
-        <TopBar logout={this.logout.bind(this)}/>
+        <TopBar logout={this.logout.bind(this)} editBudget={this.state.editBudget} setEditBudget={(v: boolean) => this.setState({editBudget: v})}/>
         <Progress amount={this.state.price} last={this.state.last} total={this.state.price + this.state.spent} budget={this.state.user.budget}/>
         <div className="overall-summary">
-          <BudgetSummary submitNewBudget={this.submitNewBudget.bind(this)} spent={this.state.spent} budget={this.state.user.budget}/>
+          <BudgetSummary editBudget={this.state.editBudget} setEditBudget={(v: boolean) => this.setState({editBudget: v})} submitNewBudget={this.submitNewBudget.bind(this)} spent={this.state.spent} budget={this.state.user.budget}/>
           <div className="spendless-ext-divider-bar"></div>
           <div className="spendless-ext-dropdown-history">
             <History ignore={this.ignoreTransaction.bind(this)} data={this.state.history.slice(0,3)}/>

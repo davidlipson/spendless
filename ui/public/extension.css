@@ -90,6 +90,12 @@
   padding-bottom: 15px;
   }
 
+.spendless-right-top{
+  width: 100%;
+  text-align: right;
+  cursor: pointer;
+}
+
 .popup-toggle{
   font-size: 60px;
   top: -33px;
@@ -98,7 +104,12 @@
   height: 10px;
   position: absolute;
 }
-  
+
+.spendlo-header-text{
+  font-size: 24px;
+  font-family: 'Merriweather', serif;
+}
+
   
   @media (prefers-reduced-motion: no-preference) {
     .App-logo {

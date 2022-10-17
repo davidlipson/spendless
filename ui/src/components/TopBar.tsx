@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import ReactLogo from '../SpendLess.svg';
+import EditIcon from '@mui/icons-material/Edit';
 
 class TopBar extends Component<any,any>{
   constructor(props: any) {
@@ -10,8 +10,12 @@ class TopBar extends Component<any,any>{
   render() {
     return (
     <div className="spendless-ext-dropdown-top-bar">
-       <div className="spendless-ext-icon"> <img src={ReactLogo} alt="React Logo" /></div>
-        {process.env.NODE_ENV == "development" ? <div className="spendless-ext-logout-button" onClick={this.props.logout}>Logout</div> : <div className="spendless-ext-logout-button"></div>}
+       <div className="spendlo-header-text">Spendlo</div>
+        {process.env.NODE_ENV == "development" ? <div className="spendless-ext-logout-button" onClick={this.props.logout}>Logout</div> : 
+        <div className="spendless-right-top">
+          <EditIcon onClick={() => {this.props.setEditBudget(!this.props.editBudget)}}/>
+          <div className="spendless-ext-logout-button"></div>
+          </div>}
     </div>
     );
   }

@@ -1,7 +1,8 @@
 //const host = 'http://localhost:5000';
-//    host = 'https://spendless-pg.herokuapp.com';
+const host = 'https://spendless-pg.herokuapp.com';
 
 chrome.webNavigation.onCompleted.addListener(async (details) => {
+    console.log(details);
     const { whitelist, blacklist } = await getUrlList();
     const { frameId, tabId, url } = details;
     if (url !== undefined && frameId === 0) {

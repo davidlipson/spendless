@@ -1,11 +1,14 @@
 {
-  "short_name": "SpendLess",
-  "name": "SpendLess",
+  "short_name": "Spendlo",
+  "name": "Spendlo",
   "version": "1.0",
-  "manifest_version": 2,
-  "browser_action": {
-    "default_title": "SpendLess",
+  "manifest_version": 3,
+  "action": {
+    "default_title": "Spendlo",
     "default_popup": "index.html"
+  },
+  "icons": {
+    "128": "icon128.png"
   },
   "content_scripts": [
     {
@@ -22,10 +25,7 @@
     }
   ],
   "background": {
-    "persistent": false,
-    "scripts": [
-      "background.js"
-    ]
+    "service_worker": "background.js"
   },
   "permissions": [
     "identity",

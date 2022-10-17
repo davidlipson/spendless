@@ -1,5 +1,5 @@
-const host = 'http://localhost:5000';
-//    host = 'https://spendless-pg.herokuapp.com';
+//const host = 'http://localhost:5000';
+const host = 'https://spendless-pg.herokuapp.com';
 
 // TODO
 // refactor to Jquery
@@ -28,7 +28,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
 
         var mainText = parent.document.createElement('span');
         mainText.className = 'spendless-ext-popup-header';
-        mainText.innerHTML = 'Spendless, Save more!';
+        mainText.innerHTML = 'Spend less, Save more!';
         app.appendChild(mainText);
 
         var overall = parent.document.createElement('div');
@@ -82,24 +82,38 @@ chrome.runtime.onMessage.addListener(async function (request) {
 
         app.appendChild(hideMessage);
 
-        var ignoreMessage = parent.document.createElement('div');
-        ignoreMessage.className = 'spendless-ext-popup-ignore';
-        ignoreMessage.innerHTML = 'Ignore this transaction';
-        ignoreMessage.onclick = async function (ev) {
-            await ignoreTransaction(user.id, tid);
-            const els = parent.document.querySelectorAll('.spendless-ext-app');
-            els.forEach((el) => {
-                el.remove();
-            });
-            alertMessage(
-                "<span style='font-weight: 800'>Got it!</span> This transaction won't be included in your budget."
-            );
-        };
-        app.appendChild(ignoreMessage);
+        if (page !== 'processed') {
+            var ignoreMessage = parent.document.createElement('div');
+            ignoreMessage.className = 'spendless-ext-popup-ignore';
+            ignoreMessage.innerHTML = 'Ignore this transaction';
+            ignoreMessage.onclick = async function (ev) {
+                await ignoreTransaction(user.id, tid);
+                closeAll();
+                alertMessage(
+                    "<span style='font-weight: 800'>Got it!</span> This transaction won't be included in your budget."
+                );
+            };
+            app.appendChild(ignoreMessage);
+        }
+
+        setTimeout(() => {
+            closeAll();
+        }, 5000);
     }
 });
 
-alertMessage = (text, time = 5000) => {
+closeAll = () => {
+    const els = parent.document.querySelectorAll('.spendless-ext-app');
+    els.forEach((el) => {
+        try {
+            el.remove();
+        } catch (e) {
+            console.log(e);
+        }
+    });
+};
+
+alertMessage = (text, time = 3000) => {
     var alert = parent.document.createElement('div');
     alert.className = 'spendless-ext-popup-message';
     alert.innerHTML = text;
