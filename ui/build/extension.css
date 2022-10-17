@@ -64,7 +64,7 @@
     font-family: 'Lato', sans-serif;
     color: #363636;
     width: 300px;
-    height: 80px;
+    height: 30px;
     padding: 20px;
     padding-top: 24px;
     font-size: 14px;
@@ -200,7 +200,6 @@
   background-color: black;
   color: white;
   padding: 20px 0px;
-  width: 240px;
   font-size: 14px;
   border-radius: 4px;
   cursor: pointer;

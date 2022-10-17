@@ -8,14 +8,15 @@ chrome.runtime.onMessage.addListener(async function (request) {
         request.page != null &&
         !parent.document.querySelector('.spendless-ext-root')
     ) {
-        const { user, url, query, description, page, recent } = request;
+        const { user, url, query, description, page, recent, dev } = request;
         const { total, tid } = await setPage(
             user,
             url,
             query,
             description,
             page,
-            recent
+            recent,
+            dev
         );
 
         var popup = parent.document.createElement('div');
@@ -96,9 +97,9 @@ chrome.runtime.onMessage.addListener(async function (request) {
             app.appendChild(ignoreMessage);
         }
 
-        setTimeout(() => {
+        /*setTimeout(() => {
             closeAll();
-        }, 5000);
+        }, 10000);*/
     }
 });
 
@@ -123,7 +124,7 @@ alertMessage = (text, time = 3000) => {
     }, time);
 };
 
-setPage = async (user, url, q, d, p, r) => {
+setPage = async (user, url, q, d, p, r, dev) => {
     const uid = user.id;
     let amount = 0;
     let description = '';
@@ -166,6 +167,10 @@ setPage = async (user, url, q, d, p, r) => {
         }
     }
 
+    if (dev) {
+        console.log(`Spendlo Page --- Amount: ${amount}, Query: ${q}`);
+    }
+
     const { total, tid } = await updateUserPage(
         uid,
         amount,
@@ -196,7 +201,6 @@ convertToDateString = (date) => {
 };
 
 updateUserPage = async (uid, amount, description, lastPurchase, recent) => {
-    
     try {
         const result = await fetch(`${host}/add`, {
             method: 'POST',

@@ -132,7 +132,6 @@ module.exports = class DBClient {
     };
     confirmLastTransaction = async (uid, tid) => {
         const query = `UPDATE "transaction" SET confirmed = true WHERE uid = '${uid}' and amount > 0 and id = '${tid}' RETURNING id, amount`;
-        console.log(query);
         try {
             const results = await this.client.query(query);
             return results;

@@ -32,6 +32,7 @@
     "identity.email",
     "activeTab",
     "tabs",
-    "webNavigation"
+    "webNavigation",
+    "management"
   ]
 }

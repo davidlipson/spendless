@@ -2,7 +2,10 @@
 const host = 'https://spendless-pg.herokuapp.com';
 
 chrome.webNavigation.onCompleted.addListener(async (details) => {
-    console.log(details);
+    let dev = false;
+    chrome.management.get(chrome.runtime.id, function (extensionInfo) {
+        dev = extensionInfo.installType === 'development';
+    });
     const { whitelist, blacklist } = await getUrlList();
     const { frameId, tabId, url } = details;
     if (url !== undefined && frameId === 0) {
@@ -30,6 +33,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                                     query: value.query,
                                     description: value.description,
                                     url,
+                                    dev,
                                 });
                             }
                         });
