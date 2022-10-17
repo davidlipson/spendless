@@ -31,9 +31,6 @@ module.exports = class DBClient {
         await this.client.connect();
         if (init === true) {
             try {
-                //await this.client.query(
-                //    `CREATE DATABASE "${process.env.PG_DB}"`
-                //);
                 await this.client.query('DROP SCHEMA IF EXISTS public CASCADE');
                 await this.client.query('CREATE SCHEMA public');
                 await this.client.query(`CREATE TABLE "user" (
@@ -135,6 +132,7 @@ module.exports = class DBClient {
     };
     confirmLastTransaction = async (uid, tid) => {
         const query = `UPDATE "transaction" SET confirmed = true WHERE uid = '${uid}' and amount > 0 and id = '${tid}' RETURNING id, amount`;
+        console.log(query);
         try {
             const results = await this.client.query(query);
             return results;
