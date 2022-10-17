@@ -196,6 +196,7 @@ convertToDateString = (date) => {
 };
 
 updateUserPage = async (uid, amount, description, lastPurchase, recent) => {
+    
     try {
         const result = await fetch(`${host}/add`, {
             method: 'POST',

@@ -30,19 +30,10 @@ database.createDatabase().then(() => {
             const { uid, amount, description, lastPurchase, tid } =
                 ctx.request.body;
             let newId = tid;
-            if (amount > 0) {
-                if (lastPurchase && tid) {
-                    console.log('confirming purchase', amount);
-                    await database.confirmLastTransaction(uid, tid);
-                } else {
-                    console.log('creating new purchase', amount);
-                    newId = await database.addTransaction(
-                        uid,
-                        description,
-                        amount
-                    );
-                    console.log(newId);
-                }
+            if (lastPurchase && tid) {
+                await database.confirmLastTransaction(uid, tid);
+            } else if (amount > 0) {
+                newId = await database.addTransaction(uid, description, amount);
             }
             const total = await database.getTotal(uid);
             ctx.body = { total, tid: newId };
