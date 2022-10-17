@@ -81,7 +81,7 @@ module.exports = class DBClient {
         }
     };
     getHistory = async (uid) => {
-        const query = `select * from "transaction" where uid = '${uid}'::uuid::uuid and ignored is false and confirmed is true order by timestamp desc`;
+        const query = `select * from "transaction" where uid = '${uid}'::uuid::uuid and ignored is false and confirmed is true and timestamp >= date_trunc('month', CURRENT_DATE) order by timestamp desc`;
         try {
             const results = await this.client.query(query);
             const spent = this.getTotalFromHistory(results.rows);

@@ -4,107 +4,111 @@ const host = 'https://spendless-pg.herokuapp.com';
 // TODO
 // refactor to Jquery
 chrome.runtime.onMessage.addListener(async function (request) {
-    if (
-        request.page != null &&
-        !parent.document.querySelector('.spendless-ext-root')
-    ) {
-        const { user, url, query, description, page, recent, dev } = request;
-        const { total, tid } = await setPage(
-            user,
-            url,
-            query,
-            description,
-            page,
-            recent,
-            dev
-        );
+    window.setTimeout(async () => {
+        console.log(document.querySelector('.spendless-ext-root'));
+        if (
+            request.page != null &&
+            !document.querySelector('.spendless-ext-root')
+        ) {
+            const { user, url, query, description, page, recent, dev } =
+                request;
+            const { total, tid } = await setPage(
+                user,
+                url,
+                query,
+                description,
+                page,
+                recent,
+                dev
+            );
 
-        var popup = parent.document.createElement('div');
-        popup.className = 'spendless-ext-root';
-        parent.document.getElementsByTagName('html')[0].appendChild(popup);
+            var popup = document.createElement('div');
+            popup.className = 'spendless-ext-root';
+            document.getElementsByTagName('html')[0].appendChild(popup);
 
-        var app = parent.document.createElement('div');
-        app.className = 'spendless-ext-app spendless-ext-popup';
-        popup.appendChild(app);
+            var app = document.createElement('div');
+            app.className = 'spendless-ext-app spendless-ext-popup';
+            popup.appendChild(app);
 
-        var mainText = parent.document.createElement('span');
-        mainText.className = 'spendless-ext-popup-header';
-        mainText.innerHTML = 'Spend less, Save more!';
-        app.appendChild(mainText);
+            var mainText = document.createElement('span');
+            mainText.className = 'spendless-ext-popup-header';
+            mainText.innerHTML = 'Spend less, Save more!';
+            app.appendChild(mainText);
 
-        var overall = parent.document.createElement('div');
-        overall.className = 'spendless-ext-summary-lines';
-        app.appendChild(overall);
+            var overall = document.createElement('div');
+            overall.className = 'spendless-ext-summary-lines';
+            app.appendChild(overall);
 
-        var budDiv = parent.document.createElement('div');
-        budDiv.className = 'spendless-ext-summary-div';
+            var budDiv = document.createElement('div');
+            budDiv.className = 'spendless-ext-summary-div';
 
-        var budVal = parent.document.createElement('span');
-        budVal.className = 'spendless-ext-summary-value';
-        budVal.innerHTML = getCurrency(Math.ceil(total)).replace('.00', '');
-        budDiv.appendChild(budVal);
+            var budVal = document.createElement('span');
+            budVal.className = 'spendless-ext-summary-value';
+            budVal.innerHTML = getCurrency(Math.ceil(total)).replace('.00', '');
+            budDiv.appendChild(budVal);
 
-        var budLine = parent.document.createElement('span');
-        budLine.className =
-            'spendless-ext-summary-line spendless-ext-small-cap-font';
-        budLine.innerHTML = 'AMOUNT SPENT';
-        budDiv.appendChild(budLine);
+            var budLine = document.createElement('span');
+            budLine.className =
+                'spendless-ext-summary-line spendless-ext-small-cap-font';
+            budLine.innerHTML = 'AMOUNT SPENT';
+            budDiv.appendChild(budLine);
 
-        overall.appendChild(budDiv);
+            overall.appendChild(budDiv);
 
-        var leftDiv = parent.document.createElement('div');
-        leftDiv.className = 'spendless-ext-summary-div';
+            var leftDiv = document.createElement('div');
+            leftDiv.className = 'spendless-ext-summary-div';
 
-        var leftVal = parent.document.createElement('span');
-        leftVal.className = 'spendless-ext-summary-value';
-        leftVal.innerHTML = getCurrency(Math.ceil(user.budget)).replace(
-            '.00',
-            ''
-        );
-        leftDiv.appendChild(leftVal);
+            var leftVal = document.createElement('span');
+            leftVal.className = 'spendless-ext-summary-value';
+            leftVal.innerHTML = getCurrency(Math.ceil(user.budget)).replace(
+                '.00',
+                ''
+            );
+            leftDiv.appendChild(leftVal);
 
-        var leftLine = parent.document.createElement('span');
-        leftLine.className =
-            'spendless-ext-summary-line spendless-ext-small-cap-font';
-        leftLine.innerHTML = 'LEFT IN BUDGET';
-        leftDiv.appendChild(leftLine);
+            var leftLine = document.createElement('span');
+            leftLine.className =
+                'spendless-ext-summary-line spendless-ext-small-cap-font';
+            leftLine.innerHTML = 'LEFT IN BUDGET';
+            leftDiv.appendChild(leftLine);
 
-        overall.appendChild(leftDiv);
+            overall.appendChild(leftDiv);
 
-        var hideMessage = parent.document.createElement('div');
-        hideMessage.className = 'spendless-ext-popup-hide';
-        hideMessage.innerHTML = 'Hide this message';
-        hideMessage.onclick = function (ev) {
-            const els = parent.document.querySelectorAll('.spendless-ext-app');
-            els.forEach((el) => {
-                el.remove();
-            });
-        };
-
-        app.appendChild(hideMessage);
-
-        if (page !== 'processed') {
-            var ignoreMessage = parent.document.createElement('div');
-            ignoreMessage.className = 'spendless-ext-popup-ignore';
-            ignoreMessage.innerHTML = 'Ignore this transaction';
-            ignoreMessage.onclick = async function (ev) {
-                await ignoreTransaction(user.id, tid);
-                closeAll();
-                alertMessage(
-                    "<span style='font-weight: 800'>Got it!</span> This transaction won't be included in your budget."
-                );
+            var hideMessage = document.createElement('div');
+            hideMessage.className = 'spendless-ext-popup-hide';
+            hideMessage.innerHTML = 'Hide this message';
+            hideMessage.onclick = function (ev) {
+                const els = document.querySelectorAll('.spendless-ext-app');
+                els.forEach((el) => {
+                    el.remove();
+                });
             };
-            app.appendChild(ignoreMessage);
-        }
 
-        /*setTimeout(() => {
+            app.appendChild(hideMessage);
+
+            if (page !== 'processed') {
+                var ignoreMessage = document.createElement('div');
+                ignoreMessage.className = 'spendless-ext-popup-ignore';
+                ignoreMessage.innerHTML = 'Ignore this transaction';
+                ignoreMessage.onclick = async function (ev) {
+                    await ignoreTransaction(user.id, tid);
+                    closeAll();
+                    alertMessage(
+                        "<span style='font-weight: 800'>Got it!</span> This transaction won't be included in your budget."
+                    );
+                };
+                app.appendChild(ignoreMessage);
+            }
+
+            /*setTimeout(() => {
             closeAll();
         }, 10000);*/
-    }
+        }
+    }, 1500);
 });
 
 closeAll = () => {
-    const els = parent.document.querySelectorAll('.spendless-ext-app');
+    const els = document.querySelectorAll('.spendless-ext-app');
     els.forEach((el) => {
         try {
             el.remove();
@@ -115,10 +119,10 @@ closeAll = () => {
 };
 
 alertMessage = (text, time = 3000) => {
-    var alert = parent.document.createElement('div');
+    var alert = document.createElement('div');
     alert.className = 'spendless-ext-popup-message';
     alert.innerHTML = text;
-    parent.document.getElementsByTagName('html')[0].appendChild(alert);
+    document.getElementsByTagName('html')[0].appendChild(alert);
     window.setTimeout(function () {
         alert.style.display = 'none';
     }, time);
@@ -130,38 +134,28 @@ setPage = async (user, url, q, d, p, r, dev) => {
     let description = '';
     if (p != 'processed') {
         try {
-            let query = '';
             let descQuery = '';
-            query = parent.document
-                .querySelector(q)
-                ?.textContent.replace(/[]+|[s]{2,}/g, ' ')
-                .trim()
-                .replace('$', '');
             if (d) {
-                descQuery = parent.document
-                    .querySelector(d)
-                    ?.textContent.trim();
+                descQuery = document.querySelector(d)?.textContent.trim();
             }
-            if (query && query != '') {
-                try {
-                    let result = parseFloat(query);
-                    if (!isNaN(result) && result > 0) {
-                        amount = result;
-                        if (descQuery && descQuery != '') {
-                            description = descQuery;
-                        } else {
-                            const baseUrl = url.match(/^https?:\/\/[^#?\/]+/);
-                            description = baseUrl || '';
-                        }
-                    } else {
-                        throw 'Invalid query value';
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
+            if (descQuery && descQuery != '') {
+                description = descQuery;
             } else {
-                throw 'Query not found';
+                const baseUrl = url.match(/^https?:\/\/[^#?\/]+/);
+                description = baseUrl || '';
             }
+
+            amounts = [];
+            document.querySelectorAll(q).forEach((n) => {
+                const trimmedQuery = n.textContent
+                    .replace(/[]+|[s]{2,}/g, ' ')
+                    .trim()
+                    .replace('$', '');
+                if (trimmedQuery && trimmedQuery !== '') {
+                    amounts.push(parseFloat(trimmedQuery));
+                }
+            });
+            amount = amounts.find((t) => !isNaN(t) && t > 0) || 0;
         } catch (e) {
             console.log(e);
         }
