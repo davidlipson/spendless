@@ -145,17 +145,10 @@ setPage = async (user, url, q, d, p, r, dev) => {
                 description = baseUrl || '';
             }
 
-            amounts = [0];
-            document.querySelectorAll(q).forEach((n) => {
-                const trimmedQuery = n.textContent
-                    .replaceAll(' ', '')
-                    .match(/\$[1-9][0-9]*.[0-9][0-9]/gm);
-                if (trimmedQuery) {
-                    amounts.push(parseFloat(trimmedQuery[0].replace('$', '')));
-                }
-            });
-
-            amount = Math.max(...amounts.filter((t) => !isNaN(t) && t > 0));
+            amount = getPriceFromDivs([...document.querySelectorAll(q)]);
+            if (amount === 0) {
+                amount = tryQueryingWholePage();
+            }
         } catch (e) {
             console.log(e);
         }
@@ -173,6 +166,29 @@ setPage = async (user, url, q, d, p, r, dev) => {
         r
     );
     return { total, tid };
+};
+
+getPriceFromDivs = (divs) => {
+    amounts = [0];
+    divs.forEach((n) => {
+        const trimmedQuery = n.textContent
+            .replaceAll(' ', '')
+            .match(/\$[1-9][0-9]*,?[0-9]*\.([0-9][0-9])?/gm);
+        if (trimmedQuery) {
+            amounts.push(
+                parseFloat(trimmedQuery[0].replace('$', '').replace(',', ''))
+            );
+        }
+    });
+    return Math.max(...amounts);
+};
+
+tryQueryingWholePage = () => {
+    divs = [...document.querySelectorAll('div, tr')];
+    divs = divs.filter((a) =>
+        a.textContent.trim().match(/^(Estimated *)?(Sub)?Total/gi)
+    );
+    return getPriceFromDivs(divs);
 };
 
 getCurrency = (a) => {
