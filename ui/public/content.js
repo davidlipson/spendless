@@ -182,7 +182,7 @@ getPriceFromDivs = (divs) => {
     divs.forEach((n) => {
         const trimmedQuery = n.textContent
             .replaceAll(' ', '')
-            .match(/\$[1-9][0-9]*,?[0-9]*\.([0-9][0-9])?/gm);
+            .match(/\$?[1-9][0-9]*,?[0-9]*\.([0-9][0-9])?/gm);
         if (trimmedQuery) {
             amounts.push(
                 parseFloat(trimmedQuery[0].replace('$', '').replace(',', ''))
