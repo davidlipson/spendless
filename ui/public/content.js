@@ -155,7 +155,7 @@ setPage = async (user, url, q, d, p, r, dev) => {
                 }
             });
 
-            amount = Math.max(...amounts.filter((t) => !isNaN(t) && t > 0));
+            amount = Math.max(...amounts);
         } catch (e) {
             console.log(e);
         }
