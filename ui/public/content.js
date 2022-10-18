@@ -147,9 +147,9 @@ setPage = async (user, url, q, d, p, r, dev) => {
 
             amounts = [];
             document.querySelectorAll(q).forEach((n) => {
-                const trimmedQuery = n.textContent.match(
-                    /\$[1-9][0-9]*.[0-9][0-9]/gm
-                );
+                const trimmedQuery = n.textContent
+                    .replaceAll(' ', '')
+                    .match(/\$[1-9][0-9]*.[0-9][0-9]/gm);
                 if (trimmedQuery) {
                     amounts.push(parseFloat(trimmedQuery[0].replace('$', '')));
                 }

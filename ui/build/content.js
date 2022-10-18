@@ -148,11 +148,10 @@ setPage = async (user, url, q, d, p, r, dev) => {
             amounts = [];
             document.querySelectorAll(q).forEach((n) => {
                 const trimmedQuery = n.textContent
-                    .replace(/[]+|[s]{2,}/g, ' ')
-                    .trim()
-                    .replace('$', '');
-                if (trimmedQuery && trimmedQuery !== '') {
-                    amounts.push(parseFloat(trimmedQuery));
+                    .replaceAll(' ', '')
+                    .match(/\$[1-9][0-9]*.[0-9][0-9]/gm);
+                if (trimmedQuery) {
+                    amounts.push(parseFloat(trimmedQuery[0].replace('$', '')));
                 }
             });
             amount = amounts.find((t) => !isNaN(t) && t > 0) || 0;
