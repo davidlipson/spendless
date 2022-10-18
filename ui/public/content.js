@@ -154,10 +154,11 @@ setPage = async (user, url, q, d, p, r, dev, pattern) => {
                 description = baseUrl || '';
             }
 
-            amount = getPriceFromDivs([...document.querySelectorAll(q)]);
-            if (amount === 0) {
-                amount = tryQueryingWholePage(pattern);
-            }
+            const bestListedAmount = getPriceFromDivs([
+                ...document.querySelectorAll(q),
+            ]);
+            const bestTotalAmount = tryQueryingWholePage(pattern);
+            amount = Math.max(bestListedAmount, bestTotalAmount);
         } catch (e) {
             console.log(e);
         }
