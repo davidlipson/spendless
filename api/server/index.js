@@ -29,6 +29,7 @@ database.createDatabase().then(() => {
         try {
             const { uid, amount, description, lastPurchase, tid } =
                 ctx.request.body;
+            console.log(amount, description);
             let newId = tid;
             if (lastPurchase && tid) {
                 await database.confirmLastTransaction(uid, tid);
