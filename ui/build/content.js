@@ -10,8 +10,16 @@ chrome.runtime.onMessage.addListener(async function (request) {
             request.page != null &&
             !document.querySelector('.spendless-ext-root')
         ) {
-            const { user, url, query, description, page, recent, dev } =
-                request;
+            const {
+                user,
+                url,
+                query,
+                description,
+                page,
+                recent,
+                dev,
+                totalRegex,
+            } = request;
             const { total, tid } = await setPage(
                 user,
                 url,
@@ -20,6 +28,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
                 page,
                 recent,
                 dev
+                totalRegex
             );
 
             var popup = document.createElement('div');
@@ -128,7 +137,7 @@ alertMessage = (text, time = 3000) => {
     }, time);
 };
 
-setPage = async (user, url, q, d, p, r, dev) => {
+setPage = async (user, url, q, d, p, r, dev, pattern) => {
     const uid = user.id;
     let amount = 0;
     let description = '';
@@ -147,7 +156,7 @@ setPage = async (user, url, q, d, p, r, dev) => {
 
             amount = getPriceFromDivs([...document.querySelectorAll(q)]);
             if (amount === 0) {
-                amount = tryQueryingWholePage();
+                amount = tryQueryingWholePage(pattern);
             }
         } catch (e) {
             console.log(e);
@@ -183,11 +192,11 @@ getPriceFromDivs = (divs) => {
     return Math.max(...amounts);
 };
 
-tryQueryingWholePage = () => {
+tryQueryingWholePage = (pattern) => {
+    const reg = new RegExp(pattern, 'gi');
+    console.log(reg)
     divs = [...document.querySelectorAll('div, tr')];
-    divs = divs.filter((a) =>
-        a.textContent.trim().match(/^(Estimated *)?(Sub)?Total/gi)
-    );
+    divs = divs.filter((a) => a.textContent.trim().match(reg));
     return getPriceFromDivs(divs);
 };
 

@@ -3,7 +3,7 @@ const cors = require('kcors');
 const Router = require('koa-router');
 const DBClient = require('./database');
 const koaBody = require('koa-body');
-const { whitelist, blacklist } = require('./lists');
+const { whitelist, blacklist, totalRegex } = require('./lists');
 
 console.log('Starting...');
 
@@ -62,7 +62,7 @@ database.createDatabase().then(() => {
     });
 
     router.get('/list', async (ctx) => {
-        ctx.body = { whitelist, blacklist };
+        ctx.body = { whitelist, blacklist, totalRegex };
     });
 
     router.post('/ignore', koaBody(), async (ctx) => {

@@ -6,17 +6,17 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
     chrome.management.get(chrome.runtime.id, function (extensionInfo) {
         dev = extensionInfo.installType === 'development';
     });
-    const { whitelist, blacklist } = await getUrlList();
+    const { whitelist, blacklist, totalRegex } = await getUrlList();
     const { frameId, tabId, url } = details;
     if (url !== undefined && frameId === 0) {
         let found = false;
         for (const [key, value] of Object.entries(whitelist)) {
             value.regex.forEach((r) => {
-                let re = new RegExp(r);
+                let re = new RegExp(r, 'i');
                 if (url?.match(re) && !found) {
                     found = true;
                     const blacklisted = blacklist.find((b) => {
-                        let bre = new RegExp(b);
+                        let bre = new RegExp(b, 'i');
                         return url.match(bre);
                     });
                     if (!blacklisted) {
@@ -34,6 +34,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                                     description: value.description,
                                     url,
                                     dev,
+                                    totalRegex,
                                 });
                             }
                         });
@@ -73,7 +74,7 @@ getUrlList = async () => {
         return data;
     } catch (error) {
         console.log(error);
-        return { whitelist: {}, blacklist: [] };
+        return { whitelist: {}, blacklist: [], totalRegex: null };
     }
 };
 
