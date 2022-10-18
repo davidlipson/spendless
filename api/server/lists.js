@@ -24,6 +24,7 @@ module.exports = {
                 '/cart',
                 '/basket',
                 '/bag',
+                '/orderitemdisplayview',
             ],
         },
     },
