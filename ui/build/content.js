@@ -145,7 +145,7 @@ setPage = async (user, url, q, d, p, r, dev) => {
                 description = baseUrl || '';
             }
 
-            amounts = [];
+            amounts = [0];
             document.querySelectorAll(q).forEach((n) => {
                 const trimmedQuery = n.textContent
                     .replaceAll(' ', '')
@@ -154,7 +154,8 @@ setPage = async (user, url, q, d, p, r, dev) => {
                     amounts.push(parseFloat(trimmedQuery[0].replace('$', '')));
                 }
             });
-            amount = amounts.find((t) => !isNaN(t) && t > 0) || 0;
+
+            amount = Math.max(...amounts.filter((t) => !isNaN(t) && t > 0));
         } catch (e) {
             console.log(e);
         }
