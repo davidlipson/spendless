@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
                 description,
                 page,
                 recent,
-                dev
+                dev,
                 totalRegex
             );
 
@@ -194,7 +194,7 @@ getPriceFromDivs = (divs) => {
 
 tryQueryingWholePage = (pattern) => {
     const reg = new RegExp(pattern, 'gi');
-    console.log(reg)
+    console.log(reg);
     divs = [...document.querySelectorAll('div, tr')];
     divs = divs.filter((a) => a.textContent.trim().match(reg));
     return getPriceFromDivs(divs);
