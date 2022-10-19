@@ -183,7 +183,7 @@ getPriceFromDivs = (divs) => {
         console.log(n);
         const trimmedQuery = n.textContent
             .replaceAll(' ', '')
-            .match(/\$?[1-9][0-9]*,?[0-9]*\.([0-9][0-9])?/gm);
+            .match(/\$?[1-9][0-9]*,?[0-9]*\.([0-9][0-9])?/);
         if (trimmedQuery) {
             amounts.push(
                 parseFloat(trimmedQuery[0].replace('$', '').replace(',', ''))
@@ -194,7 +194,7 @@ getPriceFromDivs = (divs) => {
 };
 
 tryQueryingWholePage = (pattern) => {
-    const reg = new RegExp(pattern, 'gi');
+    const reg = new RegExp(pattern, 'i');
     console.log(reg);
     divs = [...document.querySelectorAll('div, tr')];
     divs = divs.filter((a) => a.textContent.trim().match(reg));
