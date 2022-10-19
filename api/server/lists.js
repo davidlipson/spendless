@@ -15,5 +15,6 @@ module.exports = {
         },
     },
     blacklist: ['amazon.+/dp/', 'amazon.+/gp/product/'],
-    totalRegex: '^(Estimated *)?(Order *)?(Sub-? *)?Total',
+    totalRegex:
+        '^(Estimated *)?(Merchandise *)?(Payment *)?(Order *)?(Amount *)?(Sub-? *)?Total *(Due *)?',
 };
