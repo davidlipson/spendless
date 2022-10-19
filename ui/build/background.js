@@ -12,12 +12,12 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
         let found = false;
         for (const [key, value] of Object.entries(whitelist)) {
             value.regex.forEach((r) => {
-                let re = new RegExp(r, 'i');
+                let re = new RegExp(r, 'gi');
                 console.log(url, re);
                 if (url?.match(re) && !found) {
                     found = true;
                     const blacklisted = blacklist.find((b) => {
-                        let bre = new RegExp(b, 'i');
+                        let bre = new RegExp(b, 'gi');
                         return url.match(bre);
                     });
                     if (!blacklisted) {
