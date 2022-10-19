@@ -3,5 +3,6 @@
         "start": "cd api && npm i && node index.js",
 	"push": "git add -u && git commit -m 'quick push' && git push",
 	"build": "npm run push && cd ui && npm run build"
-    }
+    },
+    "engines": { "node": "16.x" }
 }
