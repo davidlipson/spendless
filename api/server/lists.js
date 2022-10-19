@@ -14,6 +14,7 @@ module.exports = {
                 '/checkout',
                 '/gp/buy',
                 '/buy/',
+                '/my-checkout',
             ],
         },
         cart: {
@@ -23,7 +24,6 @@ module.exports = {
                 '/basket',
                 '/bag',
                 '/my-bag',
-                '/my-checkout',
                 '/orderitemdisplayview',
             ],
         },
