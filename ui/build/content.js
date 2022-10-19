@@ -5,7 +5,6 @@ const host = 'https://spendless-pg.herokuapp.com';
 // refactor to Jquery
 chrome.runtime.onMessage.addListener(async function (request) {
     window.setTimeout(async () => {
-        console.log(document.querySelector('.spendless-ext-root'));
         if (
             request.page != null &&
             !document.querySelector('.spendless-ext-root')
@@ -181,6 +180,7 @@ setPage = async (user, url, q, d, p, r, dev, pattern) => {
 getPriceFromDivs = (divs) => {
     amounts = [0];
     divs.forEach((n) => {
+        console.log(n);
         const trimmedQuery = n.textContent
             .replaceAll(' ', '')
             .match(/\$?[1-9][0-9]*,?[0-9]*\.([0-9][0-9])?/gm);
