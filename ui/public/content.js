@@ -198,8 +198,10 @@ getPriceFromDivs = (divs) => {
 tryQueryingWholePage = (pattern) => {
     const reg = new RegExp(pattern, 'i');
     console.log(reg);
-    divs = [...document.querySelectorAll('div, tr, li')];
-    divs = divs.filter((a) => a.textContent.trim().match(reg));
+    divs = [...document.querySelectorAll('div, tr, li, dl')];
+    divs = divs.filter((a) =>
+        a.textContent.trim().replaceAll('\n', '').match(reg)
+    );
     return getPriceFromDivs(divs);
 };
 
