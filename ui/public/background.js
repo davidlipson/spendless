@@ -1,11 +1,7 @@
 //const host = 'http://localhost:5000';
 const host = 'https://spendless-pg.herokuapp.com';
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(navHelper);
-
-chrome.webNavigation.onCompleted.addListener(navHelper);
-
-navHelper = async (details) => {
+navHelper = async (details, source) => {
     let dev = false;
     chrome.management.get(chrome.runtime.id, function (extensionInfo) {
         dev = extensionInfo.installType === 'development';
@@ -40,6 +36,7 @@ navHelper = async (details) => {
                                     url,
                                     dev,
                                     totalRegex,
+                                    source,
                                 });
                             }
                         });
@@ -94,3 +91,11 @@ getRecent = async (uid) => {
         return null;
     }
 };
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
+    navHelper(details, 'onHistory');
+});
+
+chrome.webNavigation.onCompleted.addListener(async (details) => {
+    navHelper(details, 'onCompleted');
+});

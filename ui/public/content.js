@@ -1,25 +1,24 @@
 //const host = 'http://localhost:5000';
 const host = 'https://spendless-pg.herokuapp.com';
 
-// TODO
-// refactor to Jquery
-chrome.runtime.onMessage.addListener(async function (request) {
+listenerHelper = async (request) => {
+    const {
+        user,
+        url,
+        query,
+        description,
+        page,
+        recent,
+        dev,
+        totalRegex,
+        source,
+    } = request;
+    closeAll();
     window.setTimeout(async () => {
         if (
             request.page != null &&
             !document.querySelector('.spendless-ext-root')
         ) {
-            const {
-                user,
-                url,
-                query,
-                description,
-                page,
-                recent,
-                dev,
-                totalRegex,
-            } = request;
-
             const { total, tid, amount } = await setPage(
                 user,
                 url,
@@ -91,10 +90,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
                 hideMessage.className = 'spendless-ext-popup-hide';
                 hideMessage.innerHTML = 'Hide this message';
                 hideMessage.onclick = function (ev) {
-                    const els = document.querySelectorAll('.spendless-ext-app');
-                    els.forEach((el) => {
-                        el.remove();
-                    });
+                    closeAll();
                 };
 
                 app.appendChild(hideMessage);
@@ -115,10 +111,10 @@ chrome.runtime.onMessage.addListener(async function (request) {
             }
         }
     }, 1500);
-});
+};
 
 closeAll = () => {
-    const els = document.querySelectorAll('.spendless-ext-app');
+    const els = document.querySelectorAll('.spendless-ext-root');
     els.forEach((el) => {
         try {
             el.remove();
@@ -266,3 +262,13 @@ ignoreTransaction = async (uid, id) => {
         return 0;
     }
 };
+
+chrome.runtime.onMessage.addListener(listenerHelper);
+
+/* TODO: check when page dom updates
+window.setTimeout(async () => {
+    document.addEventListener('DOMSubtreeModified', (e) => {
+        console.log(e);
+    });
+}, 3000);
+*/

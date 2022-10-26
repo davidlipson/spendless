@@ -5,7 +5,7 @@ module.exports = {
             regex: ['/gp/buy/thankyou'],
         },
         checkout: {
-            query: '.grand-total-price, .payment-due__price, .a-price-whole, .css-1tpw2mp, .eanm77i0, .eeazboz0, .css-1p2xd9r, .exmus2i5, .amount, .acl-align--right, #TotalLine',
+            query: '.grand-total-price, .payment-due__price, .a-price-whole, .css-1tpw2mp, .eanm77i0, .eeazboz0, .css-1p2xd9r, .exmus2i5, .amount, .acl-align--right, #TotalLine, .estimated-price',
             description: '#productTitle, #title',
             regex: ['/rgxo', '/.*check-?out', '/.*buy'],
         },
