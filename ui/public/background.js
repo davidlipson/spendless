@@ -1,7 +1,11 @@
 //const host = 'http://localhost:5000';
 const host = 'https://spendless-pg.herokuapp.com';
 
-chrome.webNavigation.onCompleted.addListener(async (details) => {
+chrome.webNavigation.onHistoryStateUpdated.addListener(navHelper);
+
+chrome.webNavigation.onCompleted.addListener(navHelper);
+
+navHelper = async (details) => {
     let dev = false;
     chrome.management.get(chrome.runtime.id, function (extensionInfo) {
         dev = extensionInfo.installType === 'development';
@@ -44,7 +48,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
             });
         }
     }
-});
+};
 
 loginUser = async (prof) => {
     try {
