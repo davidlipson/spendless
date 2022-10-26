@@ -185,7 +185,7 @@ getPriceFromDivs = (divs) => {
         console.log(n);
         const trimmedQuery = n.textContent
             .replaceAll(' ', '')
-            .match(/\$?[1-9][0-9]*,?[0-9]*\.([0-9][0-9])?/);
+            .match(/\$?[1-9][0-9]*,?[0-9]*(\.[0-9][0-9])?/);
         if (trimmedQuery) {
             amounts.push(
                 parseFloat(trimmedQuery[0].replace('$', '').replace(',', ''))
