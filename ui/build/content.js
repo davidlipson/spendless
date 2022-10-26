@@ -265,8 +265,10 @@ ignoreTransaction = async (uid, id) => {
 
 chrome.runtime.onMessage.addListener(listenerHelper);
 
+/* TODO: check when page dom updates
 window.setTimeout(async () => {
     document.addEventListener('DOMSubtreeModified', (e) => {
         console.log(e);
     });
 }, 3000);
+*/
