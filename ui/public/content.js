@@ -181,17 +181,16 @@ setPage = async (user, url, q, d, p, r, dev, pattern) => {
 getPriceFromDivs = (divs) => {
     amounts = [0];
     divs.forEach((n) => {
-        console.log(n);
         const trimmedQuery = n.textContent
             .replaceAll(' ', '')
             .match(/\$?[1-9][0-9]*,?[0-9]*(\.[0-9][0-9])?/g);
         if (trimmedQuery) {
-            trimmedQuery.forEach((t) =>
-                amounts.push(parseFloat(t.replace('$', '').replace(',', '')))
-            );
+            trimmedQuery.forEach((t) => {
+                amounts.push(parseFloat(t.replace('$', '').replace(',', '')));
+                console.log(n, parseFloat(t.replace('$', '').replace(',', '')));
+            });
         }
     });
-    console.log(amounts);
     return Math.max(...amounts);
 };
 
