@@ -30,7 +30,6 @@
   "permissions": [
     "identity",
     "identity.email",
-    "tabs",
     "webNavigation",
     "management"
   ]
