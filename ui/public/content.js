@@ -152,6 +152,7 @@ setPage = async (user, url, q, d, p, r, dev, pattern) => {
             }
 
             const bestTotalAmount = tryQueryingWholePage(pattern);
+            console.log(bestTotalAmount);
 
             const bestListedAmount =
                 bestTotalAmount === 0
