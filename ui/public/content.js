@@ -213,12 +213,7 @@ tryQueryingWholePage = (pattern, dev = false) => {
     divs = divs.filter((a) =>
         a.textContent.trim().replaceAll('\n', '').match(reg)
     );
-    console.log(divs);
-    minDiv = Math.min(...divs.map((d) => d.textContent.length).concat([0]));
-    console.log(
-        minDiv,
-        divs.filter((d) => d.textContent.length === minDiv)
-    );
+    minDiv = Math.min(...divs.map((d) => d.textContent.length));
     return getPriceFromDivs(
         divs.filter((d) => d.textContent.length === minDiv),
         dev
