@@ -142,12 +142,10 @@ setPage = async (user, url, q, d, p, r, dev, pattern) => {
                 description = baseUrl || '';
             }
 
-            const bestTotalAmount = tryQueryingWholePage(pattern);
-            console.log(bestTotalAmount);
-
+            const bestTotalAmount = tryQueryingWholePage(pattern, dev);
             const bestListedAmount =
                 bestTotalAmount === 0
-                    ? getPriceFromDivs([...document.querySelectorAll(q)])
+                    ? getPriceFromDivs([...document.querySelectorAll(q)], dev)
                     : 0;
 
             amount = Math.max(bestListedAmount, bestTotalAmount);
@@ -170,33 +168,56 @@ setPage = async (user, url, q, d, p, r, dev, pattern) => {
     return { total, tid, amount };
 };
 
-getPriceFromDivs = (divs) => {
-    amounts = [0];
-    divs.forEach((n) => {
-        const trimmedQuery = n.textContent
-            .replaceAll(' ', '')
-            .match(/\$?[1-9][0-9]*,?[0-9]*(\.[0-9][0-9])?/g);
-        if (trimmedQuery) {
-            console.log(n);
-            n.removeEventListener('DOMSubtreeModified', listenerHelper);
-            n.addEventListener('DOMSubtreeModified', listenerHelper);
-            trimmedQuery.forEach((t) => {
-                amounts.push(parseFloat(t.replace('$', '').replace(',', '')));
-                console.log(n, parseFloat(t.replace('$', '').replace(',', '')));
-            });
-        }
-    });
-    return Math.max(...amounts);
+parseDiv = (n) => {
+    var trimmedQuery = n.textContent
+        .replaceAll(' ', '')
+        .match(/\$?[1-9][0-9]*,?[0-9]*(\.[0-9][0-9])?/g);
+    if (trimmedQuery) {
+        return trimmedQuery.map((t) =>
+            parseFloat(t.replace('$', '').replace(',', ''))
+        );
+    }
+    return [];
 };
 
-tryQueryingWholePage = (pattern) => {
+getPriceFromDivs = (divs, dev = false) => {
+    amounts = [0];
+    divs.forEach((n) => {
+        amounts = amounts.concat(parseDiv(n));
+    });
+    maxAmount = Math.max(...amounts);
+    maxDiv = divs.find((d) => parseDiv(d).includes(maxAmount));
+    if (dev) {
+        maxDiv.style.border = 'thick solid #0000FF';
+    }
+    let observer = new MutationObserver((e) => {
+        console.log('test', e);
+    });
+    observer.observe(maxDiv.parentElement, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+        attributes: true,
+    });
+    return maxAmount;
+};
+
+tryQueryingWholePage = (pattern, dev = false) => {
     const reg = new RegExp(pattern, 'i');
     console.log(reg);
     divs = [...document.querySelectorAll('div, tr, li, dl')];
     divs = divs.filter((a) =>
         a.textContent.trim().replaceAll('\n', '').match(reg)
     );
-    return getPriceFromDivs(divs);
+    minDiv = Math.min(...divs.map((d) => d.textContent.length));
+    console.log(
+        minDiv,
+        divs.filter((d) => d.textContent.length === minDiv)
+    );
+    return getPriceFromDivs(
+        divs.filter((d) => d.textContent.length === minDiv),
+        dev
+    );
 };
 
 getCurrency = (a) => {
