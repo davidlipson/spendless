@@ -178,6 +178,7 @@ getPriceFromDivs = (divs) => {
             .match(/\$?[1-9][0-9]*,?[0-9]*(\.[0-9][0-9])?/g);
         if (trimmedQuery) {
             console.log(n);
+            n.removeEventListener('DOMSubtreeModified', listenerHelper);
             n.addEventListener('DOMSubtreeModified', listenerHelper);
             trimmedQuery.forEach((t) => {
                 amounts.push(parseFloat(t.replace('$', '').replace(',', '')));
