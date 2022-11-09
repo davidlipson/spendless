@@ -181,6 +181,9 @@ parseDiv = (n) => {
 };
 
 getPriceFromDivs = (divs, dev = false) => {
+    if (divs.length === 0) {
+        return 0;
+    }
     amounts = [0];
     divs.forEach((n) => {
         amounts = amounts.concat(parseDiv(n));
