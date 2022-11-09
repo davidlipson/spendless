@@ -2,17 +2,8 @@
 const host = 'https://spendless-pg.herokuapp.com';
 
 listenerHelper = async (request) => {
-    const {
-        user,
-        url,
-        query,
-        description,
-        page,
-        recent,
-        dev,
-        totalRegex,
-        source,
-    } = request;
+    const { user, url, query, description, page, recent, dev, totalRegex } =
+        request;
     closeAll();
     window.setTimeout(async () => {
         if (
@@ -186,6 +177,8 @@ getPriceFromDivs = (divs) => {
             .replaceAll(' ', '')
             .match(/\$?[1-9][0-9]*,?[0-9]*(\.[0-9][0-9])?/g);
         if (trimmedQuery) {
+            console.log(n);
+            n.addEventListener('DOMSubtreeModified', listenerHelper);
             trimmedQuery.forEach((t) => {
                 amounts.push(parseFloat(t.replace('$', '').replace(',', '')));
                 console.log(n, parseFloat(t.replace('$', '').replace(',', '')));
