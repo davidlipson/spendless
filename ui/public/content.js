@@ -206,6 +206,7 @@ getPriceFromDivs = (divs, dev = false) => {
 };
 
 tryQueryingWholePage = (pattern, dev = false) => {
+    console.log(pattern);
     const reg = new RegExp(pattern, 'i');
     console.log(reg);
     divs = [...document.querySelectorAll('div, tr, li, dl')];
