@@ -209,7 +209,7 @@ tryQueryingWholePage = (pattern, dev = false) => {
     divs = divs.filter((a) =>
         a.textContent.trim().replaceAll('\n', '').match(reg)
     );
-    minDiv = Math.min(...divs.map((d) => d.textContent.length));
+    minDiv = Math.min(...divs.map((d) => d.textContent.length).concat([0]));
     console.log(
         minDiv,
         divs.filter((d) => d.textContent.length === minDiv)
