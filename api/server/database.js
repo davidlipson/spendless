@@ -98,7 +98,8 @@ module.exports = class DBClient {
             const results = await this.client.query(query);
             if (results.rows.length === 0) {
                 console.log('no recent row...');
-                return await this.addTransaction(null, uid, '', 0);
+                await this.addTransaction(null, uid, '', 0);
+                return await this.getRecentlyUnconfirmed(uid);
             }
             return results.rows;
         } catch (err) {
