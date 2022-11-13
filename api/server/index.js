@@ -33,7 +33,12 @@ database.createDatabase().then(() => {
             if (lastPurchase && tid) {
                 await database.confirmLastTransaction(uid, tid);
             } else if (amount > 0) {
-                newId = await database.addTransaction(tid, uid, description, amount);
+                newId = await database.addTransaction(
+                    tid,
+                    uid,
+                    description,
+                    amount
+                );
             }
             const total = await database.getTotal(uid);
             ctx.body = { total, tid: newId };
@@ -57,7 +62,7 @@ database.createDatabase().then(() => {
     router.get('/recent', async (ctx) => {
         const { uid } = ctx.query;
         const recent = await database.getRecentlyUnconfirmed(uid);
-        ctx.body = {recent;
+        ctx.body = recent;
     });
 
     router.get('/list', async (ctx) => {
