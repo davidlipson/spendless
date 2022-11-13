@@ -45,6 +45,8 @@ listenerHelper = async (request) => {
                     true
                 );
 
+                console.log(total, tid, amount, div);
+
                 if (amount > 0) {
                     var popup = document.createElement('div');
                     popup.className = 'spendless-ext-root';
