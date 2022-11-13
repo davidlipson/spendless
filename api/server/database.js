@@ -96,6 +96,10 @@ module.exports = class DBClient {
         timestamp = (select maxts from (select max(timestamp) as maxts from transaction where uid = '${uid}' and confirmed is false) as mts) limit 1`;
         try {
             const results = await this.client.query(query);
+            if (results.rows.length === 0) {
+                console.log('no recent row...');
+                return await this.addTransaction(null, uid, '', 0);
+            }
             return results.rows;
         } catch (err) {
             throw err;
