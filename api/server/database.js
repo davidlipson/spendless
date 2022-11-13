@@ -139,8 +139,12 @@ module.exports = class DBClient {
             throw err;
         }
     };
-    addTransaction = async (uid, description, amount) => {
-        const query = `insert into "transaction" ("description", "amount", "uid") values ('${description}', '${amount}', '${uid}') RETURNING id`;
+    addTransaction = async (tid, uid, description, amount) => {
+        if (tid) {
+            const query = `update "transaction" set description = '${description}', amount = '${amount}', timestamp = NOW() where tid = '${tid}' and uid = '${uid}' RETURNING id`;
+        } else {
+            const query = `insert into "transaction" ("description", "amount", "uid") values ('${description}', '${amount}', '${uid}') RETURNING id`;
+        }
         try {
             const results = await this.client.query(query);
             return results.rows[0].id;
