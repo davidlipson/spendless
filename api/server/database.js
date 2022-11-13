@@ -140,6 +140,7 @@ module.exports = class DBClient {
         }
     };
     addTransaction = async (tid, uid, description, amount) => {
+        console.log({ tid, uid, amount });
         let query = `insert into "transaction" ("description", "amount", "uid") values ('${description}', '${amount}', '${uid}') RETURNING id`;
         if (tid) {
             query = `update "transaction" set description = '${description}', amount = '${amount}', timestamp = NOW() where tid = '${tid}' and uid = '${uid}' RETURNING id`;
