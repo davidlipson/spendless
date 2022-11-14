@@ -1,4 +1,3 @@
-//const host = 'http://localhost:5000';
 const host = 'https://spendless-pg.herokuapp.com';
 
 navHelper = async (details) => {

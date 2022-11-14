@@ -1,4 +1,3 @@
-//const host = 'http://localhost:5000';
 const host = 'https://spendless-pg.herokuapp.com';
 createObserver = (request, oldValue) => {
     const { user, url, query, description, page, recent, dev, totalRegex } =
@@ -15,7 +14,6 @@ createObserver = (request, oldValue) => {
             totalRegex
         ).then((a) => {
             if (a.amount > 0 && a.amount != oldValue) {
-                console.log('adding listener');
                 listenerHelper(request);
             }
         });
@@ -44,8 +42,6 @@ listenerHelper = async (request) => {
                     totalRegex,
                     true
                 );
-
-                console.log(total, tid, amount, div);
 
                 if (amount > 0) {
                     var popup = document.createElement('div');
@@ -126,10 +122,8 @@ listenerHelper = async (request) => {
                     }
 
                     if (observer) {
-                        console.log('disconnecting');
                         observer.disconnect();
                     } else {
-                        console.log('creating');
                         observer = createObserver(request, amount);
                     }
                     observer.observe(document, {
@@ -201,7 +195,7 @@ setPage = async (user, url, q, d, p, r, dev, pattern, update = false) => {
     }
 
     if (dev && update) {
-        console.log(`Spendlo Page --- Amount: ${amount}, Query: ${q}`);
+        console.log(`Spendlo Page --- Amount: ${amount}`);
     }
 
     if (update) {
@@ -246,10 +240,9 @@ getPriceFromDivs = (divs, dev = false) => {
     });
     maxAmount = Math.max(...amounts);
     maxDiv = divs.find((d) => parseDiv(d).includes(maxAmount));
-    console.log(amounts, maxAmount, maxDiv);
-    if (dev) {
+    /*if (dev) {
         maxDiv.style.background = 'red';
-    }
+    }*/
 
     return [maxAmount, maxDiv];
 };
@@ -326,17 +319,8 @@ ignoreTransaction = async (uid, id) => {
         });
         return result;
     } catch (error) {
-        console.log(error);
         return 0;
     }
 };
 
 chrome.runtime.onMessage.addListener(listenerHelper);
-
-/* TODO: check when page dom updates
-window.setTimeout(async () => {
-    document.addEventListener('DOMSubtreeModified', (e) => {
-        console.log(e);
-    });
-}, 3000);
-*/
