@@ -132,10 +132,10 @@ class App extends Component<any,any>{
       {this.state.user == false ?
         <>
         <div className={`spendless-ext-welcome-header`}>
-            Welcome to SpendLess!
+            Welcome to Spendlo!
         </div>
         <div className={`spendless-ext-welcome-body`}>
-        In order to use SpendLess, you must login with Google.
+        In order to use Spendlo, you must login with Google.
         </div>
         {process.env.NODE_ENV == "development" ?
           <GoogleLogin
@@ -146,7 +146,7 @@ class App extends Component<any,any>{
           onSuccess={this.handleLogin.bind(this)}
           onFailure={this.handleLoginFailure.bind(this)}
         /> : <div className={`spendless-ext-welcome-body`}>
-        Once signed in through Chrome, reload the SpendLess extension (you may need to restart Chrome).
+        Once signed in through Chrome, reload the Spendlo extension (you may need to restart Chrome).
         </div>
         }</>
          :
