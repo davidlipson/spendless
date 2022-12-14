@@ -62,8 +62,10 @@ module.exports = class DBClient {
                     CONSTRAINT monthly_pk PRIMARY KEY (id),
                     CONSTRAINT monthly_fk FOREIGN KEY (uid) REFERENCES "user"(id)
                 );`);
+                console.log('init');
                 return true;
             } catch (error) {
+                console.log(error);
                 await this.client.end();
                 throw error;
             }
