@@ -194,9 +194,7 @@ setPage = async (user, url, q, d, p, r, dev, pattern, update = false) => {
         }
     }
 
-    if (dev && update) {
-        console.log(`Spendlo Page --- Amount: ${amount}`);
-    }
+    console.log(`Spendlo Page --- Amount: ${amount}`);
 
     if (update) {
         const { total, tid } = await updateUserPage(
