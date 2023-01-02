@@ -1,5 +1,5 @@
-//const host = 'https://spendless-pg.herokuapp.com';
-const host = 'http://localhost:5000';
+const host = 'https://spendless-pg.herokuapp.com';
+//const host = 'http://localhost:5000';
 
 createObserver = (request, oldValue) => {
     const { user, url, query, description, page, recent, dev, totalRegex } =

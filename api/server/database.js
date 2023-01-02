@@ -6,7 +6,7 @@ module.exports = class DBClient {
         this.client = null;
     }
 
-    createDatabase = async (init = true) => {
+    createDatabase = async (init = false) => {
         if (process.env.NODE_ENV === 'production') {
             this.client = await new postgres.Client({
                 user: process.env.PG_USER,
