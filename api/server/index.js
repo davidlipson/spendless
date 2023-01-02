@@ -5,8 +5,6 @@ const DBClient = require('./database');
 const koaBody = require('koa-body');
 const { whitelist, blacklist, totalRegex } = require('./lists');
 
-console.log('Starting...');
-
 const database = new DBClient();
 database.createDatabase().then(() => {
     const router = new Router();
@@ -16,6 +14,19 @@ database.createDatabase().then(() => {
         try {
             const { uid } = ctx.query;
             const results = await database.getUser(uid);
+            if (results.length === 0) {
+                ctx.throw(404);
+            }
+            ctx.body = results;
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    router.post('/onboard', koaBody(), async (ctx) => {
+        try {
+            const { uid } = ctx.request.body;
+            const results = await database.onboardUser(uid);
             if (results.length === 0) {
                 ctx.throw(404);
             }
@@ -79,12 +90,24 @@ database.createDatabase().then(() => {
     });
 
     router.post('/login', koaBody(), async (ctx) => {
-        const { email, first_name, last_name } = ctx.request.body;
-        const results = await database.loginUser(email, first_name, last_name);
-        if (results.length === 0) {
-            ctx.throw(404);
+        try {
+            const { email, first_name, last_name } = ctx.request.body;
+            if (email?.length > 0) {
+                const results = await database.loginUser(
+                    email,
+                    first_name,
+                    last_name
+                );
+                if (results.length === 0) {
+                    ctx.throw(404);
+                }
+                ctx.body = results;
+            } else {
+                throw 'Invalid email.';
+            }
+        } catch (e) {
+            console.log(e);
         }
-        ctx.body = results;
     });
 
     // Setup Koa app

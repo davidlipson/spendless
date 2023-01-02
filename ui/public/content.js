@@ -1,4 +1,6 @@
 const host = 'https://spendless-pg.herokuapp.com';
+//const host = 'http://localhost:5000';
+
 createObserver = (request, oldValue) => {
     const { user, url, query, description, page, recent, dev, totalRegex } =
         request;
@@ -54,7 +56,7 @@ listenerHelper = async (request) => {
 
                     var mainText = document.createElement('span');
                     mainText.className = 'spendless-ext-popup-header';
-                    mainText.innerHTML = 'Spend less, Save more!';
+                    mainText.innerHTML = 'Spend less, save more!';
                     app.appendChild(mainText);
 
                     var overall = document.createElement('div');
@@ -66,10 +68,10 @@ listenerHelper = async (request) => {
 
                     var budVal = document.createElement('span');
                     budVal.className = 'spendless-ext-summary-value';
-                    budVal.innerHTML = getCurrency(Math.ceil(total)).replace(
-                        '.00',
-                        ''
-                    );
+                    budVal.innerHTML = `${getPercentage(
+                        Math.ceil(total),
+                        Math.ceil(user.budget)
+                    )}%`;
                     budDiv.appendChild(budVal);
 
                     var budLine = document.createElement('span');
@@ -86,7 +88,7 @@ listenerHelper = async (request) => {
                     var leftVal = document.createElement('span');
                     leftVal.className = 'spendless-ext-summary-value';
                     leftVal.innerHTML = getCurrency(
-                        Math.ceil(user.budget)
+                        Math.ceil(user.budget) - Math.ceil(total)
                     ).replace('.00', '');
                     leftDiv.appendChild(leftVal);
 

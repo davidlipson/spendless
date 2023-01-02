@@ -1,5 +1,5 @@
-const host = 'https://spendless-pg.herokuapp.com';
-
+//const host = 'https://spendless-pg.herokuapp.com';
+const host = 'http://localhost:5000';
 navHelper = async (details) => {
     let dev = false;
     chrome.management.get(chrome.runtime.id, function (extensionInfo) {

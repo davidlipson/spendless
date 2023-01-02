@@ -1,5 +1,5 @@
 const host = 'https://spendless-pg.herokuapp.com';
-
+//const host = 'http://localhost:5000';
 navHelper = async (details) => {
     let dev = false;
     chrome.management.get(chrome.runtime.id, function (extensionInfo) {
@@ -12,7 +12,6 @@ navHelper = async (details) => {
         for (const [key, value] of Object.entries(whitelist)) {
             value.regex.forEach((r) => {
                 let re = new RegExp(r, 'i');
-                console.log(url, re);
                 if (url?.match(re) && !found) {
                     found = true;
                     const blacklisted = blacklist.find((b) => {

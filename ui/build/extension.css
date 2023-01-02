@@ -5,61 +5,65 @@
   3. popup classes: .spendless-ext-popup-<class>
 */
 
-.spendless-ext-root{
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  background: white;
-  z-index: 10000;
-  box-shadow: 0px 0px 7px 2px #8080801a;
-  border-radius: 4px;
+.spendless-ext-root {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: white;
+    z-index: 10000;
+    box-shadow: 0px 0px 7px 2px #8080801a;
+    border-radius: 4px;
 }
 
-.spendless-ext-dropdown{
-  width: 400px;
-  max-height: 800px;
+.spendless-ext-dropdown {
+    width: 400px;
+    max-height: 800px;
+}
+
+.spendless-ext-onboard-body{
+    font-size: 18px;
 }
 
 .spendless-ext-app {
-  text-align: center;
-  font-family: 'Lato', sans-serif;
-  padding: 30px;
-  color: #363636;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    padding: 30px;
+    color: #363636;
 }
 
-.spendless-ext-dropdown-top-bar{
-  border-bottom: 1px solid #e2e2e2;
-  margin-bottom: 20px;
-  display: flex;
-  padding-bottom: 15px;
+.spendless-ext-dropdown-top-bar {
+    border-bottom: 1px solid #e2e2e2;
+    margin-bottom: 20px;
+    display: flex;
+    padding-bottom: 15px;
 }
 
-.spendless-ext-icon{
-  display: flex;
-  width: 85%;
+.spendless-ext-icon {
+    display: flex;
+    width: 85%;
 }
 
-.spendless-ext-dropdown-ignore{
-  text-align: center;
+.spendless-ext-dropdown-ignore {
+    text-align: center;
     width: 20px;
     padding-left: 15px;
 }
 
-.spendless-ext-dropdown-cancel:hover{
-  cursor: pointer;
-  color: #e06767;
+.spendless-ext-dropdown-cancel:hover {
+    cursor: pointer;
+    color: #e06767;
 }
 
-.spendless-ext-icon img{
-  width: 90px !important;
+.spendless-ext-icon img {
+    width: 90px !important;
 }
 
-.spendless-ext-popup{
-  width: 300px;
-  max-height: 600px;
+.spendless-ext-popup {
+    width: 300px;
+    max-height: 600px;
 }
 
-.spendless-ext-popup-message{
+.spendless-ext-popup-message {
     text-align: center;
     font-family: 'Lato', sans-serif;
     color: #363636;
@@ -76,48 +80,52 @@
     z-index: 10000;
     box-shadow: 0px 0px 7px 2px #8080801a;
     border-radius: 4px;
-  }
-
-.spendless-ext-popup-header{
-  font-size: 16px;
-  font-weight: 800;
 }
 
-.spendless-ext-dropdown-transactions-title{
-  text-align: left;
-  font-weight: 800 !important;
-  font-size: 11px !important;
-  padding-bottom: 15px;
-  }
-
-.spendless-right-top{
-  width: 100%;
-  text-align: right;
-  cursor: pointer;
+.spendless-ext-popup-header {
+    font-size: 16px;
+    font-weight: 800;
 }
 
-.popup-toggle{
-  font-size: 60px;
-  top: -33px;
-  left: 10px;
-  text-align: end;
-  height: 10px;
-  position: absolute;
+.spendless-ext-dropdown-transactions-title {
+    text-align: left;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    padding-bottom: 15px;
 }
 
-.spendlo-header-text{
-  font-size: 24px;
-  font-family: 'Merriweather', serif;
+.spendless-right-top {
+    width: 100%;
+    text-align: right;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
-  
-  @media (prefers-reduced-motion: no-preference) {
+.spendless-right-top .spendless-ext-small-cap-font:hover{
+    opacity: 0.8;
+}
+
+.popup-toggle {
+    font-size: 60px;
+    top: -33px;
+    left: 10px;
+    text-align: end;
+    height: 10px;
+    position: absolute;
+}
+
+.spendlo-header-text {
+    font-size: 24px;
+    font-family: 'Merriweather', serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
     .App-logo {
-      animation: App-logo-spin infinite 20s linear;
+        animation: App-logo-spin infinite 20s linear;
     }
-  }
-  
-  .App-header {
+}
+
+.App-header {
     background-color: #282c34;
     min-height: 100vh;
     display: flex;
@@ -126,232 +134,244 @@
     justify-content: center;
     font-size: calc(10px + 2vmin);
     color: white;
-  }
-  
-  .spendless-ext-dropdown-progress-content{
+}
+
+.spendless-ext-dropdown-progress-content {
     margin-top: -15px !important;
-  }
-  
-  .spendless-ext-dropdown-progress{
+}
+
+.spendless-ext-dropdown-progress {
     width: 200px;
     margin: 0 auto;
     padding: 20px;
     padding-top: 0px;
     margin-bottom: 5px;
-  }
-  
-  .spendless-ext-dropdown-progress-body{
+}
+
+.spendless-ext-dropdown-progress-body {
     font-size: 12px;
     width: 150px;
     font-weight: 600;
-  }
-  
-  .spendless-ext-welcome-header{
+}
+
+.spendless-ext-welcome-header {
     font-weight: 800;
     font-size: x-large;
-  }
-  
-  .spendless-ext-dropdown-progress-header{
+}
+
+.spendless-ext-dropdown-progress-header {
     font-weight: 800;
     font-size: xx-large;
-  }
-  
-  .spendless-ext-below-budget{
-    color: rgb(75,176,248);
-    }
-  
-  .spendless-ext-approaching-budget{
-    color: rgb(248,200,75);
-  }
-  
-  .spendless-ext-above-budget{
-    color: rgb(248,75,75);
-  }
-  
-  .spendless-ext-summary-line{
-    display: block;
-  }
+}
 
-  .spendless-ext-summary-lines{
+.spendless-ext-below-budget {
+    color: rgb(75, 176, 248);
+}
+
+.spendless-ext-approaching-budget {
+    color: rgb(248, 200, 75);
+}
+
+.spendless-ext-above-budget {
+    color: rgb(248, 75, 75);
+}
+
+.spendless-ext-summary-line {
+    display: block;
+}
+
+.spendless-ext-summary-lines {
     display: flex;
     padding: 10px 0px;
     display: flex;
-  }
+}
 
-  .spendless-ext-summary-div{
+.spendless-ext-summary-div {
     width: 50%;
-    padding: 10px
-  }
-  
-  .spendless-ext-small-cap-font{
+    padding: 10px;
+}
+
+.spendless-ext-small-cap-font {
     font-weight: 400;
     font-size: 12px;
     font-variant: small-caps;
-  }
+}
 
-  .spendless-ext-summary-value{
+.spendless-ext-summary-value {
     display: block;
     font-weight: 800;
     font-size: 14px;
     margin-bottom: 3px;
- }
-
- .spendless-ext-popup-hide{
-  background-color: black;
-  color: white;
-  padding: 20px 0px;
-  font-size: 14px;
-  border-radius: 4px;
-  cursor: pointer;
- }
-
- .spendless-ext-popup-ignore {
-  padding-top: 15px;
-  cursor: pointer;
-  font-size: 14px;
 }
 
-  .spendless-ext-summary-div:first-of-type {
-    border-right: 1px solid #E2E2E2;
-  }
-  
-  .spendless-ext-divider-bar{
+.spendless-ext-popup-hide {
+    background-color: black;
+    color: white;
+    padding: 20px 0px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.spendless-ext-popup-ignore {
+    padding-top: 15px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.spendless-ext-summary-div:first-of-type {
+    border-right: 1px solid #e2e2e2;
+}
+
+.spendless-ext-divider-bar {
     background: #e4e3e3;
     height: 1px;
     margin: 0 auto;
     margin-top: 10px;
-  }
-  
-  .spendless-ext-dropdown-empty{
+}
+
+.spendless-ext-dropdown-empty {
     margin-top: 5px;
-  }
-  
-  .spendless-ext-dropdown-history{
+}
+
+.spendless-ext-dropdown-history {
     margin-top: 20px;
-  }
-  
-  .MuiSvgIcon-root{
+}
+
+.MuiSvgIcon-root {
     width: 20px !important;
-  }
-  
-  .MuiButtonBase-root{
+}
+
+.MuiButtonBase-root {
     padding: 0px !important;
-  }
-  
-  .spendless-ext-app table{
+}
+
+.spendless-ext-app table {
     margin: 0 auto;
     text-align: right;
     cursor: pointer;
     padding-bottom: 10px;
-  }
-  
-  .spendless-ext-dropdown-table-label{
+}
+
+.spendless-ext-dropdown-table-label {
     text-align: left;
     width: 200px !important;
     padding-left: 15px;
-  }
-  
-  .spendless-ext-app tr{
+}
+
+.spendless-ext-app tr {
     height: 60px !important;
     padding: 20px;
-  }
+}
 
-  .spendless-ext-dropdown-history-body{
-    margin-top: 20px;;
-  }
+.spendless-ext-dropdown-history-body {
+    margin-top: 20px;
+}
 
-  .spendless-ext-dropdown-budget-input-row{
+.spendless-ext-dropdown-budget-input-row {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
+}
 
-  
-  .spendless-ext-dropdown-table-amount{
+.spendless-ext-dropdown-table-amount {
     width: 150px;
     padding-right: 15px;
     font-size: 16px;
-  }
-  
-  .spendless-ext-welcome-body{
+}
+
+.spendless-ext-welcome-body {
     margin: 25px;
-  }
-  
-  .spendless-ext-logout-button{
+}
+
+.spendless-ext-logout-button {
     position: relative;
     top: -15px;
     right: -5px;
     text-align: right;
     color: rgb(163, 162, 162);
     font-size: 14px;
-    cursor: pointer
-  }
+    cursor: pointer;
+}
 
-  .spendless-ext-dropdown-manage-transactions{
+.spendless-ext-dropdown-manage-transactions {
     width: 100%;
-    
+
     height: 50px;
     font-variant: unset !important;
     font-weight: 700 !important;
     text-transform: none !important;
-  }
-  
-  .spendless-ext-dropdown-manage-transactions-off{
-    background: black !important;
-  }
-  
-  .spendless-ext-dropdown-manage-transactions-on{
-    background: #679093 !important;
-  }
-  
+}
 
-  .spendless-ext-dropdown-history-timestamp{
+.spendless-ext-dropdown-manage-transactions-off {
+    background: black !important;
+}
+
+.spendless-ext-dropdown-manage-transactions-on {
+    background: #679093 !important;
+}
+
+.spendless-ext-onboard-top {
+    margin-bottom: 15px;
+}
+
+.spendless-ext-onboard-button {
+    width: 130px;
+    height: auto;
+}
+
+.spendless-ext-dropdown-subline-onboard {
+    color: #679093 !important;
+    font-size: 20px;
+    font-style: italic;
+}
+
+.spendless-ext-dropdown-history-timestamp {
     font-size: 12px;
-    color: #6C6C6C;
+    color: #6c6c6c;
     margin-top: 2px;
-  }
-  
-  .spendless-ext-dropdown-history-name{
+}
+
+.spendless-ext-dropdown-history-name {
     font-weight: 900;
     font-size: 16px;
-  }
-  
-  
-  .spendless-confirm-ignore{
-    margin-bottom: 15px;
-  }
+}
 
-  .popup-progress{
+.spendless-confirm-ignore {
+    margin-bottom: 15px;
+}
+
+.popup-progress {
     font-weight: 600;
     font-size: 14px;
-  }
+}
 
-  .spendless-ext-dropdown-edit-budget-bar{
+.spendless-ext-dropdown-edit-budget-bar {
     display: flex;
     text-align: center;
     align-items: center;
     justify-content: center;
     margin-top: 5px;
-  }
+}
 
-  .spendless-ext-dropdown-summary-total{
+.spendless-ext-dropdown-summary-total {
     cursor: pointer;
-  }
+}
 
-  .spendless-ext-dropdown-budget-edit{
+.spendless-ext-dropdown-budget-edit {
     cursor: pointer;
-  }
+}
 
-  .spendless-ext-dropdown-edit-budget-bar svg{
+.spendless-ext-dropdown-edit-budget-bar svg {
     margin: 0px 10px;
-  }
+}
 
-  .spendless-ext-dropdown-save:hover{
+.spendless-ext-dropdown-save:hover {
     cursor: pointer;
     color: #4fa17c;
-  }
+}
 
-  .spendless-ext-dropdown-numeric-input-budget{
+.spendless-ext-dropdown-numeric-input-budget {
     width: 5ch;
     text-align: right;
     font-weight: 800;
@@ -361,34 +381,33 @@
     border: none;
     border-bottom: 1px dotted #cfcfcf;
     outline: none;
-  }
+}
 
-  .popup-total{
+.popup-total {
     font-weight: 800;
     font-size: xx-large;
     padding-bottom: 20px;
-  }
+}
 
-  .spendless-ext-dropdown-budget-dollar-sign{
+.spendless-ext-dropdown-budget-dollar-sign {
     border-bottom: 1px dotted #cfcfcf;
     margin-bottom: -3px;
-  }
+}
 
-  .spendless-ext-dropdown-perc{
+.spendless-ext-dropdown-perc {
     font-size: 18px;
-  }
-  
-  @keyframes App-logo-spin {
+}
+
+@keyframes App-logo-spin {
     from {
-      transform: rotate(0deg);
+        transform: rotate(0deg);
     }
     to {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
+}
 
-  .CircularProgressbar-trail {
+.CircularProgressbar-trail {
     stroke: #a1a1a1 !important;
     stroke-width: 0.5px !important;
-  }
-  
+}

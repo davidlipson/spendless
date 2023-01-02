@@ -6,7 +6,7 @@ module.exports = class DBClient {
         this.client = null;
     }
 
-    createDatabase = async (init = false) => {
+    createDatabase = async (init = true) => {
         if (process.env.NODE_ENV === 'production') {
             this.client = await new postgres.Client({
                 user: process.env.PG_USER,
@@ -40,6 +40,7 @@ module.exports = class DBClient {
                     email varchar NOT NULL,
                     budget float8 NOT NULL DEFAULT 100,
                     spent float8 NULL DEFAULT 0,
+                    onboarded bool NULL DEFAULT false,
                     CONSTRAINT user_check CHECK ((budget > (0)::double precision)),
                     CONSTRAINT user_pk PRIMARY KEY (id),
                     CONSTRAINT user_un UNIQUE (email)
@@ -62,7 +63,6 @@ module.exports = class DBClient {
                     CONSTRAINT monthly_pk PRIMARY KEY (id),
                     CONSTRAINT monthly_fk FOREIGN KEY (uid) REFERENCES "user"(id)
                 );`);
-                console.log('init');
                 return true;
             } catch (error) {
                 console.log(error);
@@ -74,7 +74,7 @@ module.exports = class DBClient {
     };
 
     getUser = async (uid) => {
-        const query = `select * from "user" where id = '${uid}' limit 1`;
+        const query = `select * from "user" where id = '${uid}'`;
         try {
             const results = await this.client.query(query);
             return results.rows;
@@ -159,12 +159,20 @@ module.exports = class DBClient {
             throw err;
         }
     };
+    onboardUser = async (uid) => {
+        const query = `update "user" set onboarded = true where id = '${uid}'
+                returning *`;
+        try {
+            const results = await this.client.query(query);
+            return results.rows;
+        } catch (err) {
+            throw err;
+        }
+    };
     loginUser = async (email, first_name, last_name) => {
         const query = `
             with s as (
-                select *
-                from "user"
-                where email = '${email}'
+                select * from "user" where email = '${email}'
             ), i as (
                 insert into "user" ("email", "first_name", "last_name")
                 select '${email}', '${first_name}', '${last_name}'
