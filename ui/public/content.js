@@ -25,8 +25,17 @@ let observer = null;
 
 listenerHelper = async (request) => {
     if (request) {
-        const { user, url, query, description, page, recent, dev, totalRegex } =
-            request;
+        const {
+            user,
+            url,
+            query,
+            description,
+            page,
+            recent,
+            dev,
+            totalRegex,
+            history,
+        } = request;
         closeAll();
         window.setTimeout(async () => {
             if (

@@ -1,9 +1,14 @@
 const host = 'https://spendless-pg.herokuapp.com';
 //const host = 'http://localhost:5000';
+
 navHelper = async (details) => {
     let dev = false;
     chrome.management.get(chrome.runtime.id, function (extensionInfo) {
         dev = extensionInfo.installType === 'development';
+    });
+    let history;
+    chrome.history.search({ text: '', maxResults: 10 }, function (data) {
+        history = data;
     });
     const { whitelist, blacklist, totalRegex } = await getUrlList();
     const { frameId, tabId, url } = details;
@@ -34,6 +39,7 @@ navHelper = async (details) => {
                                     url,
                                     dev,
                                     totalRegex,
+                                    history,
                                 });
                             }
                         });
