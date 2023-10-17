@@ -1,9 +1,7 @@
-/*global chrome*/
 import { Component } from 'react';
 import Progress from './Progress';
 import History from './History';
 import { getRange } from '../helpers/mathFns';
-import { GoogleLogin } from 'react-google-login';
 import Cookies from 'universal-cookie';
 import { loginUser, onboardUser } from '../api/login';
 import { getHistory } from '../api/history';
@@ -11,13 +9,13 @@ import { ignoreTransaction } from '../api/ignore';
 import BudgetSummary from './BudgetSummary';
 import TopBar from './TopBar';
 import { updateBudget } from '../api/budget';
-import Button from '@mui/material/Button';
+import SyncNotice from './SyncNotice';
+import Onboard from './Onboard';
+import React from 'react';
+import { host } from '../environment';
+import { SPENDLO_COOKIE } from '../types';
 
 const cookies = new Cookies();
-const CLIENT_ID =
-    process.env.NODE_ENV == 'development'
-        ? process.env.REACT_APP_DEV_CLIENT_ID
-        : process.env.REACT_APP_PROD_CLIENT_ID;
 
 class App extends Component<any, any> {
     constructor(props: any) {
@@ -25,6 +23,7 @@ class App extends Component<any, any> {
 
         this.state = {
             user: false,
+            sync: true,
             spent: 0,
             last: 0,
             price: 0,
@@ -53,7 +52,11 @@ class App extends Component<any, any> {
             let s = this;
             chrome.identity.getProfileUserInfo(async (userInfo) => {
                 let email = userInfo.email;
-                await s.login({ email });
+                if (email && email !== '') {
+                    await s.login({ email });
+                } else {
+                    this.setState({ sync: false });
+                }
             });
         } catch (e) {
             console.log(e);
@@ -61,9 +64,7 @@ class App extends Component<any, any> {
     };
 
     async componentDidMount() {
-        const currentUser = cookies.get(
-            process.env.REACT_APP_SPENDLESS_COOKIE_NAME as string
-        );
+        const currentUser = cookies.get(SPENDLO_COOKIE as string);
         if (currentUser) {
             await this.setUser(currentUser);
         } else {
@@ -73,7 +74,7 @@ class App extends Component<any, any> {
 
     setUser = async (uid: string) => {
         try {
-            const url = `${process.env.REACT_APP_API_URL}/user?uid=${uid}`;
+            const url = `${host}/user?uid=${uid}`;
             const response = await fetch(url);
             const data = await response.json();
             this.setState({ user: data[0], onboarded: data[0].onboarded });
@@ -89,7 +90,7 @@ class App extends Component<any, any> {
     };
 
     login = async (profile: any) => {
-        const user = await loginUser(profile);
+        const user = await loginUser(profile, true);
         if (user) {
             this.setState({ user, onboarded: user.onboarded });
             this.history(this.state.user.id);
@@ -131,7 +132,7 @@ class App extends Component<any, any> {
     };
 
     initialize() {
-        cookies.remove(process.env.REACT_APP_SPENDLESS_COOKIE_NAME as string, {
+        cookies.remove(SPENDLO_COOKIE as string, {
             path: '/',
         });
         this.setState({
@@ -153,110 +154,54 @@ class App extends Component<any, any> {
             this.state.price + this.state.spent,
             this.state.user.budget
         );
+        console.log(this.state);
+        if (!this.state.user || !this.state.sync) {
+            return (
+                <div className="spendless-ext-app spendless-ext-dropdown">
+                    <SyncNotice />
+                </div>
+            );
+        }
         return (
             <div className="spendless-ext-app spendless-ext-dropdown">
                 {this.state.onboarded ? (
-                    this.state.user == false ? (
-                        <>
-                            <div className={`spendless-ext-welcome-header`}>
-                                Welcome to Spendlo!
-                            </div>
-                            <div className={`spendless-ext-welcome-body`}>
-                                In order to use Spendlo, you must login with
-                                Google.
-                            </div>
-                            {process.env.NODE_ENV == 'development' ? (
-                                <GoogleLogin
-                                    className="google-login-button"
-                                    clientId={CLIENT_ID as string}
-                                    buttonText="Login"
-                                    cookiePolicy={'single_host_origin'}
-                                    onSuccess={this.handleLogin.bind(this)}
-                                    onFailure={this.handleLoginFailure.bind(
-                                        this
-                                    )}
-                                />
-                            ) : (
-                                <div className={`spendless-ext-welcome-body`}>
-                                    Once signed in through Chrome, reload the
-                                    Spendlo extension (you may need to restart
-                                    Chrome).
-                                </div>
-                            )}
-                        </>
-                    ) : (
-                        <>
-                            <TopBar
-                                logout={this.logout.bind(this)}
+                    <>
+                        <TopBar
+                            logout={this.logout.bind(this)}
+                            editBudget={this.state.editBudget}
+                            setEditBudget={(v: boolean) =>
+                                this.setState({ editBudget: v })
+                            }
+                        />
+                        <Progress
+                            amount={this.state.price}
+                            last={this.state.last}
+                            total={this.state.price + this.state.spent}
+                            budget={this.state.user.budget}
+                        />
+                        <div className="overall-summary">
+                            <BudgetSummary
                                 editBudget={this.state.editBudget}
                                 setEditBudget={(v: boolean) =>
                                     this.setState({ editBudget: v })
                                 }
-                            />
-                            <Progress
-                                amount={this.state.price}
-                                last={this.state.last}
-                                total={this.state.price + this.state.spent}
+                                submitNewBudget={this.submitNewBudget.bind(
+                                    this
+                                )}
+                                spent={this.state.spent}
                                 budget={this.state.user.budget}
                             />
-                            <div className="overall-summary">
-                                <BudgetSummary
-                                    editBudget={this.state.editBudget}
-                                    setEditBudget={(v: boolean) =>
-                                        this.setState({ editBudget: v })
-                                    }
-                                    submitNewBudget={this.submitNewBudget.bind(
-                                        this
-                                    )}
-                                    spent={this.state.spent}
-                                    budget={this.state.user.budget}
-                                />
-                                <div className="spendless-ext-divider-bar"></div>
-                                <div className="spendless-ext-dropdown-history">
-                                    <History
-                                        ignore={this.ignoreTransaction.bind(
-                                            this
-                                        )}
-                                        data={this.state.history.slice(0, 3)}
-                                    />
-                                </div>
-                            </div>
-                        </>
-                    )
-                ) : (
-                    <>
-                        <div className="onboarding-body">
-                            <div className="spendlo-header-text">
-                                Welcome to Spendlo
-                            </div>
                             <div className="spendless-ext-divider-bar"></div>
-                            <div className="spendless-ext-welcome-body spendless-ext-dropdown-subline-onboard">
-                                We built Spendlo to help people spend less money
-                                on online shopping.
-                            </div>
-                            <div
-                                className={`spendless-ext-welcome-body spendless-ext-onboard-body`}
-                            >
-                                All you have to do is{' '}
-                                <b>set a monthly budget</b> and we’ll show you
-                                how much of your budget you’ve already spent on
-                                online checkout pages whenever you’re using the
-                                Chrome web browser.
-                            </div>
-                            <div
-                                className={`spendless-ext-welcome-body spendless-ext-onboard-body`}
-                            >
-                                <Button
-                                    onClick={() => this.onboardUser()}
-                                    className={`spendless-ext-dropdown-manage-transactions spendless-ext-dropdown-manage-transactions-on spendless-ext-onboard-button`}
-                                    variant="contained"
-                                >
-                                    Get Started
-                                </Button>{' '}
-                                and set your custom monthly budget now.
+                            <div className="spendless-ext-dropdown-history">
+                                <History
+                                    ignore={this.ignoreTransaction.bind(this)}
+                                    data={this.state.history.slice(0, 3)}
+                                />
                             </div>
                         </div>
                     </>
+                ) : (
+                    <Onboard onboardUser={this.onboardUser} />
                 )}
             </div>
         );

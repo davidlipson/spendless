@@ -1,3 +1,4 @@
+import React from 'react';
 import { Component } from 'react';
 
 class TopBar extends Component<any, any> {
@@ -9,28 +10,17 @@ class TopBar extends Component<any, any> {
         return (
             <div className="spendless-ext-dropdown-top-bar">
                 <div className="spendlo-header-text">Spendlo</div>
-                {process.env.NODE_ENV == 'development' ? (
-                    <div
-                        className="spendless-ext-logout-button"
-                        onClick={this.props.logout}
+                <div className="spendless-right-top">
+                    <span
+                        onClick={() => {
+                            this.props.setEditBudget(!this.props.editBudget);
+                        }}
+                        className="spendless-ext-summary-line spendless-ext-small-cap-font"
                     >
-                        Logout
-                    </div>
-                ) : (
-                    <div className="spendless-right-top">
-                        <span
-                            onClick={() => {
-                                this.props.setEditBudget(
-                                    !this.props.editBudget
-                                );
-                            }}
-                            className="spendless-ext-summary-line spendless-ext-small-cap-font"
-                        >
-                            {this.props.editBudget ? 'KEEP BUDGET' : 'EDIT BUDGET'}
-                        </span>
-                        <div className="spendless-ext-logout-button"></div>
-                    </div>
-                )}
+                        {this.props.editBudget ? 'KEEP BUDGET' : 'EDIT BUDGET'}
+                    </span>
+                    <div className="spendless-ext-logout-button"></div>
+                </div>
             </div>
         );
     }

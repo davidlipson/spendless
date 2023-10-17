@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "export RESTART=0 && node index.js",
+    "restart": "export RESTART=1 && node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": { "node": "16.x" },

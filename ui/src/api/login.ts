@@ -1,7 +1,9 @@
 import Cookies from 'universal-cookie';
+import { host } from '../environment';
+import { SPENDLO_COOKIE } from '../types';
 const cookies = new Cookies();
 
-export const loginUser = async (prof: any) => {
+export const loginUser = async (prof: any, setCookie = false) => {
     try {
         const requestOptions = {
             method: 'POST',
@@ -12,14 +14,14 @@ export const loginUser = async (prof: any) => {
                 email: prof.email,
             }),
         };
-        const url = `${process.env.REACT_APP_API_URL}/login`;
+        const url = `${host}/login`;
         const response = await fetch(url, requestOptions);
         const data = await response.json();
-        cookies.set(
-            process.env.REACT_APP_SPENDLESS_COOKIE_NAME as string,
-            data[0].id as string,
-            { path: '/' }
-        );
+        if (setCookie) {
+            cookies.set(SPENDLO_COOKIE as string, data[0].id as string, {
+                path: '/',
+            });
+        }
         return data[0];
     } catch (error) {
         console.log(error);
@@ -36,10 +38,10 @@ export const onboardUser = async (uid: string) => {
                 uid,
             }),
         };
-        const url = `${process.env.REACT_APP_API_URL}/onboard`;
+        const url = `${host}/onboard`;
         const response = await fetch(url, requestOptions);
         const data = await response.json();
-        return data[0]
+        return data[0];
     } catch (error) {
         console.log(error);
         return false;

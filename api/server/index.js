@@ -3,14 +3,23 @@ const cors = require('kcors');
 const Router = require('koa-router');
 const DBClient = require('./database');
 const koaBody = require('koa-body');
-const { whitelist, blacklist, totalRegex } = require('./lists');
+const {
+    whitelist,
+    blacklist,
+    totalRegex,
+    processButtonEndWords,
+    processButtons,
+} = require('./lists');
+
+// change to ts
 
 const database = new DBClient();
-database.createDatabase().then(() => {
+database.createDatabase(process.env.RESTART == 1).then(() => {
     const router = new Router();
     const port = process.env.PORT || 5000;
 
     router.get('/user', async (ctx) => {
+        console.log('test');
         try {
             const { uid } = ctx.query;
             const results = await database.getUser(uid);
@@ -38,12 +47,9 @@ database.createDatabase().then(() => {
 
     router.post('/add', koaBody(), async (ctx) => {
         try {
-            const { uid, amount, description, lastPurchase, tid } =
-                ctx.request.body;
-            let newId = tid;
-            if (lastPurchase && tid) {
-                await database.confirmLastTransaction(uid, tid);
-            } else if (amount > 0) {
+            const { uid, amount, description, tid } = ctx.request.body;
+            let newId = null;
+            if (amount > 0) {
                 newId = await database.addTransaction(
                     tid,
                     uid,
@@ -53,6 +59,19 @@ database.createDatabase().then(() => {
             }
             const total = await database.getTotal(uid);
             ctx.body = { total, tid: newId };
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    router.post('/process', koaBody(), async (ctx) => {
+        try {
+            const { uid, tid } = ctx.request.body;
+            if (uid && tid) {
+                await database.confirmLastTransaction(uid, tid);
+            }
+            const total = await database.getTotal(uid);
+            ctx.body = { total };
         } catch (err) {
             console.log(err);
         }
@@ -77,7 +96,13 @@ database.createDatabase().then(() => {
     });
 
     router.get('/list', async (ctx) => {
-        ctx.body = { whitelist, blacklist, totalRegex };
+        ctx.body = {
+            whitelist,
+            blacklist,
+            totalRegex,
+            processButtons,
+            processButtonEndWords,
+        };
     });
 
     router.post('/ignore', koaBody(), async (ctx) => {

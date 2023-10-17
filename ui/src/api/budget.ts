@@ -1,12 +1,14 @@
-export const updateBudget = async(uid: string, budget: number ) => {
+import { host } from '../environment';
+
+export const updateBudget = async (uid: string, budget: number) => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          uid,
-          budget
-        })
+        body: JSON.stringify({
+            uid,
+            budget,
+        }),
     };
-    const url = `${process.env.REACT_APP_API_URL}/budget`;
+    const url = `${host}/budget`;
     await fetch(url, requestOptions);
-}
+};

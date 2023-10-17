@@ -7,9 +7,6 @@
     "default_title": "Spendlo",
     "default_popup": "index.html"
   },
-  "icons": {
-    "128": "icon128.png"
-  },
   "content_scripts": [
     {
       "matches": [

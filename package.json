@@ -1,8 +1,18 @@
 {
     "scripts": {
         "start": "cd api && npm i && node index.js",
-	"push": "git add -u && git commit -m 'quick push' && git push",
-	"quick": "npm run push && cd ui && npm run build"
+        "push": "git add -u && git commit -m 'quick push' && git push",
+        "quick": "npm run push && cd ui && npm run build"
     },
-    "engines": { "node": "16.x" }
+    "engines": {
+        "node": "16.x"
+    },
+    "devDependencies": {
+        "@types/chrome": "^0.0.246",
+        "copy-webpack-plugin": "^11.0.0",
+        "ts-loader": "^9.5.0",
+        "typescript": "^5.2.2",
+        "webpack": "^5.89.0",
+        "webpack-cli": "^5.1.4"
+    }
 }

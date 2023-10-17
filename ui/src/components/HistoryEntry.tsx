@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { getCurrency } from '../helpers/mathFns';
 import { shortenText } from '../helpers/shortenText';
 import HighlightOffSharpIcon from '@mui/icons-material/HighlightOffSharp';
+import React from 'react';
 
 class HistoryEntry extends Component<any,any>{
   constructor(props: any) {
