@@ -7,6 +7,7 @@ export class DBClient {
         if (init) {
             console.log('restarting db...');
         }
+        console.log(process.env.PG_DB);
         if (process.env.NODE_ENV === 'production') {
             this.client = await new Client({
                 user: process.env.PG_USER,
