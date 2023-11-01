@@ -294,6 +294,7 @@ export class DomManager {
         if (n.textContent === null) return [];
         const reg = new RegExp(this.lists.amountRegex, 'g');
         const trimmedQuery = n.textContent.replace(/ /g, '').match(reg);
+        console.log('trimmedQuery', trimmedQuery);
         if (trimmedQuery) {
             return trimmedQuery.map((t) =>
                 parseFloat(t.replace('$', '').replace(',', ''))
@@ -366,12 +367,14 @@ export class DomManager {
     };
 
     tryQueryingWholePage = (): number[] => {
-        const pattern = `${this.lists.totalRegex}.*${this.lists.amountRegex}}`;
+        const pattern = `${this.lists.totalRegex}.*${this.lists.amountRegex}`;
         let divs = [
             ...document.querySelectorAll('div, tr, li, dl'),
         ] as HTMLElement[];
         divs = divs.filter((a) => this.checkRegex(pattern, a) !== null);
+        console.log('divs', divs);
         const minDiv = Math.min(...divs.map((d) => d.textContent?.length || 0));
+        console.log('minDiv', minDiv);
         return this.getPriceFromDivs(
             divs.filter((d) => d.textContent?.length === minDiv)
         );
