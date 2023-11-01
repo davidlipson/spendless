@@ -15,7 +15,7 @@ export const lists = {
         },
     },
     blacklist: ['amazon.+/dp/', 'amazon.+/gp/product/'],
-    totalRegex: `^[A-Z\\(\\)]* *Total( *\\([A-z]+\\))?( *(CAD)|(USD))?`,
+    totalRegex: `^[A-Z\\(\\)]* *Total( *\\([A-z]+\\))?`,
     amountRegex: `\\$?[1-9][0-9]*,?[0-9]*(.[0-9][0-9])?`,
     processButtons: [
         'Place order',
