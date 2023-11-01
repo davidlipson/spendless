@@ -8,17 +8,7 @@ export class DBClient {
             console.log('restarting db...');
         }
         if (process.env.NODE_ENV === 'production') {
-            console.log(process.env.PG_PASSWORD);
-            this.client = await new Client({
-                user: process.env.PG_USER,
-                password: process.env.PG_PASSWORD,
-                database: process.env.PG_DB,
-                port: parseInt(process.env.PG_PORT),
-                host: process.env.PG_HOST,
-                ssl: {
-                    rejectUnauthorized: false,
-                },
-            });
+            this.client = await new Client(process.env.DATABASE_URL);
         } else {
             this.client = await new Client({
                 user: process.env.PG_USER,
