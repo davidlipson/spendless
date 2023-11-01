@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "cd api && npm i && node index.js",
+        "start": "cd api && npm i && npm run restart",
         "push": "git add -u && git commit -m 'quick push' && git push",
         "quick": "npm run push && cd ui && npm run build"
     },
