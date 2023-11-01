@@ -11,6 +11,7 @@ const {
     whitelist,
     blacklist,
     totalRegex,
+    amountRegex,
     processButtonEndWords,
     processButtons,
 } = lists;
@@ -112,6 +113,7 @@ database.createDatabase(process.env.RESTART === '1').then(() => {
             whitelist,
             blacklist,
             totalRegex,
+            amountRegex,
             processButtons,
             processButtonEndWords,
         };

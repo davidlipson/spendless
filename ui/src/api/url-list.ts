@@ -4,6 +4,7 @@ export interface UrlListArgs {
     whitelist: any;
     blacklist: string[];
     totalRegex: string | null;
+    amountRegex: string | null;
     processButtons: string[];
     processButtonEndWords: string[];
 }
@@ -19,6 +20,7 @@ export const getUrlList = async (): Promise<UrlListArgs> => {
             whitelist: {},
             blacklist: [],
             totalRegex: null,
+            amountRegex: null,
             processButtons: [],
             processButtonEndWords: [],
         };

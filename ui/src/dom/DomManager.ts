@@ -66,6 +66,7 @@ export class DomManager {
     };
 
     listenerHelper = async () => {
+        console.log('listener', this);
         window.setTimeout(async () => {
             if (!this.user) return;
             if (this.whitelistKey != null) {
@@ -199,9 +200,7 @@ export class DomManager {
                         : '';
                 }
 
-                const bestTotalAmount = this.tryQueryingWholePage(
-                    this.lists.totalRegex
-                );
+                const bestTotalAmount = this.tryQueryingWholePage();
                 const bestListedAmount =
                     bestTotalAmount[0] === 0
                         ? this.getPriceFromDivs([
@@ -212,6 +211,7 @@ export class DomManager {
                         : bestTotalAmount;
 
                 amount = Math.max(bestListedAmount[0], bestTotalAmount[0]);
+                console.log('amount', amount);
                 div =
                     amount === bestTotalAmount[0]
                         ? bestTotalAmount[1]
@@ -292,9 +292,8 @@ export class DomManager {
 
     parseDiv = (n: HTMLElement): number[] => {
         if (n.textContent === null) return [];
-        const trimmedQuery = n.textContent
-            .replace(/ /g, '')
-            .match(/\$?[1-9][0-9]*,?[0-9]*(\.[0-9][0-9])?/g);
+        const reg = new RegExp(this.lists.amountRegex, 'g');
+        const trimmedQuery = n.textContent.replace(/ /g, '').match(reg);
         if (trimmedQuery) {
             return trimmedQuery.map((t) =>
                 parseFloat(t.replace('$', '').replace(',', ''))
@@ -366,7 +365,8 @@ export class DomManager {
         return div.textContent?.trim().replace(/\n/g, '').match(reg);
     };
 
-    tryQueryingWholePage = (pattern: string): number[] => {
+    tryQueryingWholePage = (): number[] => {
+        const pattern = `${this.lists.totalRegex}.*${this.lists.amountRegex}}`;
         let divs = [
             ...document.querySelectorAll('div, tr, li, dl'),
         ] as HTMLElement[];
