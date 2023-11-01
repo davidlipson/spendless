@@ -1,4 +1,6 @@
 .env
+dist
+api/dist
 build
 ui/build
 node_modules

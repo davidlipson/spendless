@@ -1,11 +1,11 @@
 /*
-  naming convention for spendless css
-  1. general classes: .spendless-ext-<class>
-  2. dropdown classes: .spendless-ext-dropdown-<class>
-  3. popup classes: .spendless-ext-popup-<class>
+  naming convention for spendlo css
+  1. general classes: .spendlo-ext-<class>
+  2. dropdown classes: .spendlo-ext-dropdown-<class>
+  3. popup classes: .spendlo-ext-popup-<class>
 */
 
-.spendless-ext-root {
+.spendlo-ext-root {
     position: fixed;
     bottom: 10px;
     right: 10px;
@@ -15,55 +15,55 @@
     border-radius: 4px;
 }
 
-.spendless-ext-dropdown {
+.spendlo-ext-dropdown {
     width: 400px;
     max-height: 800px;
 }
 
-.spendless-ext-onboard-body {
+.spendlo-ext-onboard-body {
     font-size: 18px;
 }
 
-.spendless-ext-app {
+.spendlo-ext-app {
     text-align: center;
     font-family: 'Lato', sans-serif;
     padding: 30px;
     color: #363636;
 }
 
-.spendless-ext-dropdown-top-bar {
+.spendlo-ext-dropdown-top-bar {
     border-bottom: 1px solid #e2e2e2;
     margin-bottom: 20px;
     display: flex;
     padding-bottom: 15px;
 }
 
-.spendless-ext-icon {
+.spendlo-ext-icon {
     display: flex;
     width: 85%;
 }
 
-.spendless-ext-dropdown-ignore {
+.spendlo-ext-dropdown-ignore {
     text-align: center;
     width: 20px;
     padding-left: 15px;
 }
 
-.spendless-ext-dropdown-cancel:hover {
+.spendlo-ext-dropdown-cancel:hover {
     cursor: pointer;
     color: #e06767;
 }
 
-.spendless-ext-icon img {
+.spendlo-ext-icon img {
     width: 90px !important;
 }
 
-.spendless-ext-popup {
+.spendlo-ext-popup {
     width: 300px;
     max-height: 600px;
 }
 
-.spendless-ext-popup-message {
+.spendlo-ext-popup-message {
     text-align: center;
     font-family: 'Lato', sans-serif;
     color: #363636;
@@ -82,26 +82,26 @@
     border-radius: 4px;
 }
 
-.spendless-ext-popup-header {
+.spendlo-ext-popup-header {
     font-size: 16px;
     font-weight: 800;
 }
 
-.spendless-ext-dropdown-transactions-title {
+.spendlo-ext-dropdown-transactions-title {
     text-align: left;
     font-weight: 800 !important;
     font-size: 11px !important;
     padding-bottom: 15px;
 }
 
-.spendless-right-top {
+.spendlo-right-top {
     width: 100%;
     text-align: right;
     cursor: pointer;
     margin-top: 10px;
 }
 
-.spendless-right-top .spendless-ext-small-cap-font:hover {
+.spendlo-right-top .spendlo-ext-small-cap-font:hover {
     opacity: 0.8;
 }
 
@@ -136,11 +136,15 @@
     color: white;
 }
 
-.spendless-ext-dropdown-progress-content {
+.spendlo-ext-popup-message {
+    height: 75px !important;
+}
+
+.spendlo-ext-dropdown-progress-content {
     margin-top: -15px !important;
 }
 
-.spendless-ext-dropdown-progress {
+.spendlo-ext-dropdown-progress {
     width: 200px;
     margin: 0 auto;
     padding: 20px;
@@ -148,63 +152,63 @@
     margin-bottom: 5px;
 }
 
-.spendless-ext-dropdown-progress-body {
+.spendlo-ext-dropdown-progress-body {
     font-size: 12px;
     width: 150px;
     font-weight: 600;
 }
 
-.spendless-ext-welcome-header {
+.spendlo-ext-welcome-header {
     font-weight: 800;
     font-size: x-large;
 }
 
-.spendless-ext-dropdown-progress-header {
+.spendlo-ext-dropdown-progress-header {
     font-weight: 800;
     font-size: xx-large;
 }
 
-.spendless-ext-below-budget {
+.spendlo-ext-below-budget {
     color: rgb(75, 176, 248);
 }
 
-.spendless-ext-approaching-budget {
+.spendlo-ext-approaching-budget {
     color: rgb(248, 200, 75);
 }
 
-.spendless-ext-above-budget {
+.spendlo-ext-above-budget {
     color: rgb(248, 75, 75);
 }
 
-.spendless-ext-summary-line {
+.spendlo-ext-summary-line {
     display: block;
 }
 
-.spendless-ext-summary-lines {
+.spendlo-ext-summary-lines {
     display: flex;
     padding: 10px 0px;
     display: flex;
 }
 
-.spendless-ext-summary-div {
+.spendlo-ext-summary-div {
     width: 50%;
     padding: 10px;
 }
 
-.spendless-ext-small-cap-font {
+.spendlo-ext-small-cap-font {
     font-weight: 400;
     font-size: 12px;
     font-variant: small-caps;
 }
 
-.spendless-ext-summary-value {
+.spendlo-ext-summary-value {
     display: block;
     font-weight: 800;
     font-size: 14px;
     margin-bottom: 3px;
 }
 
-.spendless-ext-popup-hide {
+.spendlo-ext-popup-hide {
     background-color: black;
     color: white;
     padding: 20px 0px;
@@ -213,28 +217,28 @@
     cursor: pointer;
 }
 
-.spendless-ext-popup-ignore {
+.spendlo-ext-popup-ignore {
     padding-top: 15px;
     cursor: pointer;
     font-size: 14px;
 }
 
-.spendless-ext-summary-div:first-of-type {
+.spendlo-ext-summary-div:first-of-type {
     border-right: 1px solid #e2e2e2;
 }
 
-.spendless-ext-divider-bar {
+.spendlo-ext-divider-bar {
     background: #e4e3e3;
     height: 1px;
     margin: 0 auto;
     margin-top: 10px;
 }
 
-.spendless-ext-dropdown-empty {
+.spendlo-ext-dropdown-empty {
     margin-top: 5px;
 }
 
-.spendless-ext-dropdown-history {
+.spendlo-ext-dropdown-history {
     margin-top: 20px;
 }
 
@@ -246,45 +250,45 @@
     padding: 0px !important;
 }
 
-.spendless-ext-app table {
+.spendlo-ext-app table {
     margin: 0 auto;
     text-align: right;
     cursor: pointer;
     padding-bottom: 10px;
 }
 
-.spendless-ext-dropdown-table-label {
+.spendlo-ext-dropdown-table-label {
     text-align: left;
     width: 200px !important;
     padding-left: 15px;
 }
 
-.spendless-ext-app tr {
+.spendlo-ext-app tr {
     height: 60px !important;
     padding: 20px;
 }
 
-.spendless-ext-dropdown-history-body {
+.spendlo-ext-dropdown-history-body {
     margin-top: 20px;
 }
 
-.spendless-ext-dropdown-budget-input-row {
+.spendlo-ext-dropdown-budget-input-row {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.spendless-ext-dropdown-table-amount {
+.spendlo-ext-dropdown-table-amount {
     width: 150px;
     padding-right: 15px;
     font-size: 16px;
 }
 
-.spendless-ext-welcome-body {
+.spendlo-ext-welcome-body {
     margin: 25px;
 }
 
-.spendless-ext-logout-button {
+.spendlo-ext-logout-button {
     position: relative;
     top: -15px;
     right: -5px;
@@ -294,7 +298,7 @@
     cursor: pointer;
 }
 
-.spendless-ext-dropdown-manage-transactions {
+.spendlo-ext-dropdown-manage-transactions {
     width: 100%;
 
     height: 50px;
@@ -303,41 +307,41 @@
     text-transform: none !important;
 }
 
-.spendless-ext-dropdown-manage-transactions-off {
+.spendlo-ext-dropdown-manage-transactions-off {
     background: black !important;
 }
 
-.spendless-ext-dropdown-manage-transactions-on {
+.spendlo-ext-dropdown-manage-transactions-on {
     background: #679093 !important;
 }
 
-.spendless-ext-onboard-top {
+.spendlo-ext-onboard-top {
     margin-bottom: 15px;
 }
 
-.spendless-ext-onboard-button {
+.spendlo-ext-onboard-button {
     width: 130px;
     height: auto;
 }
 
-.spendless-ext-dropdown-subline-onboard {
+.spendlo-ext-dropdown-subline-onboard {
     color: #679093 !important;
     font-size: 20px;
     font-style: italic;
 }
 
-.spendless-ext-dropdown-history-timestamp {
+.spendlo-ext-dropdown-history-timestamp {
     font-size: 12px;
     color: #6c6c6c;
     margin-top: 2px;
 }
 
-.spendless-ext-dropdown-history-name {
+.spendlo-ext-dropdown-history-name {
     font-weight: 900;
     font-size: 16px;
 }
 
-.spendless-confirm-ignore {
+.spendlo-confirm-ignore {
     margin-bottom: 15px;
 }
 
@@ -346,7 +350,7 @@
     font-size: 14px;
 }
 
-.spendless-ext-dropdown-edit-budget-bar {
+.spendlo-ext-dropdown-edit-budget-bar {
     display: flex;
     text-align: center;
     align-items: center;
@@ -354,24 +358,24 @@
     margin-top: 5px;
 }
 
-.spendless-ext-dropdown-summary-total {
+.spendlo-ext-dropdown-summary-total {
     cursor: pointer;
 }
 
-.spendless-ext-dropdown-budget-edit {
+.spendlo-ext-dropdown-budget-edit {
     cursor: pointer;
 }
 
-.spendless-ext-dropdown-edit-budget-bar svg {
+.spendlo-ext-dropdown-edit-budget-bar svg {
     margin: 0px 10px;
 }
 
-.spendless-ext-dropdown-save:hover {
+.spendlo-ext-dropdown-save:hover {
     cursor: pointer;
     color: #4fa17c;
 }
 
-.spendless-ext-dropdown-numeric-input-budget {
+.spendlo-ext-dropdown-numeric-input-budget {
     width: 5ch;
     text-align: right;
     font-weight: 800;
@@ -389,12 +393,12 @@
     padding-bottom: 20px;
 }
 
-.spendless-ext-dropdown-budget-dollar-sign {
+.spendlo-ext-dropdown-budget-dollar-sign {
     border-bottom: 1px dotted #cfcfcf;
     margin-bottom: -3px;
 }
 
-.spendless-ext-dropdown-perc {
+.spendlo-ext-dropdown-perc {
     font-size: 18px;
 }
 

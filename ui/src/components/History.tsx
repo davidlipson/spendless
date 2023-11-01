@@ -13,10 +13,10 @@ class History extends Component<any, any> {
 
     render() {
         return (
-            <div className="spendless-ext-dropdown-history-body">
+            <div className="spendlo-ext-dropdown-history-body">
                 {this.props.data.length > 0 ? (
                     <>
-                        <div className="spendless-ext-dropdown-transactions-title spendless-ext-small-cap-font">
+                        <div className="spendlo-ext-dropdown-transactions-title spendlo-ext-small-cap-font">
                             RECENT TRANSACTIONS
                         </div>
                         <table className="purchase-history-table">
@@ -38,7 +38,7 @@ class History extends Component<any, any> {
                                     editMode: !this.state.editMode,
                                 })
                             }
-                            className={`spendless-ext-dropdown-manage-transactions spendless-ext-dropdown-manage-transactions-${
+                            className={`spendlo-ext-dropdown-manage-transactions spendlo-ext-dropdown-manage-transactions-${
                                 this.state.editMode ? 'on' : 'off'
                             }`}
                             variant="contained"
@@ -49,7 +49,7 @@ class History extends Component<any, any> {
                         </Button>
                     </>
                 ) : (
-                    <div className="spendless-ext-dropdown-empty">
+                    <div className="spendlo-ext-dropdown-empty">
                         You do not have any recent transactions.
                     </div>
                 )}

@@ -5,3 +5,5 @@ export * from './recent';
 export * from './url-list';
 export * from './ignore';
 export * from '../environment';
+export * from './process';
+export * from './add';

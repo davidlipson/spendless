@@ -13,9 +13,9 @@ class SyncNotice extends Component<any, any> {
                     <div className="spendlo-header-text">
                         Welcome to Spendlo
                     </div>
-                    <div className="spendless-ext-divider-bar"></div>
+                    <div className="spendlo-ext-divider-bar"></div>
                     <div
-                        className={`spendless-ext-welcome-body spendless-ext-onboard-body`}
+                        className={`spendlo-ext-welcome-body spendlo-ext-onboard-body`}
                     >
                         In order to use Spendlo, you must have your{' '}
                         <a href="https://support.google.com/chrome/answer/185277?hl=en&co=GENIE.Platform%3DDesktop">

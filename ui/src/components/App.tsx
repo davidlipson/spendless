@@ -154,16 +154,15 @@ class App extends Component<any, any> {
             this.state.price + this.state.spent,
             this.state.user.budget
         );
-        console.log(this.state);
         if (!this.state.user || !this.state.sync) {
             return (
-                <div className="spendless-ext-app spendless-ext-dropdown">
+                <div className="spendlo-ext-app spendlo-ext-dropdown">
                     <SyncNotice />
                 </div>
             );
         }
         return (
-            <div className="spendless-ext-app spendless-ext-dropdown">
+            <div className="spendlo-ext-app spendlo-ext-dropdown">
                 {this.state.onboarded ? (
                     <>
                         <TopBar
@@ -191,8 +190,8 @@ class App extends Component<any, any> {
                                 spent={this.state.spent}
                                 budget={this.state.user.budget}
                             />
-                            <div className="spendless-ext-divider-bar"></div>
-                            <div className="spendless-ext-dropdown-history">
+                            <div className="spendlo-ext-divider-bar"></div>
+                            <div className="spendlo-ext-dropdown-history">
                                 <History
                                     ignore={this.ignoreTransaction.bind(this)}
                                     data={this.state.history.slice(0, 3)}

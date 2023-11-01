@@ -1,28 +1,29 @@
-const Koa = require('koa');
-const cors = require('kcors');
-const Router = require('koa-router');
-const DBClient = require('./database');
-const koaBody = require('koa-body');
+import Koa from 'koa';
+import cors from 'kcors';
+import Router from 'koa-router';
+import { DBClient } from './database';
+import koaBody from 'koa-body';
+import { lists } from './lists';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 const {
     whitelist,
     blacklist,
     totalRegex,
     processButtonEndWords,
     processButtons,
-} = require('./lists');
-
-// change to ts
+} = lists;
 
 const database = new DBClient();
-database.createDatabase(process.env.RESTART == 1).then(() => {
+database.createDatabase(process.env.RESTART === '1').then(() => {
     const router = new Router();
     const port = process.env.PORT || 5000;
 
     router.get('/user', async (ctx) => {
-        console.log('test');
         try {
             const { uid } = ctx.query;
-            const results = await database.getUser(uid);
+            const results = await database.getUser(uid as string);
             if (results.length === 0) {
                 ctx.throw(404);
             }
@@ -34,7 +35,7 @@ database.createDatabase(process.env.RESTART == 1).then(() => {
 
     router.post('/onboard', koaBody(), async (ctx) => {
         try {
-            const { uid } = ctx.request.body;
+            const { uid } = ctx.request.body as { uid: string };
             const results = await database.onboardUser(uid);
             if (results.length === 0) {
                 ctx.throw(404);
@@ -47,7 +48,12 @@ database.createDatabase(process.env.RESTART == 1).then(() => {
 
     router.post('/add', koaBody(), async (ctx) => {
         try {
-            const { uid, amount, description, tid } = ctx.request.body;
+            const { uid, amount, description, tid } = ctx.request.body as {
+                uid: string;
+                amount: number;
+                description: string;
+                tid: string;
+            };
             let newId = null;
             if (amount > 0) {
                 newId = await database.addTransaction(
@@ -57,8 +63,8 @@ database.createDatabase(process.env.RESTART == 1).then(() => {
                     amount
                 );
             }
-            const total = await database.getTotal(uid);
-            ctx.body = { total, tid: newId };
+            const results = await database.getUser(uid as string);
+            ctx.body = { total: results[0].spent, tid: newId };
         } catch (err) {
             console.log(err);
         }
@@ -66,31 +72,37 @@ database.createDatabase(process.env.RESTART == 1).then(() => {
 
     router.post('/process', koaBody(), async (ctx) => {
         try {
-            const { uid, tid } = ctx.request.body;
+            const { uid, tid } = ctx.request.body as {
+                uid: string;
+                tid: string;
+            };
             if (uid && tid) {
                 await database.confirmLastTransaction(uid, tid);
             }
-            const total = await database.getTotal(uid);
-            ctx.body = { total };
+            const results = await database.getUser(uid as string);
+            ctx.body = { total: results[0].spent };
         } catch (err) {
             console.log(err);
         }
     });
 
     router.post('/budget', koaBody(), async (ctx) => {
-        const { uid, budget } = ctx.request.body;
+        const { uid, budget } = ctx.request.body as {
+            uid: string;
+            budget: number;
+        };
         const results = await database.updateBudget(uid, budget);
         ctx.body = results;
     });
 
     router.get('/history', async (ctx) => {
-        const { uid } = ctx.query;
+        const uid = ctx.query.uid as string;
         const { history, spent, recent } = await database.getHistory(uid);
         ctx.body = { history, spent, recent };
     });
 
     router.get('/recent', async (ctx) => {
-        const { uid } = ctx.query;
+        const uid = ctx.query.uid as string;
         const recent = await database.getRecentlyUnconfirmed(uid);
         ctx.body = recent;
     });
@@ -106,9 +118,12 @@ database.createDatabase(process.env.RESTART == 1).then(() => {
     });
 
     router.post('/ignore', koaBody(), async (ctx) => {
-        const { uid, id } = ctx.request.body;
+        const { uid, id } = ctx.request.body as {
+            uid: string;
+            id: string;
+        };
         const results = await database.ignoreTransaction(uid, id);
-        if (results.length === 0) {
+        if (results.rowCount === 0) {
             ctx.throw(404);
         }
         ctx.body = results;
@@ -116,7 +131,14 @@ database.createDatabase(process.env.RESTART == 1).then(() => {
 
     router.post('/login', koaBody(), async (ctx) => {
         try {
-            const { email, first_name, last_name } = ctx.request.body;
+            interface LoginRequestBody {
+                email: string;
+                first_name: string;
+                last_name: string;
+            }
+
+            const { email, first_name, last_name } = ctx.request
+                .body as LoginRequestBody;
             if (email?.length > 0) {
                 const results = await database.loginUser(
                     email,
@@ -135,24 +157,14 @@ database.createDatabase(process.env.RESTART == 1).then(() => {
         }
     });
 
-    // Setup Koa app
     const app = new Koa();
 
-    // Apply CORS config
     var options = {
         origin: '*',
     };
 
     app.use(cors(options));
 
-    // Log all requests
-    app.use(async (ctx, next) => {
-        const start = Date.now();
-        await next(); // This will pause this function until the endpoint handler has resolved
-        const responseTime = Date.now() - start;
-    });
-
-    // Error Handler - All uncaught exceptions will percolate up to here
     app.use(async (ctx, next) => {
         try {
             await next();
@@ -162,10 +174,8 @@ database.createDatabase(process.env.RESTART == 1).then(() => {
         }
     });
 
-    // Mount routes
-    app.use(router.routes(), router.allowedMethods());
+    app.use(router.routes());
 
-    // Start the app
     app.listen(port, () => {
         console.log(`Listening on port ${port}...`);
     });

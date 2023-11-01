@@ -8,18 +8,18 @@ class TopBar extends Component<any, any> {
 
     render() {
         return (
-            <div className="spendless-ext-dropdown-top-bar">
+            <div className="spendlo-ext-dropdown-top-bar">
                 <div className="spendlo-header-text">Spendlo</div>
-                <div className="spendless-right-top">
+                <div className="spendlo-right-top">
                     <span
                         onClick={() => {
                             this.props.setEditBudget(!this.props.editBudget);
                         }}
-                        className="spendless-ext-summary-line spendless-ext-small-cap-font"
+                        className="spendlo-ext-summary-line spendlo-ext-small-cap-font"
                     >
                         {this.props.editBudget ? 'KEEP BUDGET' : 'EDIT BUDGET'}
                     </span>
-                    <div className="spendless-ext-logout-button"></div>
+                    <div className="spendlo-ext-logout-button"></div>
                 </div>
             </div>
         );

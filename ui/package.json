@@ -1,5 +1,5 @@
 {
-    "name": "spendless-extension",
+    "name": "spendlo-extension",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -30,11 +30,7 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "wp": "webpack --config webpack/webpack.config.js",
-        "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "build": "webpack --config webpack/webpack.config.js"
     },
     "eslintConfig": {
         "extends": [

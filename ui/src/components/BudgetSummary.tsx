@@ -40,32 +40,32 @@ class BudgetSummary extends Component<any, any> {
 
     render() {
         return (
-            <div className="spendless-ext-summary-lines">
-                <div className="spendless-ext-summary-div">
-                    <span className="spendless-ext-summary-value">
+            <div className="spendlo-ext-summary-lines">
+                <div className="spendlo-ext-summary-div">
+                    <span className="spendlo-ext-summary-value">
                         {getCurrency(Math.ceil(this.props.spent)).replace(
                             '.00',
                             ''
                         )}
                     </span>
-                    <span className="spendless-ext-summary-line spendless-ext-small-cap-font">
+                    <span className="spendlo-ext-summary-line spendlo-ext-small-cap-font">
                         AMOUNT SPENT
                     </span>
                 </div>
                 {this.props.editBudget ? (
-                    <div className="spendless-ext-summary-div spendless-ext-dropdown-budget-edit">
-                        <div className="spendless-ext-dropdown-edit-budget-bar">
+                    <div className="spendlo-ext-summary-div spendlo-ext-dropdown-budget-edit">
+                        <div className="spendlo-ext-dropdown-edit-budget-bar">
                             <HighlightOffSharpIcon
                                 className="cancel-button"
                                 onClick={() => this.props.setEditBudget(false)}
                             />
-                            <div className="spendless-ext-dropdown-budget-input-row">
-                                <span className="spendless-ext-summary-value spendless-ext-dropdown-budget-dollar-sign">
+                            <div className="spendlo-ext-dropdown-budget-input-row">
+                                <span className="spendlo-ext-summary-value spendlo-ext-dropdown-budget-dollar-sign">
                                     $
                                 </span>
                                 <NumericInput
                                     onChange={this.handleEditBudget.bind(this)}
-                                    className="spendless-ext-dropdown-numeric-input-budget"
+                                    className="spendlo-ext-dropdown-numeric-input-budget"
                                     min={0}
                                     max={10000}
                                     precision={0}
@@ -74,14 +74,14 @@ class BudgetSummary extends Component<any, any> {
                                 />
                             </div>
                             <CheckCircleOutlineRoundedIcon
-                                className="spendless-ext-dropdown-save"
+                                className="spendlo-ext-dropdown-save"
                                 onClick={this.submitNewBudget.bind(this)}
                             />
                         </div>
                     </div>
                 ) : (
                     <div
-                        className="spendless-ext-summary-div spendless-ext-dropdown-summary-total"
+                        className="spendlo-ext-summary-div spendlo-ext-dropdown-summary-total"
                         onMouseEnter={this.onMouseover.bind(this)}
                         onMouseLeave={this.onMouseout.bind(this)}
                         onClick={() => {
@@ -90,10 +90,10 @@ class BudgetSummary extends Component<any, any> {
                             }
                         }}
                     >
-                        <span className="spendless-ext-summary-value">
+                        <span className="spendlo-ext-summary-value">
                             {getCurrency(this.props.budget).replace('.00', '')}
                         </span>
-                        <span className="spendless-ext-summary-line spendless-ext-small-cap-font">
+                        <span className="spendlo-ext-summary-line spendlo-ext-small-cap-font">
                             {this.state.text}
                         </span>
                     </div>

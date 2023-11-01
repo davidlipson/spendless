@@ -1,11 +1,12 @@
-import { domManager } from './dom';
+import { DomManager } from './dom';
 
 (async () => {
+    const backgroundDomManager = new DomManager();
     chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
-        domManager.navHelper(details);
+        backgroundDomManager.navHelper(details);
     });
 
     chrome.webNavigation.onCompleted.addListener(async (details) => {
-        domManager.navHelper(details);
+        backgroundDomManager.navHelper(details);
     });
 })();

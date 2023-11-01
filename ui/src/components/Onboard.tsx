@@ -14,13 +14,13 @@ class Onboard extends Component<any, any> {
                     <div className="spendlo-header-text">
                         Welcome to Spendlo
                     </div>
-                    <div className="spendless-ext-divider-bar"></div>
-                    <div className="spendless-ext-welcome-body spendless-ext-dropdown-subline-onboard">
+                    <div className="spendlo-ext-divider-bar"></div>
+                    <div className="spendlo-ext-welcome-body spendlo-ext-dropdown-subline-onboard">
                         We built Spendlo to help people spend less money on
                         online shopping.
                     </div>
                     <div
-                        className={`spendless-ext-welcome-body spendless-ext-onboard-body`}
+                        className={`spendlo-ext-welcome-body spendlo-ext-onboard-body`}
                     >
                         All you have to do is <b>set a monthly budget</b> and
                         we’ll show you how much of your budget you’ve already
@@ -28,11 +28,11 @@ class Onboard extends Component<any, any> {
                         Chrome web browser.
                     </div>
                     <div
-                        className={`spendless-ext-welcome-body spendless-ext-onboard-body`}
+                        className={`spendlo-ext-welcome-body spendlo-ext-onboard-body`}
                     >
                         <Button
                             onClick={() => this.props.onboardUser()}
-                            className={`spendless-ext-dropdown-manage-transactions spendless-ext-dropdown-manage-transactions-on spendless-ext-onboard-button`}
+                            className={`spendlo-ext-dropdown-manage-transactions spendlo-ext-dropdown-manage-transactions-on spendlo-ext-onboard-button`}
                             variant="contained"
                         >
                             Get Started
