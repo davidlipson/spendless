@@ -1,4 +1,4 @@
-export const host = 'http://localhost:5000';
+export const host = 'https://spendless-pg.herokuapp.com';
 export const dev = true;
 
 // final to do

@@ -15,7 +15,7 @@ export const lists = {
         },
     },
     blacklist: ['amazon.+/dp/', 'amazon.+/gp/product/'],
-    totalRegex: `^[A-Z\\(\\)]* *Total`,
+    totalRegex: `^[A-Z\\(\\)]* *Total( *\([A-z]+\))?`,
     processButtons: [
         'Place order',
         'Place your order',
