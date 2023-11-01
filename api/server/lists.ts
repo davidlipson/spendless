@@ -23,6 +23,7 @@ export const lists = {
         'Pay now',
         'Confirm and pay',
         'Complete purchase',
+        'Submit order',
         'Buy now',
         'Authorize payment',
         'Confirm and pay',
